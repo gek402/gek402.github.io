@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1525">
+<title>Calificaciones · Tecnologías</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1525;--panel:#14233a;--panel2:#1c304b;--border:#30435e;--text:#f4f8ff;--muted:#aabbd2;--blue:#3a7bd2;--green:#14815b;--red:#e16a72;--shadow:0 10px 30px rgba(0,0,0,.15)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;font-size:15px}button,input,select,textarea{font:inherit}button{cursor:pointer;transition:filter .12s}button:hover{filter:brightness(1.1)}button:disabled{cursor:wait;opacity:.65}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid #87b7fe;outline-offset:2px}.hidden{display:none!important}
+main{width:min(860px,100%);margin:auto;padding:14px 14px 110px}
+header{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-bottom:20px}.brand{min-width:0}.brand h1{font-size:clamp(20px,4.7vw,27px);line-height:1.12;margin:0 0 5px;font-weight:800}.brand p{margin:0;color:var(--muted);font-size:12px}.topactions{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+button{border:1px solid var(--border);border-radius:11px;color:var(--text);background:var(--panel2);font-weight:700;padding:11px 13px}.mini{font-size:13px;padding:9px 11px}.primary{background:#1f5eab;border-color:#3279c9;color:#fff}.success{background:#126448;border-color:#228562}.ghost{background:transparent}.danger{background:#743043;border-color:#bb5366}.back{background:transparent;color:#d6e7fb;padding:8px 11px;margin-bottom:11px}.kicker{color:#a7c9ff;font-weight:700;letter-spacing:.045em;font-size:12px;text-transform:uppercase}
+h2{font-size:clamp(21px,4.8vw,29px);margin:7px 0 8px}p.lead{color:var(--muted);margin:0 0 19px;font-size:14px}.card{border:1px solid var(--border);background:var(--panel);box-shadow:var(--shadow);border-radius:16px;padding:18px}.choicegrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.choice{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:145px;gap:8px;border:1px solid #385981;background:linear-gradient(135deg,#254a7f,#183454);border-radius:17px;box-shadow:var(--shadow);padding:12px}.choice .big{font-size:35px;font-weight:800}.choice small{font-size:13px;color:#c8d9f0}.groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.group{display:flex;justify-content:space-between;align-items:center;padding:16px 17px;border-radius:13px;background:var(--panel);min-height:68px;text-align:left}.group strong{font-size:19px}.group small{color:var(--muted);font-weight:500}
+.listbar{display:flex;align-items:center;gap:10px;margin:8px 0 13px}.search{width:100%;border:1px solid var(--border);background:#0c1a2e;color:var(--text);padding:13px 14px;border-radius:12px}.hint{font-size:12px;color:var(--muted)}.studentlist{display:grid;gap:8px}.student{border-radius:12px;border:1px solid var(--border);background:var(--panel);display:grid;grid-template-columns:minmax(0,1fr) 81px 49px 70px;align-items:center;gap:9px;padding:10px 12px;min-height:72px}.student.changed{border-left:4px solid #f4bc60;padding-left:9px}.person{min-width:0}.person strong{display:block;font-size:14px;line-height:1.35;overflow-wrap:anywhere}.person small{color:var(--muted);font-size:11px}.grade{width:100%;height:48px;background:#0b1c31;color:var(--text);text-align:center;border:1px solid #4b6382;border-radius:10px;font-size:20px;font-weight:800;padding:4px}.grade.low{background:#050608;color:#ff7984;border:2px solid #b84a55}
+.grade.red{background:#613b49;color:#ffd1d8;border:2px solid #e18c9f}
+.grade.yellow{background:#66552d;color:#fff0b4;border:2px solid #e2c870}
+.grade.green{background:#245448;color:#c8f7d9;border:2px solid #86caaa}
+.grade.blue{background:#254d68;color:#c0ebff;border:2px solid #81bee8}.grade.invalid{outline:2px solid #ff5252}.comment{width:46px;height:47px;display:grid;place-items:center;padding:0;font-size:20px;border-color:#49648a;background:#263e5a}.comment.custom{color:#85eac2;border-color:#2d9b77}.avg{text-align:center;white-space:nowrap}.avg strong{display:block;font-size:17px}.avg small{font-size:10px;color:var(--muted)}.colheads{display:grid;grid-template-columns:minmax(0,1fr) 81px 49px 70px;gap:9px;padding:0 12px;margin:14px 0 5px;color:#a9c6e7;font-size:11px;text-align:center}.colheads span:first-child{text-align:left}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#0e2035;border-top:1px solid #29425c;padding:10px 14px max(10px,env(safe-area-inset-bottom));z-index:20}.bottom-inner{width:min(860px,100%);margin:auto;display:flex;align-items:center;justify-content:space-between;gap:10px}.pending{font-size:13px;color:#c9daee}.pending strong{font-size:21px;color:#fff;font-variant-numeric:tabular-nums}.bottom button{white-space:nowrap}
+.screen{min-height:65vh}.notice{background:#223a59;border:1px solid #46668c;border-radius:11px;color:#d8eafb;padding:12px 14px;margin:10px 0;font-size:13px;line-height:1.45}.smallinfo{color:var(--muted);font-size:12px;margin-top:12px}.action-stack{display:grid;gap:12px;margin-top:16px}.action-row{display:flex;gap:10px;align-items:center;justify-content:space-between;border:1px solid var(--border);border-radius:13px;background:var(--panel);padding:14px}.action-row>div{min-width:0}.action-row strong{font-size:15px}.action-row p{margin:5px 0 0;font-size:12px;color:var(--muted)}.action-row button{flex-shrink:0}.field{display:grid;gap:6px;margin:12px 0}.field label{font-size:13px;color:#bacee6}.field input,.field select,.field textarea{width:100%;border:1px solid var(--border);background:#0c1b2f;color:#fff;border-radius:10px;padding:11px}.field textarea{min-height:105px;resize:vertical}.modal{position:fixed;inset:0;background:#020711bd;z-index:60;display:grid;place-items:center;padding:16px}.modalbox{width:min(480px,100%);background:#17263d;border:1px solid #426184;border-radius:17px;padding:20px;box-shadow:0 20px 65px #0007;max-height:94vh;overflow:auto}.modalbox h3{font-size:20px;margin:0 0 6px}.rowbtn{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:15px}.auto-preview{border-radius:9px;border:1px dashed #547292;background:#102036;padding:11px;color:#c9ddf2;font-size:13px;line-height:1.45;margin-top:11px}.status{margin:10px 0;padding:12px;border-radius:10px;background:#183b35;color:#aaffd9;font-size:13px}.status.err{background:#4d2632;color:#ffc5c8}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:17px}.stat{padding:13px 6px;background:var(--panel2);border-radius:11px;text-align:center}.stat b{font-size:22px;display:block}.stat small{font-size:11px;color:var(--muted)}.bars{display:grid;gap:10px;margin:17px 0}.bar-row{display:grid;grid-template-columns:95px 1fr 25px;align-items:center;gap:8px;font-size:12px}.track{height:13px;background:#0b1829;border-radius:20px;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,#2564aa,#70a6df);border-radius:20px}.report-list{display:grid;gap:7px;margin-top:12px}.reportitem{display:flex;justify-content:space-between;gap:12px;padding:11px;background:var(--panel2);border-radius:9px;font-size:13px}.reportitem span{color:#f6abab}
+@media(max-width:650px){header{align-items:flex-start;flex-wrap:wrap}.topactions{width:100%;justify-content:flex-end}.choice{min-height:132px}.student{grid-template-columns:minmax(0,1fr) 70px 44px 60px;gap:6px;padding:8px}.colheads{grid-template-columns:minmax(0,1fr) 70px 44px 60px;gap:6px;padding:0 8px}.person strong{font-size:12px}.grade{height:45px;font-size:19px}.comment{width:42px;height:44px}.avg strong{font-size:15px}.group{padding:13px}.action-row{flex-wrap:wrap}.action-row button{width:100%}.choice .big{font-size:31px}}
+@media(max-width:360px){.student{grid-template-columns:minmax(0,1fr) 60px 40px 50px;gap:4px}.colheads{grid-template-columns:minmax(0,1fr) 60px 40px 50px;gap:4px}.comment{width:38px}.grade{font-size:17px}.person strong{font-size:11px}.avg strong{font-size:13px}.choicegrid{gap:6px}.choice{min-height:115px}}
+@media print{body{background:white;color:black}header .topactions,.back,.bottom,.listbar button{display:none!important}main{width:100%;padding:0}.card,.student{box-shadow:none}}
+
+.chart-frame{overflow:hidden;margin:14px 0 19px;background:#0c1c30;border:1px solid #314762;border-radius:13px;padding:10px 8px}
+.chart-svg{width:100%;height:auto;display:block;overflow:visible}
+.chart-legend{display:flex;flex-wrap:wrap;gap:9px;font-size:11px;color:#b5cbe5;margin:7px 3px}
+.legend-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:middle}
+.chart-title{font-size:15px;font-weight:750;margin:22px 0 5px}
+.chart-note{color:#9db3cc;font-size:12px;line-height:1.5;margin:2px 0 10px}
+.chart-empty{color:#9fb5d0;font-size:13px;text-align:center;padding:25px 10px}
+.connect-row{display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap}
+.connection-indicator{font-size:12px;color:#bfcee4;line-height:1.4}
+.connection-indicator.ok{color:#85e5bc}
+.modal-description{font-size:14px;color:#cbd9e9;line-height:1.6}
+.diff-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.diff-value{padding:14px;border:1px solid #486382;border-radius:12px;text-align:center;background:#11243b}
+.diff-value span{display:block;color:#abbfd9;font-size:11px;margin-bottom:7px}
+.diff-value strong{font-size:28px}
+@media(max-width:480px){.chart-frame{padding:7px 4px}.connect-row button{width:100%}}
+
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div class="brand"><h1>Control de calificaciones · Actualizado</h1><p>Tecnologías · Profra. Patricia Isamara Espíndola Reyes</p></div>
+  <div class="topactions"><button class="mini ghost" id="openReports">▥ Reportes</button><button class="mini ghost" id="openSync">☁ Sincronización</button></div>
+</header>
+<section id="s-partial" class="screen">
+  <div class="kicker">Comenzar captura</div><h2>¿Qué parcial vas a calificar?</h2><p class="lead">Selecciona el parcial para ver tus grupos.</p>
+  <div class="choicegrid"><button class="choice" data-p="1"><span class="big">1°</span><small>Primer parcial</small></button><button class="choice" data-p="2"><span class="big">2°</span><small>Segundo parcial</small></button><button class="choice" data-p="3"><span class="big">3°</span><small>Tercer parcial</small></button></div>
+</section>
+<section id="s-groups" class="screen hidden">
+  <button class="back" id="backPartial">← Cambiar parcial</button><div class="kicker" id="groupKicker">Parcial</div><h2>Selecciona el grupo</h2><p class="lead">Abre el listado y captura directamente.</p><div class="groups" id="groups"></div>
+</section>
+<section id="s-capture" class="screen hidden">
+  <button class="back" id="backGroups">← Cambiar grupo</button><div class="kicker" id="captureKicker">Primer parcial</div><h2 id="captureTitle">Grupo</h2><p class="lead" style="margin-bottom:9px">Escribe la calificación. Se guarda localmente al momento.</p>
+  <div class="listbar"><input id="search" class="search" placeholder="Buscar alumno por nombre o ID" autocomplete="off" aria-label="Buscar alumno"></div>
+  <div class="colheads"><span>Alumno</span><span>Nota</span><span>Com.</span><span>Prom.</span></div><div id="studentlist" class="studentlist"></div>
+  <p class="smallinfo">Notas de 0 a 10, hasta un decimal. ✎ permite escribir un comentario personalizado.</p>
+</section>
+<section id="s-sync" class="screen hidden">
+  <button class="back" id="backSync">← Volver</button><div class="kicker">Conexión</div><h2>Sincronización</h2><p class="lead">La captura se guarda automáticamente en este dispositivo. Envía los cambios cuando quieras.</p>
+  <div class="card">
+    <div class="connect-row"><div><strong>Google Sheets</strong><div class="connection-indicator" id="cloudState">Sin comprobar conexión</div></div><button id="connectCloud" class="primary">Conectar</button></div>
+    <div class="action-stack">
+      <div class="action-row"><div><strong>↓ Importar desde la nube</strong><p>Actualiza los datos desde Sheets. Si hay cambios pendientes, primero podrás enviarlos o descartarlos con confirmación.</p></div><button class="primary" id="importCloud">Importar</button></div>
+      <div class="action-row"><div><strong>↑ Exportar cambios</strong><p>Envía, verifica y vuelve a importar la información de Google Sheets automáticamente.</p></div><button class="success" id="exportCloud">Exportar</button></div>
+    </div>
+    <div class="status hidden" id="syncStatus" role="status" aria-live="polite"></div>
+    <details style="margin-top:19px"><summary style="color:#b6cbe3;cursor:pointer">Conexión e información adicional</summary>
+      <p class="smallinfo">Este HTML usa tu puente de Apps Script automáticamente. No necesitas introducir su dirección.</p><p class="smallinfo"><a href="https://script.google.com/macros/s/AKfycbxc9pkPwGnvUlp_YI8tyQ3ePf31caXYfXnqRKe4QSSDMErZ1FC6yd5FDH-DINZgbI8/exec?accion=estado" target="_blank" rel="noopener noreferrer" style="color:#9fcaff">Comprobar el puente en otra pestaña</a></p><p class="smallinfo">El puente no exige contraseña: mantén privada la URL y restringe la implementación cuando termines de usarla.</p>
+    </details>
+    <details style="margin-top:16px"><summary style="color:#b6cbe3;cursor:pointer">Respaldo y mantenimiento</summary>
+      <div class="action-stack"><button id="backupCsv">Descargar respaldo CSV</button><button id="clearQueue" class="danger">Descartar cambios locales pendientes</button></div><p class="smallinfo">Los datos viven en el almacenamiento de este navegador. Evita borrar sus datos hasta sincronizar.</p>
+    </details>
+  </div>
+</section>
+<section id="s-reports" class="screen hidden">
+  <button class="back" id="backReports">← Volver</button><div class="kicker">Informes</div><h2>Reportes y seguimiento</h2><p class="lead">Los resultados incluyen la información guardada localmente y los cambios pendientes.</p>
+  <div class="card"><div class="field"><label for="reportGroup">Grupo</label><select id="reportGroup"></select></div><div class="field"><label for="reportPartial">Evaluación</label><select id="reportPartial"><option value="0">Promedio actual</option><option value="1">Primer parcial</option><option value="2">Segundo parcial</option><option value="3">Tercer parcial</option></select></div>
+  <div class="stats" id="stats"></div>
+  <h3 class="chart-title">Distribución de calificaciones</h3><p class="chart-note">Número de alumnos por rango de rendimiento.</p><div class="chart-frame" id="gradeChart"></div>
+  <h3 class="chart-title">Comportamiento académico del grupo</h3><p class="chart-note">Calificaciones de los alumnos en orden de lista, conectadas por una línea. Las caídas indican notas que requieren atención.</p><div class="chart-frame" id="behaviorChart"></div>
+  <h3 class="chart-title">Distribución espacial de estudiantes</h3><p class="chart-note">Cada punto representa a un alumno: posición horizontal = posición en lista; altura = calificación. Selecciona un grupo para distinguir a sus estudiantes.</p><div class="chart-frame" id="studentChart"></div>
+  <h3 class="chart-title">Alumnos que necesitan seguimiento</h3><div class="report-list" id="reportList"></div><p class="smallinfo" id="behaviorStats"></p></div>
+</section>
+</main>
+<div class="bottom"><div class="bottom-inner"><div class="pending">Cambios pendientes: <strong id="pendingCount">0</strong> <span id="localState" style="font-size:11px;color:#8dcebd">· Guardado local</span></div><button id="bottomSync" class="mini primary">☁ Enviar cambios</button></div></div>
+<div class="modal hidden" id="modalComment"><div class="modalbox" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><h3 id="modalTitle">Comentario del parcial</h3><p id="modalPerson" class="hint"></p><div class="auto-preview" id="autoPreview"></div><div class="field"><label for="commentText">Comentario personalizado (opcional)</label><textarea id="commentText" maxlength="500" placeholder="Escribe el comentario que proporcionó la profesora..."></textarea></div><div class="rowbtn"><button id="autoMode">Dejar NA (sin comentario)</button><button id="cancelComment" class="ghost">Cancelar</button><button id="saveComment" class="primary">Guardar comentario</button></div></div></div>
+<div class="modal hidden" id="modalConfirm"><div class="modalbox" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+  <h3 id="confirmTitle">Confirmar modificación</h3><p class="modal-description" id="confirmPerson"></p>
+  <div class="diff-grid"><div class="diff-value"><span>Calificación anterior</span><strong id="oldGrade">—</strong></div><div class="diff-value"><span>Nueva calificación</span><strong id="newGrade">—</strong></div></div>
+  <p class="modal-description">Se actualizará la calificación de este alumno en el mismo parcial. No se agregará otro registro.</p>
+  <div class="rowbtn"><button id="declineGrade" class="ghost">Declinar</button><button id="acceptGrade" class="primary">Aceptar cambio</button></div>
+</div></div>
+<script>
+'use strict';
+const ALUMNOS=[{"id":"A0042","grado":"1","grupo":"A","nombre":"ALVARADO GORDILLO MICHELLE"},{"id":"A0043","grado":"1","grupo":"A","nombre":"ARREOLA CONTRERAS KALEL"},{"id":"A0044","grado":"1","grupo":"A","nombre":"BAÑALES CUETO SAMANTHA"},{"id":"A0045","grado":"1","grupo":"A","nombre":"BARRAGAN SANCHEZ LIAM"},{"id":"A0046","grado":"1","grupo":"A","nombre":"CANO ESTRELLA AITANA ISABELLE"},{"id":"A0047","grado":"1","grupo":"A","nombre":"CHAPARRO GONZALEZ ADRIANA GUADALUPE"},{"id":"A0048","grado":"1","grupo":"A","nombre":"CORZA LOPEZ CHRISTOPHER JASSIEL"},{"id":"A0049","grado":"1","grupo":"A","nombre":"HERNANDEZ CASTELAN CEDRICK IMANOL"},{"id":"A0050","grado":"1","grupo":"A","nombre":"HERNANDEZ FLORES AREN DARIO"},{"id":"A0051","grado":"1","grupo":"A","nombre":"MARTINEZ GONZALEZ REGINA"},{"id":"A0052","grado":"1","grupo":"A","nombre":"MEJIA MIRANDA LEONARDO RAMSES"},{"id":"A0053","grado":"1","grupo":"A","nombre":"MENDEZ BARRERA LEAH REGINA"},{"id":"A0054","grado":"1","grupo":"A","nombre":"MOLINA SERRATO JIMENA ELIZABETH"},{"id":"A0055","grado":"1","grupo":"A","nombre":"MONTELLANO MENDOZA DIANA ESMERALDA"},{"id":"A0056","grado":"1","grupo":"A","nombre":"MONTELLANO MENDOZA MAR ZAFIRO"},{"id":"A0057","grado":"1","grupo":"A","nombre":"OLICON MARIN ISABELLA"},{"id":"A0058","grado":"1","grupo":"A","nombre":"ORTIZ LAGUNAS NATAN JONAS"},{"id":"A0059","grado":"1","grupo":"A","nombre":"RAMOS SANCHEZ JADE GUADALUPE"},{"id":"A0060","grado":"1","grupo":"A","nombre":"TELLEZ GONZALEZ EIDEN ALBERTO"},{"id":"A0061","grado":"1","grupo":"A","nombre":"VALERIO SALINAS SOFIA LEILANY"},{"id":"A0062","grado":"2","grupo":"A","nombre":"ALPIZAR GOMEZ JULIAN"},{"id":"A0063","grado":"2","grupo":"A","nombre":"CARREON ARCINIEGA LIA AITANA"},{"id":"A0064","grado":"2","grupo":"A","nombre":"CRUZ GONZALEZ SANTIAGO"},{"id":"A0065","grado":"2","grupo":"A","nombre":"ESCOBAR MENDOZA MIA REGINA"},{"id":"A0066","grado":"2","grupo":"A","nombre":"ESTRADA DE LA CRUZ SAMADHI"},{"id":"A0067","grado":"2","grupo":"A","nombre":"GOMEZ DURAN NESTOR IVAN"},{"id":"A0068","grado":"2","grupo":"A","nombre":"GONZALEZ LECONA AMARA"},{"id":"A0069","grado":"2","grupo":"A","nombre":"GUERRA RAMIREZ JOSE NICOLAS"},{"id":"A0070","grado":"2","grupo":"A","nombre":"HERNANDEZ MONTAÑO ELIAN DANIEL"},{"id":"A0071","grado":"2","grupo":"A","nombre":"JUAREZ LOPEZ BRIANNA KEYLIN"},{"id":"A0072","grado":"2","grupo":"A","nombre":"JUAREZ ZARANDA ANTONIO"},{"id":"A0073","grado":"2","grupo":"A","nombre":"LOZANO GOMEZ CASANDRA"},{"id":"A0074","grado":"2","grupo":"A","nombre":"MARTINEZ FLORES CAMILA"},{"id":"A0075","grado":"2","grupo":"A","nombre":"MEDINA FLORES GERALDINE"},{"id":"A0076","grado":"2","grupo":"A","nombre":"MEDINA VENTURA ELIAN DAVID"},{"id":"A0077","grado":"2","grupo":"A","nombre":"NICOLAS IBARRA ANGEL ALONSO"},{"id":"A0078","grado":"2","grupo":"A","nombre":"ORTIZ LAGUNAS JACOB SALOMON"},{"id":"A0079","grado":"2","grupo":"A","nombre":"PICHARDO ORTIZ MIA MAHELET"},{"id":"A0080","grado":"2","grupo":"A","nombre":"RANCAÑO MARTINEZ SOFIA MAITE"},{"id":"A0081","grado":"2","grupo":"A","nombre":"RANCAÑO RAZO PEDRO ALEJANDRO"},{"id":"A0082","grado":"2","grupo":"A","nombre":"RODRIGUEZ MARIN DIEGO EVERARDO"},{"id":"A0083","grado":"2","grupo":"A","nombre":"TORRES GONZALEZ SOPHIA"},{"id":"A0084","grado":"2","grupo":"A","nombre":"VALADES MARTINEZ LEONARDO JESUS"},{"id":"A0085","grado":"2","grupo":"A","nombre":"VAZQUEZ ORTEGA MATIAS NICOLAS"},{"id":"A0086","grado":"2","grupo":"A","nombre":"VENTURA MALDONADO MYA VALENTINA"},{"id":"A0087","grado":"3","grupo":"A","nombre":"ACEVEDO RAMIREZ KARLA ABIGAIL"},{"id":"A0088","grado":"3","grupo":"A","nombre":"BELLO MORALES DIEGO EMILIANO"},{"id":"A0089","grado":"3","grupo":"A","nombre":"BENITO HERNANDEZ ERIK SANTIAGO"},{"id":"A0090","grado":"3","grupo":"A","nombre":"BENITO HERNANDEZ MONSERRAT NOEMI"},{"id":"A0091","grado":"3","grupo":"A","nombre":"BUENO PUENTE SARA ESTHER"},{"id":"A0092","grado":"3","grupo":"A","nombre":"CAMPECH OLGUIN ALEXIS XABIER"},{"id":"A0093","grado":"3","grupo":"A","nombre":"CASTANEDA RODRIGUEZ VALENTINA"},{"id":"A0094","grado":"3","grupo":"A","nombre":"DURAN VAZQUEZ LIAM OSMAR"},{"id":"A0095","grado":"3","grupo":"A","nombre":"FLORES CABRERA MILDRED"},{"id":"A0096","grado":"3","grupo":"A","nombre":"GALLARDO VILLANUEVA ROMINA"},{"id":"A0097","grado":"3","grupo":"A","nombre":"GORDILLO VELASQUEZ AXEL MATEO"},{"id":"A0098","grado":"3","grupo":"A","nombre":"HERNANDEZ RAMOS EVAN DANIEL"},{"id":"A0099","grado":"3","grupo":"A","nombre":"HERRERA TORIBIO EMILIO DANIEL"},{"id":"A0100","grado":"3","grupo":"A","nombre":"JUAREZ LOPEZ IKER YIBRAM"},{"id":"A0101","grado":"3","grupo":"A","nombre":"LAZCANO MARTINEZ EMILY ISABELLA"},{"id":"A0102","grado":"3","grupo":"A","nombre":"LOPEZ LIRA LUCA MATIAS"},{"id":"A0103","grado":"3","grupo":"A","nombre":"LUIS BERMEO IAN LEONEL"},{"id":"A0104","grado":"3","grupo":"A","nombre":"MARCELIANO MONROY MATIAS DILAN"},{"id":"A0105","grado":"3","grupo":"A","nombre":"MARTINEZ FLORES ROMINA"},{"id":"A0106","grado":"3","grupo":"A","nombre":"MONTOYA MONJARAS ELIAS MOISES"},{"id":"A0107","grado":"3","grupo":"A","nombre":"MORA FRANCO NICOLE"},{"id":"A0108","grado":"3","grupo":"A","nombre":"NERI VASQUEZ LIAM"},{"id":"A0109","grado":"3","grupo":"A","nombre":"OCHOA RAMIREZ SANTIAGO MATIAS"},{"id":"A0110","grado":"3","grupo":"A","nombre":"PACHECO RIVERA CARLOS ALEXANDER"},{"id":"A0111","grado":"3","grupo":"A","nombre":"PINEDA MENDOZA EMILIO MATHEO"},{"id":"A0112","grado":"3","grupo":"A","nombre":"PINTO LOPEZ RENATA AYLIN"},{"id":"A0113","grado":"3","grupo":"A","nombre":"RAMIREZ RONQUILLO XIMENA"},{"id":"A0114","grado":"3","grupo":"A","nombre":"REYES GUERRERO VALERIA"},{"id":"A0115","grado":"3","grupo":"A","nombre":"RODRIGUEZ RODRIGUEZ DANNA ROMINA"},{"id":"A0116","grado":"3","grupo":"A","nombre":"SEBASTIAN SOLANO LISA GABRIELLE"},{"id":"A0117","grado":"3","grupo":"A","nombre":"TAPIA HIPOLITO IVANNA REGINA"},{"id":"A0118","grado":"3","grupo":"A","nombre":"TORRES BARAJAS SOPHIA MICHELLE"},{"id":"A0119","grado":"3","grupo":"A","nombre":"VENTURA MALDONADO MARCO SANTIAGO"},{"id":"A0120","grado":"4","grupo":"A","nombre":"CANO ESTRELLA SANTIAGO EMIR"},{"id":"A0121","grado":"4","grupo":"A","nombre":"CARBAJAL ZARAGOZA LUCIA"},{"id":"A0122","grado":"4","grupo":"A","nombre":"CARBAJAL ZARAGOZA OSCAR"},{"id":"A0123","grado":"4","grupo":"A","nombre":"CRUZ SANCHEZ DULCE MIRANDA"},{"id":"A0124","grado":"4","grupo":"A","nombre":"ESCOBEDO SANCHEZ MATHIAS ALAIN"},{"id":"A0125","grado":"4","grupo":"A","nombre":"FLORES GUERRERO ERIN IVANNA"},{"id":"A0126","grado":"4","grupo":"A","nombre":"FLORES PEREZ ETHAN GAEL"},{"id":"A0127","grado":"4","grupo":"A","nombre":"GOMEZ CHAVEZ ARANTZA ITZAE"},{"id":"A0128","grado":"4","grupo":"A","nombre":"GOMEZ DURAN LUZ ANDREA"},{"id":"A0129","grado":"4","grupo":"A","nombre":"GONZALEZ QUINTOS CHRISTIAN"},{"id":"A0130","grado":"4","grupo":"A","nombre":"GUERRERO MONTOYA ALONDRA GUADALUPE"},{"id":"A0131","grado":"4","grupo":"A","nombre":"HERNANDEZ RANCAÑO KATHERIN VALENTINA"},{"id":"A0132","grado":"4","grupo":"A","nombre":"JIMENEZ MARTINEZ ZARA ISABELLA"},{"id":"A0133","grado":"4","grupo":"A","nombre":"LOPEZ OJEDA MATILDA"},{"id":"A0134","grado":"4","grupo":"A","nombre":"MARTINEZ OLVERA SAID ANDRE"},{"id":"A0135","grado":"4","grupo":"A","nombre":"MENDEZ BARRERA DIEGO EMILIANO"},{"id":"A0136","grado":"4","grupo":"A","nombre":"MENDEZ MORENO ABRAHAM"},{"id":"A0137","grado":"4","grupo":"A","nombre":"MOLINA SERRATO DAYANA MAYTE"},{"id":"A0138","grado":"4","grupo":"A","nombre":"PEÑA MATA AMANDA"},{"id":"A0139","grado":"4","grupo":"A","nombre":"SANCHEZ MARTINEZ ADRIAN"},{"id":"A0140","grado":"4","grupo":"A","nombre":"SANTOS ARCOS LEON MICHELLE"},{"id":"A0141","grado":"4","grupo":"A","nombre":"XOCHIPILTECATL LUNA LUIS RODRIGO"},{"id":"A0142","grado":"4","grupo":"B","nombre":"AGUILAR MEDINA SOFIA FERNANDA"},{"id":"A0143","grado":"4","grupo":"B","nombre":"BAÑALES CUETO SOFIA"},{"id":"A0144","grado":"4","grupo":"B","nombre":"BLANCO MARIN SHANNON VALENTINA"},{"id":"A0145","grado":"4","grupo":"B","nombre":"FERNANDEZ RODRIGUEZ ELIAN MATEO"},{"id":"A0146","grado":"4","grupo":"B","nombre":"GARDUÑO ALFARO ABRIL"},{"id":"A0147","grado":"4","grupo":"B","nombre":"GODINEZ GARCIA KEYSI ODETH"},{"id":"A0148","grado":"4","grupo":"B","nombre":"GONZALEZ HIDALGO EVELYN DANAE"},{"id":"A0149","grado":"4","grupo":"B","nombre":"GONZALEZ LECONA IRENE"},{"id":"A0150","grado":"4","grupo":"B","nombre":"GUTIERREZ ADAME STEVEN YAZID"},{"id":"A0151","grado":"4","grupo":"B","nombre":"GUTIERREZ FLORES CAMILA"},{"id":"A0152","grado":"4","grupo":"B","nombre":"MARTINEZ MOLINA CITLALLY"},{"id":"A0153","grado":"4","grupo":"B","nombre":"MORA HERNANDEZ ZAID"},{"id":"A0154","grado":"4","grupo":"B","nombre":"NAVA CADENA ALONSO FERNANDO"},{"id":"A0155","grado":"4","grupo":"B","nombre":"ORTIZ PEREZ SAUL GAEL"},{"id":"A0156","grado":"4","grupo":"B","nombre":"OSORIO MIRELES JOEL URIEL"},{"id":"A0157","grado":"4","grupo":"B","nombre":"PALACIOS ISLAS GENESIS AITANA"},{"id":"A0158","grado":"4","grupo":"B","nombre":"PEREZ GARCIA LIAM SANTIAGO"},{"id":"A0159","grado":"4","grupo":"B","nombre":"PEREZ PERALTA PAOLA GETSEMANI"},{"id":"A0160","grado":"4","grupo":"B","nombre":"SANCHEZ MIER ABDIEL"},{"id":"A0161","grado":"4","grupo":"B","nombre":"SILVA RIVERO SANTIAGO ENRIQUE"},{"id":"A0162","grado":"4","grupo":"B","nombre":"TORRES NARANJO ADIRAM KEYLAN"},{"id":"A0163","grado":"5","grupo":"A","nombre":"AGUILAR BANDIN LIA OSMARA"},{"id":"A0164","grado":"5","grupo":"A","nombre":"AGUILAR CAMPILLO ALONDRA XARENI"},{"id":"A0165","grado":"5","grupo":"A","nombre":"BARROSO RAZO MATEO EMILIANO"},{"id":"A0166","grado":"5","grupo":"A","nombre":"BRINGAS ONTIVEROS LUCIANO ANDREE"},{"id":"A0167","grado":"5","grupo":"A","nombre":"BUENO PUENTE JEHU SANTIAGO"},{"id":"A0168","grado":"5","grupo":"A","nombre":"CASTRO MORENO IAN EDUARDO"},{"id":"A0169","grado":"5","grupo":"A","nombre":"CUAPIO RAMOS IAN FERNANDO"},{"id":"A0170","grado":"5","grupo":"A","nombre":"ESCOBAR MENDOZA DANNA SOFIA"},{"id":"A0171","grado":"5","grupo":"A","nombre":"FERRA JIMENEZ PAULA LEILANY"},{"id":"A0172","grado":"5","grupo":"A","nombre":"FUENTES SALAZAR DAVID"},{"id":"A0173","grado":"5","grupo":"A","nombre":"GALLARDO MUÑOZ ROMMEL YASSER"},{"id":"A0174","grado":"5","grupo":"A","nombre":"GARCIA RANGEL KARLA NATALY"},{"id":"A0175","grado":"5","grupo":"A","nombre":"GONZALEZ HERNANDEZ JORGE EDUARDO"},{"id":"A0176","grado":"5","grupo":"A","nombre":"GUERRERO MONTOYA DIEGO"},{"id":"A0177","grado":"5","grupo":"A","nombre":"JIMENEZ MARTINEZ CAMILA MELANY"},{"id":"A0178","grado":"5","grupo":"A","nombre":"LANDA JUAREZ BRUNO"},{"id":"A0179","grado":"5","grupo":"A","nombre":"LAZARO ESTRADA ARTURO"},{"id":"A0180","grado":"5","grupo":"A","nombre":"LUNA CERVANTES ISABELLA ALEJANDRA"},{"id":"A0181","grado":"5","grupo":"A","nombre":"MARTINEZ GUERRERO MIA VALENTINA"},{"id":"A0182","grado":"5","grupo":"A","nombre":"MEDINA FLORES BRAULIO JESUS"},{"id":"A0183","grado":"5","grupo":"A","nombre":"MEDINA FLORES SEBASTIAN"},{"id":"A0184","grado":"5","grupo":"A","nombre":"ORDAZ LOPEZ IKER ALEXANDER"},{"id":"A0185","grado":"5","grupo":"A","nombre":"OSORNO ROMERO VICTORIA"},{"id":"A0186","grado":"5","grupo":"A","nombre":"POPOCA BONILLA MARIA PAULA"},{"id":"A0187","grado":"5","grupo":"A","nombre":"RAMIREZ PEREZ MATEO ALONSO"},{"id":"A0188","grado":"5","grupo":"A","nombre":"RIVERA HERNANDEZ EDRIAN GAEL"},{"id":"A0189","grado":"5","grupo":"A","nombre":"SILVA GONZALEZ LUNA ABIGAIL"},{"id":"A0190","grado":"5","grupo":"A","nombre":"VALENCIA ROMERO MIA MELANIE"},{"id":"A0191","grado":"5","grupo":"A","nombre":"VELASCO GARCIA DOMINICK EMMYR"},{"id":"A0192","grado":"6","grupo":"A","nombre":"ALMAGUER MORENO MARTIN"},{"id":"A0193","grado":"6","grupo":"A","nombre":"ANGELES RAMIREZ LEON URIEL"},{"id":"A0194","grado":"6","grupo":"A","nombre":"BETANZOS RAMIREZ ELLIOT ARGEO"},{"id":"A0195","grado":"6","grupo":"A","nombre":"BRIONES ARAMBULA LEONEL ANDRE"},{"id":"A0196","grado":"6","grupo":"A","nombre":"BRIONES ARAMBULA RENATA GISELL"},{"id":"A0197","grado":"6","grupo":"A","nombre":"CARRANZA MORA IAN ANDRE"},{"id":"A0198","grado":"6","grupo":"A","nombre":"CONTRERAS OLMOS AITANA VALERIA"},{"id":"A0199","grado":"6","grupo":"A","nombre":"DE LEON GALVEZ LEONARDO DE ANGELLO"},{"id":"A0200","grado":"6","grupo":"A","nombre":"ECHEVERRIA AMADOR FRIDA"},{"id":"A0201","grado":"6","grupo":"A","nombre":"GOMEZ LIMON MAXIMO SANTIAGO"},{"id":"A0202","grado":"6","grupo":"A","nombre":"GONZALEZ SERRANO ZURIEL ALEJANDRO"},{"id":"A0203","grado":"6","grupo":"A","nombre":"MARTINEZ GUERRERO LIA ISABELLA"},{"id":"A0204","grado":"6","grupo":"A","nombre":"MARTINEZ VAZQUEZ ANGEL KALEB"},{"id":"A0205","grado":"6","grupo":"A","nombre":"NORIEGA BERNABE EMMET"},{"id":"A0206","grado":"6","grupo":"A","nombre":"ORDAZ CHILPA IAN SEBASTIAN"},{"id":"A0207","grado":"6","grupo":"A","nombre":"OROPEZA AGUILAR JIMENA MELANI"},{"id":"A0208","grado":"6","grupo":"A","nombre":"REYES GARCIA DYLAN DACIEL"},{"id":"A0209","grado":"6","grupo":"A","nombre":"ROBLES LOPEZ ARI ANDRE"},{"id":"A0210","grado":"6","grupo":"A","nombre":"RODRIGUEZ AUDELO CRISTIAN YAEL"},{"id":"A0211","grado":"6","grupo":"A","nombre":"SANCHEZ RAMIREZ DERECK MATEO"},{"id":"A0212","grado":"6","grupo":"A","nombre":"SORIA MENDOZA ROGELIO CALEB"},{"id":"A0213","grado":"6","grupo":"A","nombre":"VALDEZ OCHOA THIAGO MATEO"}];
+const HEADERS=['IdAlumno','Nivel','Grado','Grupo','NombreCompleto','Materia','CicloEscolar','CalificacionP1','ComentarioP1','TipoComentarioP1','CalificacionP2','ComentarioP2','TipoComentarioP2','CalificacionP3','ComentarioP3','TipoComentarioP3','PromedioActual','ActualizadoEn','Revision'];
+const GRUPOS=['1A','2A','3A','4A','4B','5A','6A'];
+const BASE_KEY='TecnologiasV2_CSVBase'; const CURRENT_CSV_KEY='TecnologiasV2_CSVActual'; const QUEUE_KEY='TecnologiasV2_Pendientes';
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxc9pkPwGnvUlp_YI8tyQ3ePf31caXYfXnqRKe4QSSDMErZ1FC6yd5FDH-DINZgbI8/exec';
+const $$=id=>document.getElementById(id);
+const clone=o=>JSON.parse(JSON.stringify(o));
+const cleanText=s=>String(s===undefined||s===null?'':s).trim();
+const defaultStudent=a=>{let o={IdAlumno:a.id,Nivel:'PRI',Grado:a.grado,Grupo:a.grupo,NombreCompleto:a.nombre,Materia:'Tecnologias',CicloEscolar:'2026-2027',PromedioActual:'',ActualizadoEn:'',Revision:'0'};for(let p=1;p<=3;p++){o['CalificacionP'+p]='';o['ComentarioP'+p]='NC';o['TipoComentarioP'+p]='NC';}return o};
+const seed=()=>Object.fromEntries(ALUMNOS.map(a=>[a.id,defaultStudent(a)]));
+
+function validGrade(t){return t===''||/^(?:10(?:\.0)?|[0-9](?:\.[0-9])?)$/.test(String(t))}
+function normalizeGrade(v){return v===''?'':String(Number(v))}
+function average(r){let ns=[1,2,3].map(p=>r['CalificacionP'+p]).filter(v=>v!==''&&validGrade(String(v))).map(Number);return ns.length?(ns.reduce((a,b)=>a+b,0)/ns.length).toFixed(1):''}
+function quoteCSV(v){let s=String(v===null||v===undefined?'':v);return /[",\r\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s}
+function csvExport(rows){return [HEADERS.join(','),...ALUMNOS.map(a=>HEADERS.map(h=>quoteCSV(rows[a.id][h])).join(','))].join('\r\n')}
+function parseCSV(csv){csv=String(csv||'').replace(/^\uFEFF/,'');let output=[],line=[],field='',quoted=false;for(let i=0;i<csv.length;i++){let c=csv[i];if(c==='"'){if(quoted&&csv[i+1]==='"'){field+='"';i++}else quoted=!quoted}else if(!quoted&&c===','){line.push(field);field=''}else if(!quoted&&(c==='\r'||c==='\n')){if(c==='\r'&&csv[i+1]==='\n')i++;line.push(field);if(line.some(x=>x!==''))output.push(line);line=[];field=''}else field+=c}if(quoted)throw Error('CSV incompleto: comillas sin cerrar.');if(line.length||field!==''){line.push(field);output.push(line)}if(output.length<1||output[0].join(',')!==HEADERS.join(','))throw Error('Encabezados del CSV incompatibles.');let rows=seed();let seen=new Set();for(let fields of output.slice(1)){if(fields.length!==HEADERS.length)throw Error('Fila CSV con columnas incorrectas.');let r=Object.fromEntries(HEADERS.map((h,i)=>[h,fields[i]]));if(!rows[r.IdAlumno])continue;if(seen.has(r.IdAlumno))throw Error('ID de alumno duplicado en CSV: '+r.IdAlumno);seen.add(r.IdAlumno);for(let p=1;p<=3;p++){let v=cleanText(r['CalificacionP'+p]);if(!validGrade(v))throw Error('Nota inválida en CSV: '+r.IdAlumno);r['CalificacionP'+p]=normalizeGrade(v)}r.PromedioActual=average(r);rows[r.IdAlumno]={...rows[r.IdAlumno],...r}}return rows}
+function stored(k){try{return localStorage.getItem(k)}catch(e){return null}}
+let base=seed(),rows=seed(),pending={},selectedPartial=1,selectedGroup='1A',screen='s-partial',lastScreen='s-partial',editId='',busy=false,gradeDecision=null;
+function getPart(r,p){return {Calificacion:cleanText(r['CalificacionP'+p]),Comentario:cleanText(r['ComentarioP'+p]||'NC'),TipoComentario:cleanText(r['TipoComentarioP'+p]||'NC')}}
+function putPart(r,p,x){r['CalificacionP'+p]=x.Calificacion;r['ComentarioP'+p]=x.Comentario;r['TipoComentarioP'+p]=x.TipoComentario;r.PromedioActual=average(r)}
+const partEqual=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+function applyPending(){rows=clone(base);for(const q of Object.values(pending)){if(rows[q.IdAlumno]&&[1,2,3].includes(Number(q.Parcial)))putPart(rows[q.IdAlumno],Number(q.Parcial),q.Nuevo)}}
+function normalizeLegacyPending(){let n=0;for(const q of Object.values(pending)){if(!q?.Nuevo)continue;if(cleanText(q.Nuevo.Calificacion)!==''&&q.Nuevo.TipoComentario==='Automatico'&&q.Nuevo.Comentario!=='NA'){q.Nuevo.Comentario='NA';n++}}if(n){applyPending();persist()}return n}
+function load(){try{let s=stored(BASE_KEY);if(s){base=parseCSV(s)}let q=stored(QUEUE_KEY);if(q){let obj=JSON.parse(q);if(obj&&typeof obj==='object'&&!Array.isArray(obj))pending=obj}}catch(e){alert('No se pudo leer la memoria local: '+e.message+'. No borres la caché; recupera una copia antes de continuar.')}applyPending();normalizeLegacyPending();updateCount()}
+function persist(){try{localStorage.setItem(BASE_KEY,csvExport(base));localStorage.setItem(CURRENT_CSV_KEY,csvExport(rows));localStorage.setItem(QUEUE_KEY,JSON.stringify(pending));$$('localState').textContent='· Guardado local';return true}catch(e){$$('localState').textContent='· ERROR de guardado';alert('No se pudo guardar en el navegador: '+e.message);return false}}
+function updateCount(){let n=Object.keys(pending).length;$$('pendingCount').textContent=n;$$('bottomSync').textContent=n?`☁ Enviar ${n}`:'☁ Sincronización';return n}
+function recordPart(id,p){let key=id+'_'+p;let old=getPart(base[id],p),now=getPart(rows[id],p);if(partEqual(old,now))delete pending[key];else pending[key]={IdAlumno:id,Parcial:p,Base:old,Nuevo:now};persist();updateCount();let student=$$('student-'+id);if(student)student.classList.toggle('changed',Boolean(pending[key]))}
+function show(id){screen=id;for(let s of document.querySelectorAll('.screen'))s.classList.toggle('hidden',s.id!==id);window.scrollTo(0,0)}
+function showGroups(p){selectedPartial=p;$$('groupKicker').textContent='Parcial '+p;$$('groups').innerHTML='';for(let grp of GRUPOS){let n=ALUMNOS.filter(a=>a.grado+a.grupo===grp).length;let b=document.createElement('button');b.className='group';b.innerHTML=`<strong>${grp.slice(0,-1)}° ${grp.slice(-1)}</strong><small>${n} alumnos　›</small>`;b.addEventListener('click',()=>showCapture(grp));$$('groups').appendChild(b)}show('s-groups')}
+function gradeClass(v){if(v==='')return '';let n=Number(v);return n<6?'low':n<8?'red':n<9?'yellow':n<10?'green':'blue'}
+function showCapture(g){selectedGroup=g;$$('captureKicker').textContent='Parcial '+selectedPartial;$$('captureTitle').textContent='Grupo '+g.slice(0,-1)+'° '+g.slice(-1);$$('search').value='';renderList();show('s-capture')}
+function renderList(){let query=cleanText($$('search').value).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase();let list=$$('studentlist');list.replaceChildren();let al=ALUMNOS.filter(a=>a.grado+a.grupo===selectedGroup&&(a.nombre.normalize('NFD').replace(/[\u0300-\u036f]/g,'').includes(query)||a.id.includes(query)));for(let a of al){let r=rows[a.id],v=String(r['CalificacionP'+selectedPartial]??''),key=a.id+'_'+selectedPartial;let card=document.createElement('div');card.className='student'+(pending[key]?' changed':'');card.id='student-'+a.id;let person=document.createElement('div');person.className='person';let name=document.createElement('strong');name.textContent=a.nombre;let sub=document.createElement('small');sub.textContent=a.id;person.append(name,sub);let input=document.createElement('input');input.className='grade '+gradeClass(v);input.type='text';input.inputMode='decimal';input.autocomplete='off';input.value=v;input.placeholder='—';input.maxLength=4;input.setAttribute('aria-label','Calificación de '+a.nombre);input.dataset.gradeId=a.id;input.dataset.focusStart=v;
+input.addEventListener('focus',()=>{input.dataset.focusStart=String(rows[a.id]['CalificacionP'+selectedPartial]??'')});
+input.addEventListener('input',()=>inputGrade(a.id,input));
+input.addEventListener('blur',()=>commitGrade(a.id,input));
+input.addEventListener('keydown',e=>{if(e.key==='Escape'){input.value=String(rows[a.id]['CalificacionP'+selectedPartial]??'');input.className='grade '+gradeClass(input.value);input.blur()}if(e.key==='Enter'){e.preventDefault();let all=[...list.querySelectorAll('input[data-grade-id]')],i=all.indexOf(input);input.blur();if(!gradeDecision){all[(i+1)%all.length]?.focus();all[(i+1)%all.length]?.select()}}});
+let comment=document.createElement('button');comment.className='comment'+(r['TipoComentarioP'+selectedPartial]==='Personalizado'?' custom':'');comment.textContent=r['TipoComentarioP'+selectedPartial]==='Personalizado'?'✎':'▤';comment.title='Comentario del parcial';comment.setAttribute('aria-label','Comentario de '+a.nombre);comment.addEventListener('click',()=>openComment(a.id));let av=document.createElement('div');av.className='avg';av.innerHTML='<strong></strong><small>promedio</small>';av.querySelector('strong').textContent=average(r)||'—';card.append(person,input,comment,av);list.appendChild(card)}if(!al.length){let div=document.createElement('p');div.textContent='No se encontraron alumnos.';list.appendChild(div)}}
+function inputGrade(id,el){let val=cleanText(el.value).replace(',','.');if(val!==el.value)el.value=val;let valid=validGrade(val);el.classList.toggle('invalid',!valid);if(valid&&el.dataset.focusStart==='')setGrade(id,normalizeGrade(val),el)}
+function commitGrade(id,el){let val=cleanText(el.value).replace(',','.');if(!validGrade(val)){el.value=String(rows[id]['CalificacionP'+selectedPartial]??'');el.className='grade '+gradeClass(el.value);return}val=normalizeGrade(val);const original=String(el.dataset.focusStart??'');const current=String(rows[id]['CalificacionP'+selectedPartial]??'');if(val===current){el.value=current;el.className='grade '+gradeClass(current);return}if(original!==''&&val!==original){showConfirm(id,selectedPartial,current,val,el)}else{setGrade(id,val,el);el.value=val}}
+function showConfirm(id,p,oldValue,newValue,el){if(gradeDecision)return;gradeDecision={id,p,oldValue,newValue,el};let a=ALUMNOS.find(x=>x.id===id);$$('confirmPerson').textContent=a.nombre+' · Grupo '+a.grado+'° '+a.grupo+' · Parcial '+p;$$('oldGrade').textContent=oldValue===''?'Sin nota':oldValue;$$('newGrade').textContent=newValue===''?'Sin nota':newValue;$$('modalConfirm').classList.remove('hidden');$$('acceptGrade').focus()}
+function resolveConfirm(yes){if(!gradeDecision)return;let {id,p,oldValue,newValue,el}=gradeDecision;gradeDecision=null;$$('modalConfirm').classList.add('hidden');if(yes){if(selectedPartial!==p){selectedPartial=p}setGrade(id,newValue,el);el.value=newValue;el.dataset.focusStart=newValue}else{el.value=oldValue;el.className='grade '+gradeClass(oldValue)} }
+function setGrade(id,v,el){let r=rows[id],p=selectedPartial;let prev=cleanText(r['CalificacionP'+p]);if(v===prev)return;r['CalificacionP'+p]=v;if(v===''){r['TipoComentarioP'+p]='NC';r['ComentarioP'+p]='NC'}else if(r['TipoComentarioP'+p]!=='Personalizado'){r['TipoComentarioP'+p]='Automatico';r['ComentarioP'+p]='NA'}r.PromedioActual=average(r);recordPart(id,p);if(el){el.className='grade '+gradeClass(v);let card=$$('student-'+id);if(card){card.querySelector('.avg strong').textContent=average(r)||'—';let button=card.querySelector('.comment');button.classList.toggle('custom',r['TipoComentarioP'+p]==='Personalizado')}}}
+function openComment(id){editId=id;let a=ALUMNOS.find(a=>a.id===id),r=rows[id],p=selectedPartial;$$('modalPerson').textContent=a.nombre+' · Parcial '+p;let grade=cleanText(r['CalificacionP'+p]);$$('autoPreview').textContent=grade===''?'Sin calificación registrada.':'Sin comentario personalizado: NA · Tipo de comentario: Automático';$$('commentText').value=r['TipoComentarioP'+p]==='Personalizado'?r['ComentarioP'+p]:'';$$('modalComment').classList.remove('hidden')}
+function closeComment(){$$('modalComment').classList.add('hidden');editId=''}
+function saveComment(auto=false){let id=editId;if(!id)return;let p=selectedPartial,r=rows[id],grade=cleanText(r['CalificacionP'+p]);if(grade===''){alert('Primero coloca la calificación para acompañarla con un comentario.');return}let texto=cleanText($$('commentText').value);if(!texto)auto=true;r['TipoComentarioP'+p]=auto?'Automatico':'Personalizado';r['ComentarioP'+p]=auto?'NA':texto;recordPart(id,p);closeComment();renderList()}
+function navTo(id){lastScreen=screen;show(id);if(id==='s-reports')renderReports();if(id==='s-sync'){$$('syncStatus').classList.add('hidden');refreshCloudState()}}
+function status(s,err=false){let e=$$('syncStatus');e.className='status'+(err?' err':'');e.textContent=s}
+function refreshCloudState(){
+ const el=$$('cloudState');
+ el.className='connection-indicator';
+ el.textContent='Puente configurado · pulsa Conectar para comprobar Google Sheets.';
+}
+// Apps Script responde a GET con JSONP: funciona desde este HTML independiente
+// sin depender de google.script.run ni del origen de un servidor web.
+function getCloud(accion){
+ return new Promise((resolve,reject)=>{
+  const callback='calif_cb_'+Date.now()+'_'+Math.floor(Math.random()*1000000000);
+  const script=document.createElement('script');
+  let finished=false;
+  const timer=setTimeout(()=>finish(Error('La conexión tardó demasiado. Abre la URL del puente y comprueba los permisos de la implementación.')),25000);
+  function finish(error,data){
+   if(finished)return;
+   finished=true;
+   clearTimeout(timer);
+   try{delete window[callback]}catch(e){window[callback]=undefined}
+   script.remove();
+   if(error)reject(error);else if(!data||data.ok!==true)reject(Error(data?.error||'Google Sheets rechazó la solicitud.'));else resolve(data);
+  }
+  window[callback]=(data)=>finish(null,data);
+  script.onerror=()=>finish(Error('No se pudo acceder a Google Apps Script. Comprueba que la implementación esté publicada como aplicación web, con acceso «Cualquier persona».'));
+  script.src=SCRIPT_URL+'?accion='+encodeURIComponent(accion)+'&callback='+callback+'&_='+Date.now();
+  document.head.appendChild(script);
+ });
+}
+// POST simple con respuesta opaca por la restricción CORS de Apps Script.
+// NUNCA se considera exitoso solo por completar fetch: se verifica leyendo Sheets.
+async function postCloud(payload){
+ let response;
+ try{
+  response=await fetch(SCRIPT_URL,{
+   method:'POST',
+   mode:'no-cors',
+   credentials:'omit',
+   redirect:'follow',
+   headers:{'Content-Type':'text/plain;charset=UTF-8'},
+   body:JSON.stringify(payload)
+  });
+ }catch(e){throw Error('No se pudo enviar la solicitud al puente: '+(e?.message||e))}
+ return response;
+}
+function validateRoster(snapshot){
+ if(!snapshot?.ok||!snapshot.csv)throw Error('No llegó el respaldo de Google Sheets.');
+ if(Number(snapshot.alumnos)!==ALUMNOS.length)throw Error('La hoja tiene '+snapshot.alumnos+' alumnos y se esperaban '+ALUMNOS.length+'. Comprueba los datos y vuelve a conectar.');
+ let parsed=parseCSV(snapshot.csv);
+ // El CSV incluye ID en la primera columna, uno por fila. El parser valida la cantidad
+ // de columnas y los ID duplicados; también comprobamos la presencia de todos los ID.
+ let seen=Object.create(null),lines=snapshot.csv.split(/\r?\n/);
+ // Un campo de comentario puede tener salto de línea: solo se consideran IDs válidos al
+ // principio de cada fila, ya que IdAlumno nunca contiene comas ni comillas.
+ for(const line of lines){const m=/^(A\d{4,}),/.exec(line);if(m)seen[m[1]]=true}
+ for(const a of ALUMNOS){if(!seen[a.id])throw Error('Falta en Google Sheets el alumno con ID '+a.id+'.')}
+ return parsed;
+}
+async function ensureRoster(){
+ let r=await getCloud('estado');
+ let total=Number(r.alumnos);
+ if(!Number.isInteger(total)||total<0)throw Error('La cantidad de alumnos del servidor es inválida.');
+ if(total!==ALUMNOS.length){
+  status('Preparando la lista de 172 alumnos en Google Sheets, sin duplicados…');
+  await postCloud({accion:'iniciar',alumnos:ALUMNOS});
+  // La solicitud POST no devuelve una confirmación legible. Leemos hasta comprobarla.
+  let ok=false;
+  for(let i=0;i<4;i++){
+   r=await getCloud('estado');
+   if(Number(r.alumnos)===ALUMNOS.length){ok=true;break}
+   await new Promise(resolve=>setTimeout(resolve,650*(i+1)));
+  }
+  if(!ok)throw Error('No se confirmó la carga inicial. La hoja aún registra '+r.alumnos+' alumnos. Revisa el registro de Apps Script y los permisos; no se borró ninguna calificación local.');
+ }
+ return await getCloud('leer');
+}
+function receiveCloud(snapshot){
+ let newBase=validateRoster(snapshot);
+ let oldBase=base;
+ base=newBase;
+ applyPending();
+ if(!persist()){
+  base=oldBase;applyPending();
+  throw Error('No se guardó la copia de la nube en este navegador.');
+ }
+ updateCount();
+ if(screen==='s-capture')renderList();
+ if(screen==='s-reports')renderReports();
+ return snapshot.alumnos;
+}
+function setBusy(yes){busy=yes;for(let id of ['connectCloud','exportCloud','importCloud','backSync'])$$(id).disabled=yes}
+async function connectCloud(){
+ if(busy)return;
+ setBusy(true);status('Comprobando conexión con Google Sheets…');
+ try{
+  if(Object.keys(pending).length){
+   const r=await getCloud('estado');
+   const n=Number(r.alumnos);
+   if(!r.ok||n!==ALUMNOS.length)throw Error('La hoja no confirma los 172 alumnos.');
+   let el=$$('cloudState');el.className='connection-indicator ok';
+   el.textContent='✓ Conectado a Calificaciones · '+n+' alumnos';
+   status('✓ Conexión verificada. Tienes '+updateCount()+' cambios locales pendientes: expórtalos antes de importar.');
+  }else{
+   const snap=await ensureRoster();
+   const n=receiveCloud(snap);
+   let el=$$('cloudState');el.className='connection-indicator ok';
+   el.textContent='✓ Conectado a Calificaciones · '+n+' alumnos';
+   status('✓ Conexión verificada: '+n+' alumnos. Datos actualizados desde Google Sheets.');
+  }
+ }catch(e){refreshCloudState();status(e.message,true)}finally{setBusy(false)}
+}
+async function importCloud(){
+ if(busy)return;
+ const count=Object.keys(pending).length;
+ let discard=false;
+ if(count){
+  const send=confirm('Hay '+count+' cambio(s) local(es) pendiente(s) de enviar.\n\nACEPTAR: exportar primero los pendientes y luego actualizar desde la nube.\nCANCELAR: ver opciones para descartar los cambios locales.');
+  if(send){await exportCloud(true);return}
+  discard=confirm('¿DESCARTAR DEFINITIVAMENTE '+count+' cambio(s) local(es) sin enviar?\n\nACEPTAR: reemplazar el CSV local por los datos de Google Sheets.\nCANCELAR: mantener intactos los cambios y salir.\n\nEsto NO elimina nada de Google Sheets.');
+  if(!discard){status('Importación cancelada: se conservaron todos los pendientes.');return}
+ }
+ setBusy(true);status('Importando datos desde Google Sheets…');
+ try{
+  // Descargar y validar antes de tocar el almacenamiento local.
+  const snap=await ensureRoster();
+  let countUpdated;
+  if(discard){
+   const previousBase=base,previousQueue=clone(pending);
+   base=validateRoster(snap);pending={};applyPending();
+   if(!persist()){
+    base=previousBase;pending=previousQueue;applyPending();
+    throw Error('No se pudo guardar la copia importada. Los pendientes se conservaron en memoria.');
+   }
+   updateCount();
+   if(screen==='s-capture')renderList();
+   if(screen==='s-reports')renderReports();
+   countUpdated=snap.alumnos;
+  }else countUpdated=receiveCloud(snap);
+  let el=$$('cloudState');el.className='connection-indicator ok';
+  el.textContent='✓ Conectado a Calificaciones · '+countUpdated+' alumnos';
+  status('✓ Importación confirmada: '+countUpdated+' alumnos. '+(discard?'Se reemplazó el CSV local y se descartaron los pendientes seleccionados.':'Datos locales actualizados desde Sheets.'));
+ }catch(e){status('No se completó la importación. '+e.message,true)}finally{setBusy(false)}
+}
+async function exportCloud(skipConfirm=false){
+ if(busy)return false;
+ const batch=Object.values(pending);
+ if(!batch.length){
+  if(skipConfirm)return false;
+  await importCloud();
+  return true;
+ }
+ if(!skipConfirm&&!confirm('¿Enviar '+batch.length+' cambios a Google Sheets? Se actualizarán las mismas filas de los alumnos.'))return false;
+ setBusy(true);status('Conectando con Google Sheets…');
+ try{
+  let before=await ensureRoster();validateRoster(before);
+  status('Enviando '+batch.length+' cambios y verificando su escritura…');
+  await postCloud({accion:'guardar',cambios:batch});
+  // GET tras POST: importa un estado fresco de la hoja y confirma cada escritura.
+  let snap=await getCloud('leer'),next=validateRoster(snap);
+  for(const change of batch){
+   const part=getPart(next[change.IdAlumno],Number(change.Parcial));
+   if(!partEqual(part,change.Nuevo))throw Error('La nube no confirmó '+change.IdAlumno+' en el parcial '+change.Parcial+'. No se borraron los pendientes.');
+  }
+  const oldBase=base,oldPending=clone(pending);
+  base=next;
+  for(const change of batch){
+   const key=change.IdAlumno+'_'+change.Parcial;
+   if(pending[key]&&partEqual(pending[key].Nuevo,change.Nuevo))delete pending[key];
+  }
+  applyPending();
+  if(!persist()){
+   base=oldBase;pending=oldPending;applyPending();
+   throw Error('La nube confirmó los cambios, pero falló el guardado local. Los pendientes se conservan.');
+  }
+  updateCount();
+  if(screen==='s-capture')renderList();
+  if(screen==='s-reports')renderReports();
+  let el=$$('cloudState');el.className='connection-indicator ok';
+  el.textContent='✓ Conectado a Calificaciones · '+snap.alumnos+' alumnos';
+  status('✓ '+batch.length+' cambios verificados. La copia local se actualizó automáticamente desde Google Sheets. Pendientes: '+updateCount()+'.');
+  return true;
+ }catch(e){status('Los cambios pendientes se conservan. '+e.message,true);return false}finally{setBusy(false)}
+}
+function backupCSV(){let data=csvExport(rows);let blob=new Blob(['\ufeff'+data],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='Calificaciones_Tecnologias_Respaldo.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+function clearPending(){let n=Object.keys(pending).length;if(!n)return alert('No hay cambios pendientes.');if(!confirm('Vas a DESCARTAR '+n+' cambios no enviados. No elimina información en Google Sheets. ¿Continuar?'))return;pending={};applyPending();persist();updateCount();status('Cambios locales descartados.');}
+function valFor(r,p){return p?cleanText(r['CalificacionP'+p]):average(r)}
+const SVG_NS='http://www.w3.org/2000/svg';
+function svgNode(tag,attrs={},text){const e=document.createElementNS(SVG_NS,tag);for(let [k,v] of Object.entries(attrs))e.setAttribute(k,String(v));if(text!==undefined)e.textContent=String(text);return e}
+function emptyGraph(id,message){let el=$$(id);el.replaceChildren();let p=document.createElement('p');p.className='chart-empty';p.textContent=message;el.appendChild(p)}
+function histogramGraph(id,items,opts={}){let dest=$$(id);dest.replaceChildren();let total=items.reduce((n,d)=>n+d.count,0);if(total===0){emptyGraph(id,'Todavía no hay datos en esta selección.');return}let max=Math.max(4,Math.ceil(Math.max(...items.map(x=>x.count))/4)*4),w=640,h=266,left=48,right=13,top=26,bottom=62,plotH=h-top-bottom,plotW=w-left-right;let svg=svgNode('svg',{viewBox:`0 0 ${w} ${h}`,class:'chart-svg',role:'img','aria-label':opts.title||'Gráfica de barras'});for(let t=0;t<=4;t++){let y=top+plotH-t*plotH/4;svg.appendChild(svgNode('line',{x1:left,y1:y,x2:w-right,y2:y,stroke:'#324a65','stroke-width':1}));svg.appendChild(svgNode('text',{x:left-9,y:y+4,'text-anchor':'end',fill:'#a7bfdc','font-size':12},Math.round(max*t/4)))}let slot=plotW/items.length;items.forEach((item,i)=>{let bw=Math.min(64,slot*.61),x=left+i*slot+(slot-bw)/2,bh=item.count/max*(plotH-4),y=top+plotH-bh;let bar=svgNode('rect',{x,y,width:bw,height:Math.max(bh,1),rx:5,fill:item.color||'#4a91d6'});bar.appendChild(svgNode('title',{},item.label+': '+item.count+' alumno(s)'));svg.appendChild(bar);svg.appendChild(svgNode('text',{x:x+bw/2,y:y-8,'text-anchor':'middle',fill:'#ffffff','font-size':13,'font-weight':700},item.count));let label=svgNode('text',{x:left+(i+.5)*slot,y:h-39,'text-anchor':'middle',fill:'#c9d9ed','font-size':11});let parts=item.label.split('|');parts.forEach((part,j)=>label.appendChild(svgNode('tspan',{x:left+(i+.5)*slot,dy:j?14:0},part)));svg.appendChild(label)});dest.appendChild(svg)}
+function academicLineGraph(id,sample,p,connect=true){
+ let dest=$$(id);dest.replaceChildren();
+ let entries=sample.map((r,i)=>({r,i,v:valFor(r,p)})).filter(x=>x.v!=='');
+ if(!entries.length){emptyGraph(id,'Captura calificaciones para visualizar el rendimiento del grupo.');return}
+ const w=690,h=300,L=45,R=20,T=24,B=48,pw=w-L-R,ph=h-T-B;
+ let svg=svgNode('svg',{viewBox:`0 0 ${w} ${h}`,class:'chart-svg',role:'img','aria-label':connect?'Gráfica lineal de calificaciones por alumno':'Distribución espacial de calificaciones por alumno'});
+ for(let y=0;y<=10;y+=2){let py=T+(10-y)/10*ph;svg.appendChild(svgNode('line',{x1:L,y1:py,x2:w-R,y2:py,stroke:'#324a65'}));svg.appendChild(svgNode('text',{x:L-9,y:py+4,'text-anchor':'end',fill:'#b5cbe5','font-size':12},y))}
+ const xAt=i=>L+(sample.length===1?pw/2:i/Math.max(1,sample.length-1)*pw),yAt=v=>T+(10-Number(v))/10*ph;
+ if(connect){let points=entries.map(e=>xAt(e.i)+','+yAt(e.v)).join(' ');svg.appendChild(svgNode('polyline',{points,fill:'none',stroke:'#5eb7ef','stroke-width':2.7,'stroke-linejoin':'round','stroke-linecap':'round'}))}
+ entries.forEach(e=>{let v=Number(e.v),x=xAt(e.i),y=yAt(v),color=v<6?'#ff6878':v<8?'#ffb36e':v===10?'#62dca6':'#69b9f0';let dot=svgNode('circle',{cx:x,cy:y,r:connect?4.5:6,fill:color,stroke:'#071321','stroke-width':1});dot.appendChild(svgNode('title',{},e.r.NombreCompleto+' · Calificación: '+v));svg.appendChild(dot)});
+ svg.appendChild(svgNode('text',{x:L+pw/2,y:h-7,'text-anchor':'middle',fill:'#a9c2df','font-size':12},'Alumnos en orden de lista (izquierda a derecha)'));
+ dest.appendChild(svg);
+ let info=document.createElement('div');info.className='chart-legend';info.textContent='Cada punto corresponde a un alumno. Pasa el cursor o mantén pulsado para ver su nombre y nota.';dest.appendChild(info)
+}
+function renderReports(){let g=$$('reportGroup').value,p=Number($$('reportPartial').value);let sample=ALUMNOS.filter(a=>g==='TODOS'||a.grado+a.grupo===g).map(a=>rows[a.id]);let graded=sample.map(r=>({r,v:valFor(r,p)})).filter(x=>x.v!==''),values=graded.map(x=>Number(x.v)),n=values.length,media=n?(values.reduce((a,b)=>a+b,0)/n).toFixed(1):'—';let risks=graded.filter(x=>Number(x.v)<8).sort((a,b)=>Number(a.v)-Number(b.v));$$('stats').innerHTML=`<div class="stat"><b>${n}/${sample.length}</b><small>Evaluados</small></div><div class="stat"><b>${media}</b><small>Promedio</small></div><div class="stat"><b>${risks.length}</b><small>Por atender (&lt;8)</small></div>`;
+let categories=[['Menos de|6',x=>x<6,'#fa6874'],['6 a 7.9',x=>x>=6&&x<8,'#ef9a61'],['8 a 8.9',x=>x>=8&&x<9,'#55a1db'],['9 a 9.9',x=>x>=9&&x<10,'#3eb5a6'],['10',x=>x===10,'#73d4a1']];histogramGraph('gradeChart',categories.map(([label,fn,color])=>({label,count:values.filter(fn).length,color})),{title:'Distribución de notas: '+g});
+academicLineGraph('behaviorChart',sample,p,true);
+academicLineGraph('studentChart',sample,p,false);
+$$('reportList').replaceChildren();if(!risks.length){$$('reportList').textContent='No hay alumnos con calificación menor a 8 en esta consulta.'}else for(let x of risks){let row=document.createElement('div');row.className='reportitem';let name=document.createElement('div');name.textContent=x.r.NombreCompleto+' · '+x.r.Grado+'° '+x.r.Grupo;let val=document.createElement('span');val.textContent=x.v;row.append(name,val);$$('reportList').appendChild(row)}$$('behaviorStats').textContent='Alumnos aún sin evaluación: '+(sample.length-n)+'.'}
+$$('openReports').addEventListener('click',()=>navTo('s-reports'));$$('openSync').addEventListener('click',()=>navTo('s-sync'));$$('bottomSync').addEventListener('click',()=>navTo('s-sync'));document.querySelectorAll('[data-p]').forEach(b=>b.addEventListener('click',()=>showGroups(Number(b.dataset.p))));$$('backPartial').addEventListener('click',()=>show('s-partial'));$$('backGroups').addEventListener('click',()=>show('s-groups'));$$('backSync').addEventListener('click',()=>show(lastScreen));$$('backReports').addEventListener('click',()=>show(lastScreen));$$('search').addEventListener('input',renderList);$$('cancelComment').addEventListener('click',closeComment);$$('modalComment').addEventListener('click',e=>{if(e.target===$$('modalComment'))closeComment()});$$('saveComment').addEventListener('click',()=>saveComment(false));$$('autoMode').addEventListener('click',()=>saveComment(true));$$('connectCloud').addEventListener('click',connectCloud);$$('acceptGrade').addEventListener('click',()=>resolveConfirm(true));$$('declineGrade').addEventListener('click',()=>resolveConfirm(false));$$('importCloud').addEventListener('click',importCloud);$$('exportCloud').addEventListener('click',exportCloud);$$('backupCsv').addEventListener('click',backupCSV);$$('clearQueue').addEventListener('click',clearPending);$$('reportPartial').addEventListener('change',renderReports);$$('reportGroup').addEventListener('change',renderReports);let opt=document.createElement('option');opt.value='TODOS';opt.textContent='Todos los grupos';$$('reportGroup').appendChild(opt);for(let g of GRUPOS){let op=document.createElement('option');op.value=g;op.textContent=g.slice(0,-1)+'° '+g.slice(-1);$$('reportGroup').appendChild(op)}
+load();if(!stored(CURRENT_CSV_KEY))persist();refreshCloudState();show('s-partial');
+</script>
+</body>
+</html>
