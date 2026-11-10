@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="theme-color" content="#0c1020"/>
+<title>Kino Fighter | Arena Control V7 — Creado por S</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1020;--bg2:#11182b;--panel:#171e32;--panel2:#1d2740;--border:#34405b;--txt:#eff4ff;--muted:#a0adc8;--cyan:#5adcf7;--purple:#b4a0ff;--gold:#ffd17a;--red:#ff8999;--green:#81edbe;--shadow:0 20px 60px rgba(0,0,0,.18)}
+*{box-sizing:border-box}html{min-height:100%}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#1c2348 0%,transparent 45%),radial-gradient(ellipse at 92% 15%,#202348 0%,transparent 35%),var(--bg);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:var(--txt);line-height:1.48}
+button,input,select{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.45}a{color:var(--cyan)}.shell{max-width:1260px;padding:24px 22px 70px;margin:0 auto}.top{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:22px}.brand{display:flex;gap:14px;align-items:center}.logo{width:58px;height:58px;border:1px solid rgba(90,220,247,.45);border-radius:17px;background:linear-gradient(145deg,#293763,#151d36);display:grid;place-items:center;font-size:30px;font-weight:950;color:var(--cyan);box-shadow:0 10px 32px #091224}.eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);font-weight:800}.brand h1{font-size:clamp(22px,3vw,31px);letter-spacing:-.035em;margin:1px 0 0}.brand small{font-size:12px;color:var(--muted)}.status{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--green);border:1px solid rgba(129,237,190,.3);background:rgba(129,237,190,.07);padding:9px 12px;border-radius:50px}.dot{width:8px;height:8px;border-radius:50%;background:var(--green)}.nav{display:flex;flex-wrap:wrap;gap:8px;padding:8px;background:rgba(21,30,51,.85);border:1px solid var(--border);border-radius:18px;margin-bottom:22px}.nav button{background:transparent;color:var(--muted);border:0;border-radius:11px;padding:11px 16px;font-weight:800}.nav button.active{background:#32425f;color:#fff;box-shadow:inset 0 1px 0 #ffffff17}.nav button:hover:not(.active){background:#ffffff0d;color:var(--txt)}.nav .right{margin-left:auto}.hero{border:1px solid var(--border);background:linear-gradient(110deg,#202a49 0%,#172038 68%,#19233e 100%);padding:26px;border-radius:22px;margin-bottom:20px;box-shadow:var(--shadow)}.hero h2{font-size:clamp(26px,4vw,40px);margin:7px 0;line-height:1.13;letter-spacing:-.04em}.hero p{color:var(--muted);max-width:750px;margin:8px 0 0}.hero .sub{color:var(--cyan);font-size:12px;text-transform:uppercase;letter-spacing:.12em;font-weight:900}.cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}.cols.three{grid-template-columns:repeat(3,1fr)}.card{background:linear-gradient(180deg,#1a243b,#151d31);border:1px solid var(--border);border-radius:19px;padding:21px;min-width:0}.card h3{font-size:18px;margin:0 0 10px;letter-spacing:-.02em}.card p{color:var(--muted);margin:6px 0}.feature{display:flex;flex-direction:column;min-height:195px;gap:12px}.feature .symbol{font-size:32px}.feature strong{font-size:20px}.feature button{margin-top:auto}.btn{border-radius:11px;border:1px solid var(--border);background:#2a3653;color:var(--txt);padding:11px 16px;font-weight:800;transition:filter .12s,border-color .12s}.btn:hover{filter:brightness(1.14)}.btn.primary{border-color:#6fe5fb;background:linear-gradient(135deg,#8deaff,#4cafd9);color:#061424}.btn.secondary{background:#333054;border-color:#625f95}.btn.danger{background:#3b2633;border-color:#855260;color:#ffcbd2}.btn.small{font-size:12px;padding:7px 11px;border-radius:9px}.btn.big{padding:15px 17px;font-size:15px}.btn.block{width:100%}.btnrow{display:flex;gap:9px;flex-wrap:wrap;align-items:center}.btnrow .grow{flex:1}.barhead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:15px}.muted{color:var(--muted)}.small{font-size:12px}.label{font-size:12px;color:var(--muted);font-weight:800;letter-spacing:.035em}.formgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.field{display:flex;flex-direction:column;gap:6px;min-width:0}.field input,.field select{min-width:0;width:100%;padding:12px 12px;border:1px solid #4a5875;border-radius:10px;background:#10192d;color:var(--txt);outline:none}.field input:focus,.field select:focus{border-color:var(--cyan);box-shadow:0 0 0 3px #5adcf71d}.field input[type=number]{font-variant-numeric:tabular-nums}.roster{margin-top:16px;border:1px solid var(--border);border-radius:14px;overflow:hidden}.roster summary{cursor:pointer;padding:13px 15px;background:#24314a;font-weight:800}.roster .inside{padding:14px;max-height:340px;overflow:auto}.rostergrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.rosteritem{display:flex;align-items:center;gap:8px}.rosteritem b{font-size:12px;color:var(--cyan);min-width:28px}.rosteritem input{width:100%;padding:9px 11px;background:#0e172a;color:var(--txt);border:1px solid #41516c;border-radius:9px}.rosteritem .coins{width:112px;flex:none}.note{background:#102e39;border:1px solid #296271;border-radius:12px;padding:12px 15px;font-size:13px;color:#aeeefa;margin:15px 0}.warning{background:#382b25;border-color:#866546;color:#ffdda4}.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}.kpi{border:1px solid var(--border);border-radius:15px;background:#1a253c;padding:16px}.kpi .val{font-size:27px;line-height:1.2;font-weight:900;font-variant-numeric:tabular-nums;margin:6px 0}.kpi .desc{font-size:12px;color:var(--muted)}.pill{display:inline-flex;gap:6px;align-items:center;padding:4px 9px;border:1px solid #4d6380;border-radius:999px;background:#283450;font-size:11px;color:#c8d8f4;font-weight:900;letter-spacing:.025em}.pill.good{border-color:#447960;color:var(--green)}.pill.gold{border-color:#97763e;color:var(--gold)}.pill.red{border-color:#9e5964;color:var(--red)}.arena{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:stretch}.fighter{border:1px solid #485876;background:linear-gradient(180deg,#263553,#19253b);border-radius:17px;padding:22px;display:flex;flex-direction:column;gap:10px;min-width:0}.fighter:nth-child(3){background:linear-gradient(180deg,#302e58,#1b203c)}.fighter h3{font-size:clamp(17px,2.7vw,25px);overflow-wrap:anywhere;margin:0}.fighter .points{font-size:clamp(45px,6vw,74px);font-weight:950;line-height:1;letter-spacing:-.065em}.fighter .stats{color:var(--muted);font-size:12px}.vs{font-size:19px;font-weight:950;color:var(--gold);display:grid;place-items:center;padding:2px}.fighter .btn{margin-top:auto}.progress{background:#0d1526;border-radius:100px;height:9px;overflow:hidden;margin-top:8px;border:1px solid #34425c}.progress>i{display:block;background:linear-gradient(90deg,#52c8dc,#b8a1ff);height:100%;border-radius:100px}.tablewrap{overflow-x:auto}.table{border-collapse:collapse;width:100%;min-width:530px}.table th{font-size:11px;letter-spacing:.07em;text-align:left;text-transform:uppercase;color:var(--muted);padding:11px 10px;border-bottom:1px solid var(--border);white-space:nowrap}.table td{font-size:13px;padding:12px 10px;border-bottom:1px solid #303e59}.table tr:last-child td{border-bottom:0}.table tr.winner td{color:var(--gold);font-weight:800}.table td.num{text-align:right;font-variant-numeric:tabular-nums}.table th.num{text-align:right}.history{max-height:360px;overflow:auto}.historyrow{display:flex;justify-content:space-between;gap:8px;padding:11px 0;border-bottom:1px solid #32405b;font-size:13px}.historyrow:last-child{border-bottom:0}.historyrow strong{color:var(--green)}.eventline{border:1px solid var(--border);border-radius:14px;background:#142138;padding:12px 15px;margin-bottom:17px;display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;align-items:center}.eventline .detail{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.eventline .detail strong{font-size:14px}.sectionTitle{font-size:20px;margin:23px 0 11px;letter-spacing:-.025em}.stagerow{margin-bottom:18px}.stageTitle{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:20px 0 10px}.stageTitle h3{margin:0;font-size:19px}.matches{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.match{background:#16233a;border:1px solid #3c4b69;border-radius:15px;padding:14px}.match.finished{border-color:#587761}.match .info{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:7px}.match .info small{color:var(--muted)}.side{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px;border-radius:10px;background:#25334f;margin:6px 0;font-size:13px}.side.champ{background:#3a3b42;color:var(--gold)}.side .sidename{flex:1;min-width:0;overflow-wrap:anywhere}.score{font-weight:900;font-size:18px;font-variant-numeric:tabular-nums}.side .btn{white-space:nowrap}.bracketDetails{color:var(--muted);font-size:12px;margin-top:5px}.empty{text-align:center;padding:35px 20px;color:var(--muted);border:1px dashed #4f6181;border-radius:16px}.statbar{height:9px;background:#101a2b;border-radius:99px;overflow:hidden;min-width:85px}.statbar i{display:block;height:100%;background:linear-gradient(90deg,#5bd5e4,#a68eff);border-radius:99px}.footer{text-align:center;margin-top:34px;color:#8392b5;font-size:12px}.footer strong{color:var(--cyan)}.toast{position:fixed;bottom:24px;right:22px;left:22px;max-width:500px;margin-left:auto;border:1px solid #567e83;border-radius:14px;padding:14px 17px;background:#162f3d;color:#dcfffa;box-shadow:0 20px 60px #0008;z-index:99;font-size:13px}.hide{display:none!important}
+@media(max-width:850px){.cols.three{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.matches{grid-template-columns:1fr}.formgrid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.shell{padding:14px 12px 44px}.top{margin-bottom:15px}.brand h1{font-size:22px}.brand small{font-size:10px}.logo{width:48px;height:48px}.nav button{font-size:12px;padding:10px 12px}.nav .right{margin-left:0}.hero{padding:19px}.hero h2{font-size:27px}.card{padding:16px}.cols,.formgrid,.rostergrid{grid-template-columns:1fr}.arena{grid-template-columns:1fr 34px 1fr;gap:6px}.fighter{padding:13px 9px}.fighter h3{font-size:16px}.fighter .points{font-size:53px}.fighter .btn{padding:10px 5px;font-size:12px}.kpi{padding:12px}.kpi .val{font-size:24px}.rosteritem input{min-width:0}.rosteritem .coins{width:96px}.btnrow .btn{flex:1}.eventline{align-items:stretch}.status{font-size:11px}}@media print{body{background:#fff;color:#111}.shell{max-width:100%}.top,.nav,.btn,.footer,.eventline button,.no-print,.fighter button,.match button{display:none!important}.card,.hero,.kpi,.match,.fighter{background:white;color:#111;box-shadow:none;border-color:#ddd;break-inside:avoid}.pill{color:#111}.muted,.label,.card p,.table th,.small{color:#444}.table td,.table th{border-color:#ccc}.arena,.matches,.cols,.kpis{break-inside:avoid}.table{min-width:0}}
+/* V3: marcador legible, controles arcade amplios y reporte completo */
+.fighter .winBtn{min-height:94px;font-size:clamp(18px,2vw,25px);font-weight:950;letter-spacing:.02em;padding:22px 14px;white-space:normal;overflow-wrap:anywhere;text-transform:none;box-shadow:0 8px 22px #0003}
+.fighter .survivorSelect{width:100%;border:1px solid #617595;border-radius:11px;color:var(--txt);background:#10192d;padding:12px;font-size:14px}
+.fighter.side-holder{border-color:#657cba;box-shadow:inset 0 0 0 1px #8090ff20}
+.standout-date{border:1px solid #466581;background:#14253a;border-radius:14px;padding:16px;margin-bottom:16px;display:flex;flex-wrap:wrap;gap:20px;align-items:center}
+.standout-date strong{display:block;font-size:17px;color:var(--txt)}
+.fighter .fighterInfo{font-size:12px;color:var(--muted)}
+@media(max-width:600px){.fighter .winBtn{min-height:90px;font-size:15px;padding:16px 7px}.fighter .survivorSelect{font-size:12px;padding:8px 4px}.standout-date{gap:10px}}
+
+
+/* V4 — Dominio, auditoría, repechaje y liquidación */
+.coinDisclaimer{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:-7px 0 16px;border:1px solid #675c3b;background:linear-gradient(110deg,#373027,#28293a);border-radius:12px;padding:10px 14px;color:#ffe7af;font-size:12px}
+.coinDisclaimer strong{color:#fff3d6}
+.pill.correction{background:#3b2e22;border-color:#b07c53;color:#ffd49c}
+.warningbtn{border-color:#ba8857;background:#483521;color:#ffe2a7}
+.dominance{padding:14px 0}.domLabels{display:flex;justify-content:space-between;align-items:start;gap:14px;font-size:13px}.domLabels b{min-width:0;overflow-wrap:anywhere}.domLabels b:first-child{color:#83e3ff}.domLabels b:last-child{color:#d3afff;text-align:right}.domRail{display:flex;overflow:hidden;border:2px solid #526786;background:#0f182c;height:26px;margin-top:10px;border-radius:30px}.domLeft{height:100%;background:linear-gradient(95deg,#269ec4,#80e6f6)}.domRight{height:100%;background:linear-gradient(95deg,#9981ee,#d3a7f6)}
+.domIndividual{padding:11px 0;border-bottom:1px solid #35415a}.domIndividual:last-child{border:0}.domIndividual .barhead{margin:0 0 5px;font-size:13px}.domTrack{height:15px;border-radius:99px;background:#101c30;border:1px solid #405372;overflow:hidden;margin-bottom:5px}.domTrack span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#3da8e2,#a7dfef)}
+.miniUsed{display:flex;flex-direction:column;gap:3px;min-width:125px}.miniUsed label{font-size:10px;color:#bdc8db;font-weight:800}.miniUsed select{font-size:12px;padding:7px;color:#fff;background:#10192d;border:1px solid #52698d;border-radius:8px}.side{flex-wrap:wrap}.side .btn{min-height:47px}.manualPanel{border-color:#ba9664;margin:16px 0;background:linear-gradient(145deg,#332c2b,#1b263c)}.manualPanel p{color:#e3cfb3}.manualPanel button{white-space:normal;line-height:1.35}
+.settleCol{border:1px solid #3d4b65;border-radius:12px;padding:15px;background:#17223a}.settleCol h4{font-size:15px;margin:0 0 12px}.settleRow{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid #324059;padding:9px 0;font-size:13px}.settleRow strong{overflow-wrap:anywhere}.settleTotal{display:flex;justify-content:space-between;gap:12px;margin-top:14px;padding-top:12px;border-top:2px solid #596a83;font-size:12px;letter-spacing:.03em}.settleTotal strong{color:#83e3ff;font-size:16px}
+@media(max-width:650px){.coinDisclaimer{font-size:11px}.domLabels{font-size:11px}.match .side{display:grid;grid-template-columns:1fr auto;align-items:center}.match .side .miniUsed{grid-column:1/-1;width:100%}.match .side .btn{grid-column:1/-1;width:100%;min-height:54px}.settlCol{padding:10px}}
+@media print{.coinDisclaimer{background:#fff;color:#111;border:1px solid #bbb}.coinDisclaimer strong{color:#111}.domRail,.domTrack{border:1px solid #aaa}.domLeft,.domRight,.domTrack span{print-color-adjust:exact;-webkit-print-color-adjust:exact}.warningbtn{display:none!important}}
+
+
+/* V5 — Torneo por etapas, sin pases y con evaluación protegida */
+.currentStage{border:2px solid #79b4da;border-radius:16px;padding:16px;background:rgba(42,91,128,.12);margin:17px 0}
+.closedStage{border:1px solid #41506c;border-radius:16px;padding:15px;opacity:.86;margin:17px 0}
+.processBar{display:flex;align-items:center;justify-content:space-between;gap:18px;border:1px solid #479ac5;background:linear-gradient(125deg,#213951,#1c2b43);padding:16px;border-radius:13px;margin:14px 0}
+.processBar strong,.processBar small{display:block}.processBar small{margin-top:5px;color:#afc4d5}
+.processBar button{min-width:230px;max-width:400px;white-space:normal}
+.match.protectedMatch{border:2px solid #d6a85e;background:linear-gradient(160deg,#392e27,#202b3c)}
+.protectedBanner{background:#574025;color:#ffdfa8;border:1px solid #ba965d;border-radius:8px;padding:9px;font-size:11px;font-weight:800;margin:8px 0}
+.protectedMatch .side .pill{font-size:10px;vertical-align:middle;margin-left:7px}
+@media(max-width:720px){.processBar{flex-direction:column;align-items:stretch}.processBar button{width:100%;max-width:none;min-width:0}.currentStage,.closedStage{padding:10px}}
+@media print{.currentStage,.closedStage,.match.protectedMatch,.protectedBanner{background:transparent;color:#111;border-color:#888}.processBar{display:none}}
+
+/* V7 — Rendiciones y control universal de eventos */
+.abandonTop{margin-left:auto;font-size:13px;white-space:nowrap;border:1px solid #bd6f7a;background:#422631;min-height:46px;box-shadow:0 4px 18px #0004}
+.surrenderBtn{border:1px solid #85646b!important;background:#382831!important;color:#ffced5!important;font-size:12px!important;font-weight:800!important;min-height:42px;letter-spacing:0}
+.fighter .surrenderBtn{margin-top:0!important;width:100%}
+.side .surrenderBtn{min-height:40px}
+.domTrack{position:relative}
+.domTrack .domZero{position:absolute;left:50%;height:100%;width:2px;background:#d3d9e9;opacity:.85;z-index:2}
+.domTrack .domFillPos{position:absolute;height:100%;background:linear-gradient(90deg,#228fb4,#81e5be);border-radius:0 99px 99px 0}
+.domTrack .domFillNeg{position:absolute;height:100%;background:linear-gradient(90deg,#ee8199,#a85573);border-radius:99px 0 0 99px}
+@media(max-width:600px){.abandonTop{margin-left:auto;flex:1;min-width:150px}.top .status{order:3;width:100%;justify-content:center}.side .surrenderBtn{grid-column:1/-1}}
+@media print{.abandonTop,.surrenderBtn{display:none!important}}
+
+/* V6 — Clasificación explicada y dominio neto */
+.roundClassification{margin:14px 0;border:1px solid #5b8eaa;border-radius:12px;background:#101e30;overflow:hidden}
+.roundClassification summary{cursor:pointer;list-style:auto;padding:16px 18px;color:#b7e9f7;font-weight:850;background:#1a3449;line-height:1.4}
+.roundClassification[open] summary{border-bottom:1px solid #466b86}
+.roundClassification .tablewrap{margin:8px 12px}
+.roundClassification .table{min-width:630px}
+.roundClassification .table th,.roundClassification .table td{padding:10px 9px}
+.roundClassification p{margin:12px 16px}
+.roundClassification .status-direct{background:#1b383d55}
+.roundClassification .status-ranking{background:#264a3655}
+.roundClassification .status-manual{background:#5d4b2455}
+.roundClassification .status-tie{background:#58432a66}
+.roundClassification .status-out{opacity:.78}
+.netNegative{color:#ff9b99}.netPositive{color:#8de9b4}
+@media print{.roundClassification{break-inside:auto;background:#fff}.roundClassification summary{color:#111;background:#fff}.roundClassification table{min-width:0}.netNegative,.netPositive{color:#111}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="top">
+    <div class="brand"><div class="logo">K</div><div><div class="eyebrow">Kino Fighter · Event Manager</div><h1>ARENA CONTROL</h1><small>Creado por <strong>S</strong> · 100% local y sin conexión</small></div></div>
+    <div class="status" id="storageStatus"><span class="dot"></span> Guardado en este dispositivo</div>
+    <button class="btn danger abandonTop" data-action="abandon" title="Abandonar evento y volver al inicio">✕ Abandonar evento</button>
+  </header>
+  <nav class="nav" id="nav">
+    <button data-nav="home">⌂ Inicio</button><button data-nav="versus">⚔ Personales</button><button data-nav="crown">♛ Corona</button><button data-nav="tournament">🏆 Torneo</button><button data-nav="reports" class="right">▤ Reportes</button>
+  </nav>
+  <div class="coinDisclaimer"><span>ⓘ</span> <span><strong>Coins simbólicas</strong> · Son puntos virtuales del evento, <strong>no dinero en efectivo real</strong>.</span></div>
+  <main id="view"></main>
+  <footer class="footer">KINO FIGHTER · EVENT MANAGER · <strong>CREADO POR S</strong><div>Los eventos se conservan localmente hasta que los elimines. No se envían datos a ningún servidor.</div><div>Las coins son simbólicas; no representan dinero real.</div></footer>
+</div>
+<div class="toast hide" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+
+'use strict';
+/* Kino Fighter · Creado por S · Sin dependencias externas */
+const STORE_KEY='KINO_FIGHTER_S_EVENT_V6';
+const view=document.getElementById('view');
+const storageStatus=document.getElementById('storageStatus');
+let eventData=null,activeTab='home',toastTimer=null;
+const draft={versus:['Player 1','Player 2'],versusTarget:10,versusDetails:false,crownCount:4,crownTarget:12,crownMode:'equal',crownFee:50,crownCoinPerWin:5,crownNames:[],crownStakes:[],tournamentCount:10,tournamentNames:[],bestEarly:3,bestSemi:3,bestFinal:5};
+const esc=(v)=>String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=(n)=>Number(n||0).toLocaleString('es-MX',{maximumFractionDigits:2});
+const money=(n)=>fmt(n)+' coins';
+const now=()=>new Date().toISOString();
+const key=(r,i)=>`${r}_${i}`;
+const nameOf=(id)=>eventData?.players?.find(p=>p.id===id)?.name||'Jugador';
+const num=(v,def=0)=>Number.isFinite(Number(v))?Number(v):def;
+const val=(id)=>document.getElementById(id)?.value;
+const safe=(v,min,max,def)=>{let n=Number(v);return Number.isFinite(n)?Math.max(min,Math.min(max,Math.floor(n))):def};
+const when=(iso)=>{try{return new Date(iso).toLocaleString('es-MX',{dateStyle:'short',timeStyle:'short'})}catch{return '-'}};
+function notify(s){const t=document.getElementById('toast');t.textContent=s;t.classList.remove('hide');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.add('hide'),4200)}
+function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify(eventData));storageStatus.innerHTML='<span class="dot"></span> Guardado en este dispositivo';return true}catch(e){storageStatus.innerHTML='⚠ Almacenamiento no disponible';notify('No se pudo guardar localmente. Revisa la configuración de almacenamiento del navegador.');return false}}
+function load(){try{const x=localStorage.getItem(STORE_KEY);if(x){const p=JSON.parse(x);if(isValidEvent(p)){eventData=p;activeTab=p.type}else{notify('El respaldo local no tiene el formato esperado.')}}}catch(e){storageStatus.innerHTML='⚠ Almacenamiento no disponible'}}
+function isValidEvent(p){return p&&typeof p==='object'&&['versus','crown','tournament'].includes(p.type)&&Array.isArray(p.players)&&p.players.length>=2&&p.players.length<=32&&p.players.every((x,i)=>x&&x.id===i&&typeof x.name==='string'&&x.name.length<=100)&&Array.isArray(p.fights)&&p.fights.length<10000&&p.fights.every(f=>f&&typeof f.winnerId==='number'&&f.winnerId>=0&&f.winnerId<p.players.length)&&typeof p.createdAt==='string'}
+function nav(tab){activeTab=tab;render();window.scrollTo({top:0,behavior:'smooth'})}
+const typeName=(type)=>({versus:'Personales',crown:'Corona',tournament:'Torneo'})[type]||'Evento';
+const navBtn=(tab,text)=>`<button class="btn" data-nav="${tab}">${text}</button>`;
+function correctionsUsed(e){return (e?.corrections||[]).length}
+function undoRemaining(e){return Math.max(0,3-correctionsUsed(e))}
+function auditForSlot(e,slot){return (e.corrections||[]).filter(x=>x.slot===slot).length}
+function correctionPill(e,slot){const n=auditForSlot(e,slot);return n?`<span class="pill correction">⚠ Modificado ${n} ${n===1?'vez':'veces'}</span>`:''}
+function auditNotice(e){return `<div class="note warning">Control de cambios: <strong>${correctionsUsed(e)}/3 correcciones usadas</strong> en este evento. Cada deshacer queda registrado con fecha, enfrentamiento y resultado anulado; no puede borrarse individualmente.</div>`}
+function eventHeader(){if(!eventData)return '';const remaining=undoRemaining(eventData),lastAction=(eventData.actions||[]).at(-1);return `<div class="eventline"><div class="detail"><span class="pill good">● Evento activo</span><strong>${typeName(eventData.type)}</strong><span class="muted small">Iniciado: ${esc(when(eventData.createdAt))}</span></div><div class="btnrow no-print"><button class="btn small warningbtn" data-action="undo" ${!(lastAction||eventData.fights.length)||!remaining?'disabled':''}>↶ Deshacer última acción · ${remaining}/3</button><button class="btn small" data-nav="reports">▤ Reportes</button></div></div>`}
+function hero(s,title,desc){return `<section class="hero"><div class="sub">${s}</div><h2>${title}</h2><p>${desc}</p></section>`}
+function renderHome(){const active=eventData?`<section class="card" style="margin-bottom:18px"><div class="barhead"><div><span class="pill good">Evento guardado</span><h3 style="margin-top:9px">${typeName(eventData.type)} · ${eventData.players.length} jugadores</h3><p>Tu evento seguirá aquí incluso después de cerrar la página, mientras este navegador conserve los datos locales.</p></div><div class="btnrow"><button class="btn primary" data-nav="${eventData.type}">Continuar evento</button><button class="btn" data-nav="reports">Ver reportes</button></div></div></section>`:'';return hero('Tres modalidades · Una sola arena','Control total del combate','Registra victorias, torneo y coins sin servidores. El evento queda guardado en este navegador hasta que lo borres o inicies otro.')+active+`<div class="cols three"><section class="card feature"><span class="symbol">⚔</span><strong>Personales</strong><p>Dos jugadores, meta de wins y análisis opcional de los tres peleadores.</p><button class="btn primary block" data-nav="versus">Abrir Personales</button></section><section class="card feature"><span class="symbol">♛</span><strong>Corona</strong><p>Wins acumulados, rivales rotativos y dos sistemas de coins: cuota general o coins por combate.</p><button class="btn primary block" data-nav="crown">Abrir Corona</button></section><section class="card feature"><span class="symbol">🏆</span><strong>Torneo</strong><p>Clasificatorias, eliminatorias, semifinales y final. Cada serie tiene su propia meta.</p><button class="btn primary block" data-nav="tournament">Abrir Torneo</button></section></div><p class="muted small" style="margin-top:15px">Para iniciar otra modalidad, primero confirma el reemplazo del evento activo. Puedes descargar un reporte CSV o imprimirlo antes de borrarlo.</p>`}
+function rosterFields(names,count,withStake=false,stakes=[]){return Array.from({length:count},(_,i)=>`<label class="rosteritem"><b>#${i+1}</b><input class="player-input" data-player="${i}" value="${esc(names[i]||'Player '+(i+1))}" maxlength="100" aria-label="Nombre del jugador ${i+1}">${withStake?`<input class="coins" type="number" min="0" max="10000000" step="0.01" data-stake="${i}" value="${esc(stakes[i]??50)}" aria-label="Aporte en coins del jugador ${i+1}">`:''}</label>`).join('')}
+function captureSetup(){if(activeTab==='versus'){draft.versus=[...document.querySelectorAll('.player-input')].map(x=>x.value);draft.versusTarget=val('versusTarget')??draft.versusTarget;draft.versusDetails=!!document.getElementById('fighterDetails')?.checked}else if(activeTab==='crown'){draft.crownNames=[...document.querySelectorAll('.player-input')].map(x=>x.value);draft.crownTarget=val('target')??draft.crownTarget;draft.crownFee=val('equalFee')??draft.crownFee;draft.crownCoinPerWin=val('coinPerWin')??draft.crownCoinPerWin;draft.crownMode=val('stakeMode')??draft.crownMode}else if(activeTab==='tournament'){draft.tournamentNames=[...document.querySelectorAll('.player-input')].map(x=>x.value);draft.bestEarly=val('bestEarly')??draft.bestEarly;draft.bestSemi=val('bestSemi')??draft.bestSemi;draft.bestFinal=val('bestFinal')??draft.bestFinal}}
+function setupPage(type){const warning=eventData?`<div class="note warning">Hay un evento activo de <strong>${typeName(eventData.type)}</strong>. Si inicias otro, se sustituirá el actual (se pedirá confirmación). Puedes <button class="btn small" data-nav="${eventData.type}">volver a él</button> o descargar el reporte CSV antes de reemplazarlo.</div>`:'';
+if(type==='versus')return hero('Modo 01 · Dos contrincantes','PERSONALES','Los dos equipos tienen tres peleadores. Define la meta de wins y, si quieres, registra cuántos personajes utilizó cada ganador.')+warning+`<section class="card"><h3>Configurar Personales</h3><div class="formgrid"><label class="field"><span class="label">Jugador 1</span><input class="player-input" maxlength="100" value="${esc(draft.versus[0])}" placeholder="Player 1"></label><label class="field"><span class="label">Jugador 2</span><input class="player-input" maxlength="100" value="${esc(draft.versus[1])}" placeholder="Player 2"></label><label class="field"><span class="label">Meta de wins (1–999)</span><input id="versusTarget" type="number" min="1" max="999" step="1" value="${esc(draft.versusTarget)}"></label></div><label class="field" style="margin:17px 0 0;flex-direction:row;align-items:center;gap:10px"><input type="checkbox" id="fighterDetails" style="width:19px;height:19px;accent-color:var(--cyan)" ${draft.versusDetails?'checked':''}><span>Registrar personajes usados de la tercia (1, 2 o 3)</span></label><p class="muted small">Cada enfrentamiento otorga un win. Dominio por win: 1 personaje usado = +3 puntos; 2 = +2; 3 = +1. El perdedor recibe la misma cantidad en negativo. Si alguien se rinde, se registra win pero dominio 0 para ambos. Los nombres son opcionales.</p><div class="btnrow" style="margin-top:20px"><button class="btn primary big" data-action="create" data-type="versus">⚔ Iniciar Personales</button></div></section>`;
+
+if(type==='crown'){const cnt=safe(draft.crownCount,2,32,4),m=draft.crownMode==='individual';return hero('Modo 02 · Rey de la arena','CORONA','El ganador conserva su lado del tablero y enfrenta al siguiente rival en el orden de inscripción. Todas las victorias cuentan hasta alcanzar la meta.')+warning+`<section class="card"><h3>Configurar Corona</h3><div class="formgrid"><label class="field"><span class="label">Número de jugadores (2–32)</span><input id="playerCount" type="number" min="2" max="32" value="${cnt}"></label><label class="field"><span class="label">Meta de wins acumulados</span><input id="target" type="number" min="1" max="999" value="${esc(draft.crownTarget)}"></label><label class="field"><span class="label">Modalidad de coins</span><select id="stakeMode"><option value="equal" ${!m?'selected':''}>Cuota general · mismo aporte</option><option value="individual" ${m?'selected':''}>Coins por combate · + al ganar, − al perder</option></select></label></div><div class="formgrid" style="margin-top:14px">${m?`<label class="field"><span class="label">Coins por victoria / derrota</span><input id="coinPerWin" type="number" min="0" max="10000000" step="0.01" value="${esc(draft.crownCoinPerWin)}"></label>`:`<label class="field"><span class="label">Cuota que aporta cada jugador</span><input id="equalFee" type="number" min="0" max="10000000" step="0.01" value="${esc(draft.crownFee)}"></label>`}</div><details class="roster" open><summary>Jugadores en orden fijo de participación</summary><div class="inside"><div class="rostergrid">${rosterFields(draft.crownNames,cnt)}</div></div></details><div class="note">${m?'<strong>Coins por combate:</strong> si estableces 5, cada victoria suma +5 y cada derrota resta −5 al saldo. Al final, los saldos negativos pagan y los positivos reciben. El pozo es la suma de los importes que se deben pagar.':'<strong>Cuota general:</strong> todos aportan la misma cantidad una vez; el campeón recibe el pozo común. El reporte indica quién paga y quién recibe.'} Los wins de Corona son acumulativos, independientemente de los coins. Una rendición da el win al rival y 0 de dominio a ambos.</div><div class="btnrow"><button class="btn primary big" data-action="create" data-type="crown">♛ Iniciar Corona</button></div></section>`}
+
+const cnt=safe(draft.tournamentCount,2,32,10),b=bestOfOptions;const estimate=planTournament(cnt,{early:Number(draft.bestEarly),semi:Number(draft.bestSemi),final:Number(draft.bestFinal)});return hero('Modo 03 · Eliminación directa','TORNEO','Escribe la cantidad de jugadores: el sistema ordenará clasificatorias y repechajes sin pases libres. Registra cada win y pulsa Procesar ronda para determinar la siguiente etapa; ninguna ronda previa desaparecerá.')+warning+`<section class="card"><h3>Configurar Torneo</h3><div class="formgrid"><label class="field"><span class="label">Participantes (2–32)</span><input id="playerCount" type="number" min="2" max="32" value="${cnt}"></label><label class="field"><span class="label">Clasificatorias / eliminatorias</span><select id="bestEarly">${b(draft.bestEarly)}</select></label><label class="field"><span class="label">Semifinales</span><select id="bestSemi">${b(draft.bestSemi)}</select></label><label class="field"><span class="label">Final</span><select id="bestFinal">${b(draft.bestFinal)}</select></label></div><div class="note">Con ${cnt} participantes no habrá pases directos. La ronda inicial se adapta al número de inscritos; si no es potencia de dos, el torneo clasificará jugadores y completará ${estimate.bracket} plazas mediante resultados y, si hace falta, repechaje. 
+ <strong>Mínimo sin rendiciones: ${estimate.min} juegos; mínimo con rendiciones: ${estimate.minWithSurrender}; máximo: ${estimate.max} juegos (incluye una sola fase de desempate).</strong> “Al mejor de 3” significa ganar <strong>2 juegos</strong>; “al mejor de 5” significa ganar <strong>3 juegos</strong>. Todos compiten. Si el total es impar, el jugador restante se enfrentará al primer ganador ya clasificado; ese ganador no arriesga su pase. Los mejores eliminados recuperan plazas por wins y dominio neto (+3/−3, +2/−2, +1/−1); únicamente los empatados al límite disputan una fase al mejor de uno.</div><details class="roster" open><summary>Orden de inscripción · ${cnt} jugadores</summary><div class="inside"><div class="rostergrid">${rosterFields(draft.tournamentNames,cnt)}</div></div></details><div class="btnrow" style="margin-top:18px"><button class="btn primary big" data-action="create" data-type="tournament">🏆 Generar torneo y llaves</button></div></section>`}
+const bestOfOptions=(chosen)=>[1,3,5,7,9].map(v=>`<option value="${v}" ${Number(chosen)===v?'selected':''}>Al mejor de ${v}</option>`).join('');
+function gatherNames(n){return Array.from({length:n},(_,i)=>{const raw=document.querySelector(`.player-input[data-player="${i}"]`)?.value||document.querySelectorAll('.player-input')[i]?.value||'';return {id:i,name:String(raw).trim().slice(0,100)||`Player ${i+1}`}})}
+function validateStakes(vals){for(const v of vals){if(!Number.isFinite(Number(v))||Number(v)<0||Number(v)>10000000||!/^\d+(?:\.\d{1,2})?$/.test(String(v).trim()))throw Error('Los aportes deben ser cantidades de coins de 0 a 10,000,000, con máximo 2 decimales.')}return vals.map(v=>Number(Number(v).toFixed(2)))}
+function createEvent(type){captureSetup();let e;
+if(type==='versus'){const a=[...document.querySelectorAll('.player-input')].map((input,i)=>({id:i,name:input.value.trim().slice(0,100)||`Player ${i+1}`}));const target=Number(val('versusTarget'));if(!Number.isInteger(target)||target<1||target>999)throw Error('La meta de Personales debe estar entre 1 y 999 wins.');e={type,players:a,target,fighterDetails:!!document.getElementById('fighterDetails')?.checked,fights:[],createdAt:now()}}
+else if(type==='crown'){const n=Number(val('playerCount')),target=Number(val('target')),mode=val('stakeMode');if(!Number.isInteger(n)||n<2||n>32||!Number.isInteger(target)||target<1||target>999)throw Error('Revisa el número de jugadores y la meta de wins.');if(!['equal','individual'].includes(mode))throw Error('Modalidad de coins inválida.');const players=gatherNames(n);let stakes=[],coinPerWin=0;if(mode==='equal'){const amount=validateStakes([val('equalFee')])[0];stakes=Array(n).fill(amount)}else{coinPerWin=validateStakes([val('coinPerWin')])[0];stakes=Array(n).fill(0)}e={type,players,target,stakeMode:mode,stakes,coinPerWin,fights:[],createdAt:now()}}
+
+else if(type==='tournament'){const n=safe(val('playerCount'),2,32,10);if(!Number.isInteger(Number(val('playerCount')))||n!==Number(val('playerCount')))throw Error('Selecciona entre 2 y 32 participantes.');const bestOf={early:Number(val('bestEarly')),semi:Number(val('bestSemi')),final:Number(val('bestFinal'))};if(Object.values(bestOf).some(x=>![1,3,5,7,9].includes(x)))throw Error('La serie debe ser de 1, 3, 5, 7 o 9 juegos.');e={type,players:gatherNames(n),bestOf,fights:[],createdAt:now()};initTournament(e)}
+if(eventData&&!confirm(`Se sustituirá el evento activo de ${typeName(eventData.type)} y se borrarán sus resultados locales. ¿Quieres continuar?`))return;eventData=e;eventData.corrections=[];eventData.actions=[];eventData.manualChoices={};activeTab=type;save();render();notify('Nuevo evento creado y guardado localmente.');window.scrollTo({top:0,behavior:'smooth'})}
+function dominationPoints(used){const n=Number(used);return [1,2,3].includes(n)?4-n:0} // Rendición: 0 pts para ambos
+function fightUsed(f){const n=Number(f.used ?? (f.survivors ? 4-f.survivors : 3));return [1,2,3].includes(n)?n:3}
+function versusStats(e){const wins=[0,0],dom=[0,0];for(const f of e.fights){if(f.winnerId!==0&&f.winnerId!==1)continue;wins[f.winnerId]++;if(e.fighterDetails&&!Number.isInteger(f.surrenderedId)){const pts=dominationPoints(fightUsed(f));dom[f.winnerId]+=pts;dom[1-f.winnerId]-=pts}}return {wins,dom,done:!!e.target&&Math.max(...wins)>=e.target,winner:wins[0]===wins[1]?null:(wins[0]>wins[1]?0:1)}}
+function dominanceSplit(left,right,leftName,rightName,small=false,unit="pts"){const gross=Math.abs(left)+Math.abs(right),signed=left<0||right<0;const total=left+right,a=gross?(signed?Math.max(0,Math.min(100,50+50*(left-right)/gross)):100*left/total):50,b=100-a;return `<div class="dominance ${small?'domSmall':''}"><div class="domLabels"><b>${esc(leftName)} · ${left} ${unit}</b><b>${esc(rightName)} · ${right} ${unit}</b></div><div class="domRail"><div class="domLeft" style="width:${a}%"></div><div class="domRight" style="width:${b}%"></div></div><p class="muted small">${gross?'Dominio: '+a.toFixed(1)+'% / '+b.toFixed(1)+'%':'Aún sin puntos de dominio.'}</p></div>`}
+function individualDomBar(p,max){const v=p.dom||0,half=50*Math.min(1,Math.abs(v)/Math.max(1,max));return `<div class="domIndividual"><div class="barhead"><strong>${esc(p.name)}</strong><span class="pill ${v<0?'red':v>0?'good':''}">${signedPoints(v)} puntos de dominio</span></div><div class="domTrack"><span class="domZero"></span><span class="${v<0?'domFillNeg':'domFillPos'}" style="left:${v<0?50-half:50}%;width:${half}%"></span></div><small class="muted">${p.wins||0} wins · ${p.losses||0} derrotas · cero en el centro</small></div>`}
+function renderPersonales(e){
+ const v=versusStats(e),w=v.wins,goal=e.target||10,done=v.done;
+ const card=id=>{const p=e.players[id];return `<article class="fighter"><span class="pill">P${id+1}</span><h3>${esc(p.name)}</h3><div class="points">${w[id]}<span class="small muted" style="font-size:14px"> / ${goal}</span></div><div class="stats">Wins · ${e.fights.length-w[id]} derrotas · ${v.dom[id]} puntos</div><div class="progress"><i style="width:${Math.min(100,w[id]/goal*100)}%"></i></div>${e.fighterDetails&&!done?`<label class="field"><span class="label">Personajes usados de la tercia</span><select id="used-${id}"><option value="">Seleccionar…</option><option value="1">1 personaje · +3</option><option value="2">2 personajes · +2</option><option value="3">3 personajes · +1</option></select></label>`:''}${done?'':`<button class="btn ${id===0?'primary':'secondary'} winBtn" data-action="win" data-winner="${id}">Win ${esc(p.name)}</button><button class="btn surrenderBtn" data-action="surrender" data-loser="${id}">Rendirse · ${esc(p.name)}</button>`}</article>`};
+ const leader=done?`🏆 ${esc(e.players[v.winner].name)} llegó primero a ${goal} wins.`:`El primero en conseguir ${goal} wins gana. ${e.fighterDetails?'Cada win registra personajes utilizados.':'Modo simple: solo wins.'}`;
+ const dom=e.fighterDetails?dominanceSplit(v.dom[0],v.dom[1],e.players[0].name,e.players[1].name):dominanceSplit(w[0],w[1],e.players[0].name,e.players[1].name,false,'wins');
+ return hero('Personales · Evento activo',done?'¡PERSONALES TERMINADO!':'Uno contra uno',leader)+eventHeader()+`<div class="kpis"><div class="kpi"><span class="label">Meta</span><div class="val">${goal}</div></div><div class="kpi"><span class="label">Combates disputados</span><div class="val">${e.fights.length}</div></div><div class="kpi"><span class="label">Líder / ganador</span><div class="val" style="font-size:19px">${esc(w[0]===w[1]?'Empate':e.players[v.winner].name)}</div></div><div class="kpi"><span class="label">Personajes</span><div class="val" style="font-size:18px">${e.fighterDetails?'Detallado':'Simple'}</div></div></div><section class="arena">${card(0)}<div class="vs">VS</div>${card(1)}</section><section class="card" style="margin:16px 0"><h3>Barra de dominio ${done?'final':'en vivo'}</h3>${dom}<p class="muted small">${e.fighterDetails?'El ganador obtiene +3, +2 o +1; el perdedor recibe −3, −2 o −1. Rendirse: 0 para ambos.':'En modo simple, la barra utiliza wins registrados; las rendiciones no generan puntos de dominio.'}</p></section>${correctionPill(e,e.fights.length)}${auditNotice(e)}${historyCard(e)}`;
+}
+function calcCrown(e){
+  const stats=e.players.map(p=>({id:p.id,name:p.name,wins:0,losses:0,dom:0}));
+  let champ=0,challenger=1,champSide=0,done=false,crowned=null,fightsCount=0;
+  for(const f of e.fights){
+    if(done||![champ,challenger].includes(f.winnerId))break;
+    const loser=f.winnerId===champ?challenger:champ;
+    const winner=stats[f.winnerId];
+    winner.wins++;
+    const pts=Number.isInteger(f.surrenderedId)?0:dominationPoints(fightUsed(f));
+    winner.dom=(winner.dom||0)+pts;
+    stats[loser].losses++;
+    stats[loser].dom-=pts;
+    if(f.winnerId!==champ)champSide=1-champSide; // Quien gana conserva el lado físico que ocupaba.
+    champ=f.winnerId;
+    fightsCount++;
+    // Corona: ONLY cumulative wins count, even after any losses.
+    if(winner.wins>=e.target){done=true;crowned=champ;break}
+    const last=challenger;
+    let next=null;
+    for(let j=1;j<=e.players.length;j++){
+      const x=(last+j)%e.players.length;
+      if(x!==champ&&(e.players.length===2||x!==loser)){next=x;break}
+    }
+    if(next===null){
+      for(let j=1;j<=e.players.length;j++){
+        const x=(last+j)%e.players.length;
+        if(x!==champ){next=x;break}
+      }
+    }
+    challenger=next;
+  }
+  return {stats,champ,challenger,champSide,done,crowned,fightsCount};
+}
+function crownMoney(e,c){const n=e.players.length;if(e.stakeMode==='individual'){
+ const rate=Number(e.coinPerWin??5),net=c.stats.map(p=>Math.round((p.wins-p.losses)*rate*100)/100);
+ const pays=net.map(v=>Math.max(0,-v)),receives=net.map(v=>Math.max(0,v));
+ const pool=Number(pays.reduce((a,b)=>a+b,0).toFixed(2));
+ return {pool,net,pays,receives,rate,mode:'individual'};
+ }
+ const stakes=e.stakes||Array(n).fill(0),pool=Number(stakes.reduce((a,b)=>a+Number(b),0).toFixed(2));
+ const pays=stakes.map(Number),receives=e.players.map(p=>c.done&&p.id===c.crowned?pool:0),net=pays.map((p,i)=>Number((receives[i]-p).toFixed(2)));
+ return {pool,net,pays,receives,rate:0,mode:'equal'};
+}
+function settlementCard(e,c){
+ const m=crownMoney(e,c),payers=c.stats.filter(p=>m.pays[p.id]>0),receivers=c.stats.filter(p=>m.receives[p.id]>0);
+ const item=(p,amount)=>`<div class="settleRow"><strong>${esc(p.name)}</strong><b>${fmt(amount)} coins</b></div>`;
+ const totalReceive=m.receives.reduce((a,b)=>a+b,0);
+ return `<section class="card" style="margin:16px 0"><div class="barhead"><h3>Liquidación ${c.done?'final':'provisional'} · Pozo de coins</h3><span class="pill gold">${fmt(m.pool)} coins al pozo</span></div><p class="muted small">Coins simbólicas, sin valor de dinero en efectivo. Los saldos negativos aportan al pozo y los positivos cobran de él.</p><div class="cols"><div class="settleCol"><h4>Quién paga al pozo</h4>${payers.length?payers.map(p=>item(p,m.pays[p.id])).join(''):'<p class="muted small">Nadie debe coins.</p>'}<div class="settleTotal">TOTAL APORTADO <strong>${fmt(m.pool)}</strong></div></div><div class="settleCol"><h4>Quién recibe del pozo</h4>${receivers.length?receivers.map(p=>item(p,m.receives[p.id])).join(''):'<p class="muted small">Sin pagos por recibir todavía.</p>'}<div class="settleTotal">TOTAL REPARTIDO <strong>${fmt(totalReceive)}</strong></div></div></div></section>`;
+}
+function crownPool(e){return crownMoney(e,calcCrown(e)).pool}
+function renderCrown(e){
+ const c=calcCrown(e),settle=crownMoney(e,c),champ=c.stats[c.champ],chall=c.stats[c.challenger],done=c.done;
+ const who=done?`👑 ${esc(champ.name)} alcanzó ${champ.wins} wins acumulados. Consulta el pago final en el reporte.`:`El primero que llegue a ${e.target} wins acumulados será campeón. Las derrotas no borran wins.`;
+ const lead=hero('Corona · Evento activo',done?'¡CORONA CONQUISTADA!':'Rey de la arena',who);
+ const a=`<div class="kpis"><div class="kpi"><span class="label">Meta</span><div class="val">${e.target}</div><div class="desc">Wins acumulados</div></div><div class="kpi"><span class="label">Combates</span><div class="val">${e.fights.length}</div><div class="desc">Disputados</div></div><div class="kpi"><span class="label">${e.stakeMode==='individual'?'Pozo a liquidar':'Pozo general'}</span><div class="val">${fmt(settle.pool)}</div><div class="desc">coins ${e.stakeMode==='individual'&&!done?'· saldo provisional':''}</div></div><div class="kpi"><span class="label">Modalidad</span><div class="val" style="font-size:18px">${e.stakeMode==='equal'?'Cuota general':'Por combate'}</div><div class="desc">${e.stakeMode==='individual'?`${fmt(settle.rate)} coins por win / derrota`:'Aporte igual por jugador'}</div></div></div>`;
+ const card=(id,isIncumbent)=>{const p=c.stats[id],first=isIncumbent;return `<article class="fighter ${isIncumbent?'side-holder':''}"><span class="pill ${first?'gold':''}">${first?'♛ Ganador anterior':'Siguiente rival'}</span><h3>${esc(p.name)}</h3><div class="points">${p.wins}<span class="small muted" style="font-size:14px"> / ${e.target}</span></div><div class="stats">Wins acumulados · ${p.losses} derrotas</div><div class="progress"><i style="width:${Math.min(100,p.wins/e.target*100)}%"></i></div>${e.stakeMode==='individual'?`<div class="fighterInfo">Saldo: ${settle.net[id]>=0?'+':''}${fmt(settle.net[id])} coins</div>`:''}<label class="field" style="margin-top:10px"><span class="label">Personajes usados (1, 2 o 3)</span><select id="used-${id}"><option value="">Seleccionar…</option><option value="1">1 personaje · +3</option><option value="2">2 personajes · +2</option><option value="3">3 personajes · +1</option></select></label><button class="btn ${first?'primary':'secondary'} winBtn" data-action="win" data-winner="${id}">Win ${esc(p.name)}</button><button class="btn surrenderBtn" data-action="surrender" data-loser="${id}">Rendirse · ${esc(p.name)}</button></article>`};
+ const leftId=c.champSide===0?c.champ:c.challenger,rightId=c.champSide===1?c.champ:c.challenger;
+ const correctionNow=correctionPill(e,e.fights.length);
+ const cards=done?`<div class="card" style="text-align:center"><span style="font-size:55px">♛</span><h3 style="color:var(--gold);font-size:29px;margin:4px 0">${esc(champ.name)}</h3><p>Campeón de Corona · ${champ.wins} wins acumulados · ${e.stakeMode==='individual'?'liquidación según saldos':'pozo general de '+money(settle.pool)}.</p><div class="btnrow" style="justify-content:center;margin-top:14px"><button class="btn" data-nav="reports">Ver pagos y clasificación</button></div></div>`:`<section class="arena">${card(leftId,leftId===c.champ)}<div class="vs">VS</div>${card(rightId,rightId===c.champ)}</section>`;
+ const sorted=[...c.stats].sort((x,y)=>y.wins-x.wins||x.losses-y.losses||x.id-y.id);
+ const rows=sorted.map((p,i)=>`<tr class="${p.id===c.crowned?'winner':''}"><td>${i+1}. ${esc(p.name)} ${p.id===c.crowned?'♛':''}</td><td class="num">${p.wins}</td><td class="num">${p.losses}</td><td class="num">${fmt(settle.pays[p.id])}</td><td class="num">${fmt(settle.receives[p.id])}</td><td class="num">${settle.net[p.id]>0?'+':''}${fmt(settle.net[p.id])}</td></tr>`).join('');
+ return lead+eventHeader()+a+correctionNow+cards+`<div class="note">El ganador <strong>siempre conserva su lugar izquierdo o derecho</strong>; quien entra nuevo ocupa el tablero libre. El siguiente rival se elige en orden de inscripción. <strong>Los wins jamás se reinician al perder.</strong> ${e.stakeMode==='individual'?`Cada victoria suma +${fmt(settle.rate)} coins y cada derrota resta −${fmt(settle.rate)} coins. ${done?'Estos son los pagos finales.':'Los saldos mostrados son provisionales hasta alcanzar la meta.'}`:'Cada participante aporta una cuota única; el ganador recibe todo el pozo.'}</div><div class="btnrow no-print" style="margin:16px 0"><button class="btn" data-nav="reports">▤ Reporte completo</button></div><section class="card"><div class="barhead"><h3>Clasificación · Coins</h3><span class="pill">${e.stakeMode==='equal'?'Cuota general':'Por combate'}</span></div><div class="tablewrap"><table class="table"><thead><tr><th>Jugador</th><th class="num">Wins</th><th class="num">Derrotas</th><th class="num">Paga</th><th class="num">Recibe</th><th class="num">Saldo neto</th></tr></thead><tbody>${rows}</tbody></table></div><p class="muted small">${e.stakeMode==='individual'?'Los pagos se compensan: sólo paga quien tiene saldo negativo y sólo cobra quien tiene saldo positivo.':`Cuota general: el pozo es ${fmt(settle.pool)} coins.`} ${done?'Liquidación final.':'Vista provisional hasta terminar el evento.'}</p></section><section class="card" style="margin-top:16px"><h3>Dominio por jugador · Mayor a menor</h3>${[...c.stats].sort((a,b)=>b.dom-a.dom||b.wins-a.wins).map(p=>individualDomBar(p,Math.max(1,...c.stats.map(x=>Math.abs(x.dom))))).join('')}</section>${settlementCard(e,c)}${auditNotice(e)}<div style="margin-top:16px">${historyCard(e)}</div>`;
+}
+
+/* V6: Dominio neto (ganador +3/+2/+1; perdedor -3/-1/0), tabla por etapa. */
+function tournamentLoserPoints(used){return ({1:-3,2:-2,3:-1})[Number(used)]??0}
+function signedPoints(n){return n>0?'+'+n:String(n)}
+function pow2(n){let p=1;while(p<n)p*=2;return p}
+function lowerPow2(n){let p=1;while(p*2<=n)p*=2;return p}
+function seedOrder(n){let a=[1,2];while(a.length<n){const max=a.length*2+1;a=a.flatMap(v=>[v,max-v])}return a}
+function stageLabel(r,total){if(r===total-1)return 'Gran final';if(r===total-2)return 'Semifinales';const alive=2**(total-r);return ({32:'Dieciseisavos de final',16:'Octavos de final',8:'Cuartos de final',4:'Semifinales',2:'Gran final'})[alive]||`Ronda ${r+1}`}
+function roundBest(e,r,total){return r===total-1?e.bestOf.final:r===total-2?e.bestOf.semi:e.bestOf.early}
+function planTournament(n,format){
+ const pure=pow2(n)===n,bracket=lowerPow2(n),initial=pure?0:Math.floor(n/2)+(n%2),R=Math.log2(bracket);
+ let min=initial*Math.ceil(format.early/2),maxBase=initial*format.early;
+ for(let r=0;r<R;r++){
+  const series=bracket/2**(r+1),best=r===R-1?format.final:r===R-2?format.semi:format.early;
+  min+=series*Math.ceil(best/2);maxBase+=series*best;
+ }
+ // Cada eliminado podría empatar en puntos en la plaza de corte; todos los empatados juegan una sola liguilla BO1.
+ const maxLosers=pure?0:n-Math.floor(n/2);const tieLimit=pure?0:maxLosers*(maxLosers-1)/2;
+ return {pure,bracket,initial,prelim:initial,min,minWithSurrender:initial+bracket-1,maxBase,max:maxBase+tieLimit,tieLimit,series:initial+bracket-1,losers:maxLosers};
+}
+function makeRound(e,r,ids){
+ const total=Math.log2(lowerPow2(e.players.length)),best=roundBest(e,r,total);
+ return {key:'r'+r,kind:'bracket',round:r,label:stageLabel(r,total),matches:Array.from({length:ids.length/2},(_,i)=>({key:`r_${r}_${i}`,p1:ids[2*i],p2:ids[2*i+1],best,phase:stageLabel(r,total)}))};
+}
+function firstTournamentStage(e){
+ const n=e.players.length;
+ if(pow2(n)===n){const seeds=seedOrder(n).map(rank=>rank-1);return makeRound(e,0,seeds)}
+ const matches=[];
+ for(let i=0;i+1<n;i+=2)matches.push({key:`q_${i/2}`,p1:i,p2:i+1,best:e.bestOf.early,phase:'Clasificatoria'});
+ if(n%2)matches.push({key:'q_evaluation',p1:n-1,p2:null,anchor:'q_0',guestId:n-1,best:e.bestOf.early,phase:'Evaluación protegida · el ganador anterior mantiene su pase'});
+ return {key:'q',kind:'qualifying',label:'Ronda 1 · Clasificatorias',matches};
+}
+function initTournament(e){e.tour={stages:[firstTournamentStage(e)],qualified:[],tieContext:null,manualSelections:[]}}
+function calcTournament(e){
+ const plan=planTournament(e.players.length,e.bestOf),tour=e.tour||{stages:[firstTournamentStage(e)],qualified:[],tieContext:null,manualSelections:[]};
+ const stats=e.players.map(p=>({id:p.id,name:p.name,gameWins:0,gameLosses:0,matchWins:0,matchLosses:0,dom:0}));
+ const logs=new Map();for(const f of e.fights){if(!logs.has(f.match))logs.set(f.match,[]);logs.get(f.match).push(f)}
+ const matches=[],byKey=new Map(),stages=[];
+ for(const st of tour.stages){
+  const stageMatches=[];
+  for(const def of st.matches){
+   const anchor=def.anchor?byKey.get(def.anchor):null;
+   const p1=def.p1,p2=def.anchor?(anchor?.done?anchor.winner:null):def.p2;
+   const protectedId=def.guestId!==undefined?p2:null;
+   const ready=Number.isInteger(p1)&&Number.isInteger(p2);
+   const best=def.best,need=Math.ceil(best/2);
+   const m={...def,p1,p2,protectedId,ready,need,a:0,b:0,done:false,winner:null};
+   if(ready){
+    for(const f of logs.get(m.key)||[]){
+     if(m.done)break;
+     if(f.winnerId!==p1&&f.winnerId!==p2)continue;
+     const loser=f.winnerId===p1?p2:p1;
+     if(f.winnerId===p1)m.a++;else m.b++;
+     // Dominio NETO de torneo: 1 usado => +3 / -3, 2 => +2 / -2, 3 => +1 / -1.
+     // En evaluación protegida, el primer ganador mantiene su pase, pero la puntuación de juego se equilibra.
+     const wonPts=Number.isInteger(f.surrenderedId)?0:dominationPoints(fightUsed(f)),lostPts=Number.isInteger(f.surrenderedId)?0:tournamentLoserPoints(fightUsed(f));
+     // Cada juego suma lo mismo en positivo y negativo, incluso en evaluación protegida.
+     stats[f.winnerId].gameWins++;stats[f.winnerId].dom+=wonPts;
+     stats[loser].gameLosses++;stats[loser].dom+=lostPts;
+     if(Number.isInteger(f.surrenderedId)||m.a>=need||m.b>=need){
+      m.done=true;m.winner=Number.isInteger(f.surrenderedId)?f.winnerId:(m.a>=need?p1:p2);
+      if(m.guestId===undefined){stats[m.winner].matchWins++;stats[m.winner===p1?p2:p1].matchLosses++}
+      else if(m.winner===m.guestId)stats[m.guestId].matchWins++;
+      else stats[m.guestId].matchLosses++;
+     }
+    }
+   }
+   byKey.set(m.key,m);matches.push(m);stageMatches.push(m);
+  }
+  stages.push({...st,matches:stageMatches,done:stageMatches.every(m=>m.done)});
+ }
+ const active=stages.at(-1),last=stages.find(st=>st.kind==='bracket'&&st.round===Math.log2(plan.bracket)-1);
+ const final=last?.matches[0]||null,winner=final?.done?final.winner:null;
+ return {stats,stages,active,matches,plan,byKey,winner,runnerup:winner===null?null:(final.p1===winner?final.p2:final.p1),qualified:tour.qualified||[]};
+}
+function scoreTournament(id,stats){return {wins:stats[id]?.gameWins||0,dom:stats[id]?.dom||0}}
+function borderRanking(ids,seats,score){
+ const ranked=[...ids].sort((a,b)=>score(b).wins-score(a).wins||score(b).dom-score(a).dom||a-b);
+ if(seats<=0)return {chosen:[],border:[],missing:0};
+ if(seats>=ranked.length)return {chosen:ranked,border:[],missing:0};
+ const cutoff=score(ranked[seats-1]),ahead=ranked.filter(id=>score(id).wins>cutoff.wins||(score(id).wins===cutoff.wins&&score(id).dom>cutoff.dom));
+ const tied=ranked.filter(id=>score(id).wins===cutoff.wins&&score(id).dom===cutoff.dom);
+ const need=seats-ahead.length;
+ return tied.length===need?{chosen:[...ahead,...tied],border:[],missing:0}:{chosen:ahead,border:tied,missing:need};
+}
+function qualifyOutcome(e,t){
+ const stage=t.stages[0],plan=t.plan;
+ if(stage?.kind!=='qualifying'||!stage.done)return null;
+ const qualified=stage.matches.filter(m=>m.guestId===undefined).map(m=>m.winner);
+ const evalMatch=stage.matches.find(m=>m.guestId!==undefined);
+ if(evalMatch&&evalMatch.winner===evalMatch.guestId)qualified.push(evalMatch.guestId);
+ const rejected=e.players.map(p=>p.id).filter(id=>!qualified.includes(id));
+ const need=plan.bracket-qualified.length;
+ const rank=borderRanking(rejected,need,id=>scoreTournament(id,t.stats));
+ return {qualified,rejected,need,rank};
+}
+function tieOutcome(e,t){
+ const ctx=e.tour.tieContext;if(!ctx)return null;
+ const stage=t.active;if(!stage||stage.kind!=='tiebreak'||!stage.done)return null;
+ const scores=Object.fromEntries(ctx.tied.map(id=>[id,{wins:0,dom:0}]));
+ for(const m of stage.matches){
+  if(!m.done)continue;
+  for(const f of e.fights.filter(f=>f.match===m.key)){
+   const loser=f.winnerId===m.p1?m.p2:m.p1;
+   scores[f.winnerId].wins++;
+   scores[f.winnerId].dom+=Number.isInteger(f.surrenderedId)?0:dominationPoints(fightUsed(f));
+   scores[loser].dom+=Number.isInteger(f.surrenderedId)?0:tournamentLoserPoints(fightUsed(f));
+  }
+ }
+ const selected=[],remaining=[...ctx.tied],manual=e.tour.manualSelections||[];
+ while(selected.length<ctx.seats){
+  const cut=borderRanking(remaining,ctx.seats-selected.length,id=>scores[id]);
+  selected.push(...cut.chosen);for(const id of cut.chosen){const ix=remaining.indexOf(id);if(ix>=0)remaining.splice(ix,1)}
+  if(!cut.border.length)break;
+  const chosen=manual.find(id=>cut.border.includes(id)&&!selected.includes(id));
+  if(chosen===undefined)return {complete:false,score:scores,selected,choices:cut.border,missing:cut.missing};
+  selected.push(chosen);remaining.splice(remaining.indexOf(chosen),1);
+ }
+ return {complete:true,score:scores,selected,choices:[],missing:0};
+}
+function tournamentNext(e,t){
+ const st=t.active;
+ if(!st||!st.done||t.winner!==null)return null;
+ if(st.kind==='qualifying')return {label:'Procesar clasificación y generar siguiente etapa'};
+ if(st.kind==='tiebreak'){
+  const outcome=tieOutcome(e,t);
+  return outcome?.complete?{label:'Confirmar clasificados y crear la siguiente ronda'}:null;
+ }
+ return {label:'Procesar siguiente ronda'};
+}
+function openBracketFromQualified(e,t,ids){
+ const unique=[...new Set(ids)];if(unique.length!==t.plan.bracket)throw Error('La ronda no tiene el número correcto de clasificados.');
+ const ranked=unique.sort((a,b)=>t.stats[b].gameWins-t.stats[a].gameWins||t.stats[b].dom-t.stats[a].dom||a-b);
+ const positions=seedOrder(t.plan.bracket).map(rank=>ranked[rank-1]);
+ e.tour.qualified=ranked;
+ e.tour.stages.push(makeRound(e,0,positions));
+}
+// Resultados de UNA etapa, con dominio positivo/negativo de cada lado.
+function stageTournamentStats(e,st){
+ const map=new Map(),games=new Map();
+ const ensure=id=>{if(Number.isInteger(id)&&!map.has(id))map.set(id,{id,wins:0,losses:0,dom:0});};
+ for(const m of st.matches){
+  ensure(m.p1);ensure(m.p2);
+  const logs=e.fights.filter(f=>f.match===m.key);
+  for(const f of logs){
+   if(f.winnerId!==m.p1&&f.winnerId!==m.p2)continue;
+   const loser=f.winnerId===m.p1?m.p2:m.p1;
+   const winpts=Number.isInteger(f.surrenderedId)?0:dominationPoints(fightUsed(f)),losepts=Number.isInteger(f.surrenderedId)?0:tournamentLoserPoints(fightUsed(f));
+   // Ambos acumulan puntuación simétrica; el pase del jugador protegido no se pierde.
+   ensure(f.winnerId);ensure(loser);
+   map.get(f.winnerId).wins++;map.get(f.winnerId).dom+=winpts;
+   map.get(loser).losses++;map.get(loser).dom+=losepts;
+  }
+ }
+ return map;
+}
+function tournamentStageReport(e,t,st,context){
+ const scores=stageTournamentStats(e,st), direct=new Set(),chosen=new Set(),border=new Set(),manual=new Set();
+ const notes=new Map();
+ if(st.kind==='qualifying'){
+  for(const id of context.qualified){direct.add(id);notes.set(id,'Clasificación directa · ganó su serie o evaluación protegida')}
+  for(const id of context.rank.chosen){chosen.add(id);notes.set(id,'Clasificación por tabla · mejores wins y dominio neto')}
+  for(const id of context.rank.border){border.add(id);notes.set(id,'Repechaje · empate exacto en la plaza disponible')}
+ }else if(st.kind==='tiebreak'){
+  for(const id of context.selected){chosen.add(id);notes.set(id,'Clasificado por repechaje · wins y dominio')}
+  for(const id of e.tour.manualSelections||[]){manual.add(id);notes.set(id,'Clasificado por decisión manual · empate persistente')}
+ }else{
+  for(const m of st.matches){if(!m.done)continue;direct.add(m.winner);notes.set(m.winner,st.round===Math.log2(t.plan.bracket)-1?'Campeón del torneo · ganó la final':'Clasificación directa · ganó la serie')}
+ }
+ const ids=[...scores.keys()],rows=ids.map(id=>{
+  const v=scores.get(id);
+  const state=manual.has(id)?'manual':direct.has(id)?'direct':chosen.has(id)?'ranking':border.has(id)?'tie':'out';
+  const fallback=st.kind==='tiebreak'?'Eliminado en repechaje':st.kind==='qualifying'?'Eliminado · menor puntuación de la tabla':'Eliminado · perdió la serie';
+  return {...v,state,reason:notes.get(id)||fallback};
+ });
+ const weight={direct:0,ranking:1,manual:1,tie:2,out:3};
+ rows.sort((a,b)=>weight[a.state]-weight[b.state]||b.wins-a.wins||b.dom-a.dom||a.id-b.id);
+ return {at:now(),rows,source:st.kind};
+}
+function classificationPanel(e,st,latest=false){
+ const rep=st.classification;if(!rep)return '';
+ const open=latest?' open':'';
+ const line=row=>`<tr class="status-${row.state}"><td>${esc(nameOf(row.id))}</td><td class="num">${row.wins}</td><td class="num">${row.losses}</td><td class="num"><strong class="${row.dom<0?'netNegative':row.dom>0?'netPositive':''}">${signedPoints(row.dom)}</strong></td><td>${esc(row.reason)}</td></tr>`;
+ return `<details class="roundClassification ${latest?'recentClassification':''}"${open}><summary>📋 Tabla de clasificación · ${esc(st.label)} · ${rep.rows.filter(r=>r.state==='direct').length} directos · ${rep.rows.filter(r=>r.state==='ranking'||r.state==='manual').length} por tabla/desempate · ${rep.rows.filter(r=>r.state==='tie').length} a repechaje</summary><div class="tablewrap"><table class="table"><thead><tr><th>Jugador</th><th class="num">Wins</th><th class="num">Derrotas</th><th class="num">Dominio neto</th><th>Resultado y motivo</th></tr></thead><tbody>${rep.rows.map(line).join('')}</tbody></table></div><p class="muted small">Puntuación solo de esta etapa. El pase directo corresponde a ganar una serie; las plazas restantes se asignan primero por wins y después por dominio neto. Solo los empatados exactamente en la última plaza disputan repechaje.</p></details>`;
+}
+function tournamentClassificationReports(e,t){
+ const list=t.stages.map(st=>(!st.classification&&st.done&&t.winner!==null&&st===t.active)?{...st,classification:tournamentStageReport(e,t,st)}:st);
+ const latest=list.reduce((pos,st,i)=>st.classification?i:pos,-1);
+ return list.map((st,i)=>classificationPanel(e,st,i===latest)).join('');
+}
+function processTournament(){
+ const e=eventData;if(e?.type!=='tournament')return;
+ const t=calcTournament(e),st=t.active;
+ if(!st?.done)throw Error('Registra todos los resultados de esta etapa antes de continuar.');
+ if(t.winner!==null)return notify('El torneo ya tiene campeón.');
+ const prior=JSON.parse(JSON.stringify(e.tour));
+ if(st.kind==='qualifying'){
+  const out=qualifyOutcome(e,t);if(!out)throw Error('Aún faltan clasificatorias.');
+  e.tour.stages[e.tour.stages.length-1].classification=tournamentStageReport(e,t,st,out);
+  if(out.rank.border.length){
+   const ties=out.rank.border,ms=[];
+   for(let i=0;i<ties.length;i++)for(let j=i+1;j<ties.length;j++)ms.push({key:`tb_${Math.min(ties[i],ties[j])}_${Math.max(ties[i],ties[j])}`,p1:ties[i],p2:ties[j],best:1,phase:'Repechaje · un solo juego'});
+   e.tour.tieContext={locked:[...out.qualified,...out.rank.chosen],tied:ties,seats:out.rank.missing};
+   e.tour.manualSelections=[];
+   e.tour.stages.push({key:'tb',kind:'tiebreak',label:'Repechaje · plazas pendientes',matches:ms});
+  }else openBracketFromQualified(e,t,[...out.qualified,...out.rank.chosen]);
+ }else if(st.kind==='tiebreak'){
+  const out=tieOutcome(e,t);if(!out?.complete)throw Error('Falta resolver un empate del repechaje.');
+  e.tour.stages[e.tour.stages.length-1].classification=tournamentStageReport(e,t,st,out);
+  const qual=[...e.tour.tieContext.locked,...out.selected];
+  openBracketFromQualified(e,t,qual);
+ }else if(st.kind==='bracket'){
+  const r=st.round,total=Math.log2(t.plan.bracket);
+  if(r>=total-1)return notify('El torneo ya terminó.');
+  const winners=st.matches.map(m=>m.winner);
+  e.tour.stages[e.tour.stages.length-1].classification=tournamentStageReport(e,t,st);
+  e.tour.stages.push(makeRound(e,r+1,winners));
+ }else throw Error('Etapa desconocida.');
+ e.actions??=[];e.actions.push({kind:'advance',before:prior,stage:st.label,at:now()});
+ save();render();notify('Etapa procesada. Se conservaron los resultados anteriores.');
+}
+function matchCard(e,m){
+ const correction=(e.corrections||[]).filter(c=>c.match===m.key).length,protectedGame=m.guestId!==undefined;
+ const side=(id,score,first)=>`<div class="side ${m.winner===id&&m.done?'champ':''}"><div class="sidename">${id===null?'Esperando al ganador anterior':esc(nameOf(id))}${protectedGame&&id===m.protectedId?` <span class="pill good">Pase protegido</span>`:''}</div>${id!==null?`<span class="score">${score}</span>`:''}${m.ready&&!m.done&&id!==null?`<div class="miniUsed"><label>Personajes usados</label><select id="used-${m.key}-${id}"><option value="">Selecciona…</option><option value="1">1 · +3 pts</option><option value="2">2 · +2 pts</option><option value="3">3 · +1 pt</option></select></div><button class="btn small ${first?'primary':'secondary'}" data-action="game" data-match="${m.key}" data-winner="${id}">Win ${esc(nameOf(id))}</button><button class="btn small surrenderBtn" data-action="surrender" data-match="${m.key}" data-loser="${id}">Rendirse · ${esc(nameOf(id))}</button>`:''}</div>`;
+ const status=m.done?(protectedGame?(m.winner===m.guestId?'Aspirante clasificado':'Aspirante a repechaje'):'Serie terminada'):m.ready?`Primero en ${m.need} wins`:'Esperando al primer ganador';
+ const foot=m.done?(protectedGame?`<strong>${esc(nameOf(m.protectedId))}</strong> conserva su pase. ${m.winner===m.guestId?`<strong>${esc(nameOf(m.guestId))}</strong> también clasifica.`:`<strong>${esc(nameOf(m.guestId))}</strong> podrá buscar un lugar en repechaje.`}`:`Clasifica ${esc(nameOf(m.winner))}`):'';
+ return `<article class="match ${m.done?'finished':''} ${protectedGame?'protectedMatch':''}"><div class="info"><small>${esc(m.phase)}</small><span class="pill ${m.done?'good':''}">${status}</span></div>${protectedGame?`<div class="protectedBanner">🛡 COMBATE PROTEGIDO · Solo ${esc(nameOf(m.guestId))} busca clasificación. El pase del rival está asegurado; los puntos de dominio se suman y restan por igual.</div>`:''}${side(m.p1,m.a,true)}${side(m.p2,m.b,false)}${correction?`<div style="margin:8px 0">${correctionPillForCount(correction)}</div>`:''}${m.done?`<div class="bracketDetails">${foot}</div>`:''}</article>`;
+}
+function correctionPillForCount(n){return `<span class="pill correction">⚠ Modificado ${n} ${n===1?'vez':'veces'}</span>`}
+function renderTournament(e){
+ const t=calcTournament(e),plan=t.plan,done=t.winner!==null,next=tournamentNext(e,t),out=t.active?.kind==='tiebreak'&&t.active.done?tieOutcome(e,t):null;
+ const title=done?'¡TORNEO FINALIZADO!':'Torneo · ronda por ronda';
+ const desc=done?`🏆 ${esc(nameOf(t.winner))} ganó el torneo. Subcampeón: ${esc(nameOf(t.runnerup))}.`:'Cada resultado se registra primero. Solo el botón «Procesar ronda» calcula y abre la etapa siguiente; las anteriores siguen visibles.';
+ const sections=[];
+ const latestReportIndex=t.stages.reduce((pos,st,i)=>st.classification?i:pos,-1);
+ t.stages.forEach((st,i)=>{
+  const current=i===t.stages.length-1;
+  const hint=st.kind==='qualifying'?'Los ganadores clasifican; los eliminados podrán optar a las plazas que falten. Si sobra un jugador, disputa una evaluación protegida contra el primer ganador.':st.kind==='tiebreak'?`Una sola fase de desempate, siempre al mejor de 1. Hay ${e.tour.tieContext?.seats||0} plaza(s) pendientes. Los que no estén empatados en el límite no necesitan repetir.`:'Los ganadores pasan a la siguiente etapa únicamente cuando pulses «Procesar ronda».';
+  sections.push(`<section class="stagerow ${current?'currentStage':'closedStage'}"><div class="stageTitle"><h3>${esc(st.label)} ${current?'<span class="pill good">Etapa actual</span>':'<span class="pill">Etapa anterior</span>'}</h3><span class="pill">${st.matches.length} serie(s) · ${st.done?'Completada':'En juego'}</span></div><p class="muted small">${hint}</p><div class="matches">${st.matches.map(m=>matchCard(e,m)).join('')}</div>${classificationPanel(e,(!st.classification&&current&&done)?{...st,classification:tournamentStageReport(e,t,st)}:st,i===latestReportIndex||(!st.classification&&current&&done))}${current&&st.done&&next?`<div class="processBar"><div><strong>Todos los resultados registrados.</strong><small>Confirma para calcular quién avanza. Esta acción también puede deshacerse.</small></div><button class="btn primary big" data-action="process-round">${esc(next.label)} →</button></div>`:''}</section>`);
+ });
+ if(out&&!out.complete)sections.push(`<section class="card manualPanel"><h3>⚠ Empate después del único repechaje</h3><p>Los candidatos siguen empatados en <strong>wins y puntos de dominio</strong> después de jugar. No habrá otra repetición: resuelvan el boleto por acuerdo y registra tu decisión.</p><div class="btnrow">${out.choices.map(id=>`<button class="btn primary" data-action="manual" data-prefix="repechaje" data-winner="${id}">Clasificar a ${esc(nameOf(id))} · ${out.score[id].wins} wins / ${out.score[id].dom} pts</button>`).join('')}</div><p class="muted small">Plazas pendientes: ${out.missing}. Cada decisión manual queda registrada.</p></section>`);
+ if(t.active?.done&&!next&&!done&&(!out||out.complete===false))sections.push(`<div class="note warning">Primero resuelve el empate indicado para poder procesar la siguiente ronda.</div>`);
+ const totals=`<div class="kpis"><div class="kpi"><span class="label">Participantes</span><div class="val">${e.players.length}</div></div><div class="kpi"><span class="label">Juegos registrados</span><div class="val">${e.fights.length}</div></div><div class="kpi"><span class="label">Mínimo de juegos</span><div class="val">${plan.minWithSurrender}</div><div class="desc">Con rendiciones · sin rendiciones: ${plan.min}</div></div><div class="kpi"><span class="label">Máximo de juegos</span><div class="val">${plan.max}</div><div class="desc">Incluye un solo repechaje de corte</div></div></div>`;
+ const champdom=done?(()=>{const id=t.winner;let other=0,earned=0;for(const f of e.fights){const m=t.byKey.get(f.match);if(!m||![m.p1,m.p2].includes(id)||m.guestId!==undefined)continue;if(f.winnerId===id)earned+=(Number.isInteger(f.surrenderedId)?0:dominationPoints(fightUsed(f)));else other+=(Number.isInteger(f.surrenderedId)?0:dominationPoints(fightUsed(f)))}return `<section class="card"><h3>Dominio del campeón: ${esc(nameOf(id))}</h3>${dominanceSplit(earned,other,nameOf(id),'Rivales')}<p class="muted small">Saldo neto del campeón en todas las etapas: ${signedPoints(t.stats[id].dom)} puntos (incluye derrotas).</p></section>`})():'';
+ return hero('Torneo · Evento activo',title,desc)+eventHeader()+totals+`<div class="note">${plan.series} series previstas · <strong>mínimo ${plan.minWithSurrender} (con rendiciones), ${plan.min} sin rendiciones; máximo ${plan.max} juegos</strong>. Se cuentan todos los juegos de las series y, como máximo, una fase BO1 de repechaje. Los pases no se conceden por ausencia: todos disputan una serie.</div>${auditNotice(e)}${sections.join('')}${done?`<div class="note"><strong>🏆 Campeón: ${esc(nameOf(t.winner))}</strong></div>`:''}${(e.actions||[]).filter(a=>a.kind==='manual').length?`<div class="note">Clasificaciones manuales: ${(e.actions||[]).filter(a=>a.kind==='manual').map(a=>esc(nameOf(a.winnerId))).join(', ')}</div>`:''}${champdom}${(e.corrections||[]).length?correctionsTable(e):''}<section class="card"><h3>Criterios de clasificación</h3><p>1.º Wins de juegos. 2.º Dominio NETO: si el ganador usa 1 personaje, recibe +3 y el perdedor −3; si usa 2, +2 y −2; si usa 3, +1 y −1. Rendición: dominio 0 para ambos. 3.º Una sola fase de repechaje BO1 entre los empatados en el límite; si el empate persiste, elección manual documentada. En la evaluación protegida el jugador ya clasificado conserva su pase, pero ambos registran dominio equilibrado.</p></section>`;
+}
+
+function historyCard(e){const last=e.fights.slice(-12).reverse();return `<section class="card"><div class="barhead"><h3>Últimos resultados</h3><span class="pill">${e.fights.length} registros</span></div><div class="history">${last.length?last.map((f,i)=>`<div class="historyrow"><span><span class="muted">#${e.fights.length-i} · </span>${e.type==='tournament'?`<span class="muted">Llave ${esc(f.match)} · </span>`:''}<strong>${esc(nameOf(f.winnerId))}</strong> ganó ${Number.isInteger(f.surrenderedId)?`· Rendición de ${esc(nameOf(f.surrenderedId))} · 0 pts de dominio`:f.used?`· ${fightUsed(f)} personajes usados · ±${dominationPoints(fightUsed(f))} pts`:''} ${correctionPill(e,f.slot??(e.fights.length-1-i))}</span><span class="muted small">${esc(when(f.at))}</span></div>`).join(''):'<div class="empty">Todavía no hay victorias registradas.</div>'}</div></section>`}
+function correctionsTable(e){const items=e.corrections||[];return `<section class="card"><div class="barhead"><h3>Registro permanente de correcciones</h3><span class="pill correction">${items.length}/3</span></div><p class="muted small">Cada entrada registra el resultado anulado, su fecha y el enfrentamiento. No se elimina al cambiar el ganador.</p><div class="tablewrap"><table class="table"><thead><tr><th>#</th><th>Fecha</th><th>Enfrentamiento</th><th>Resultado anulado</th><th>Corrección</th></tr></thead><tbody>${items.length?items.map((a,i)=>`<tr><td>${i+1}</td><td>${esc(when(a.at))}</td><td>${esc(a.match||(typeof a.slot==='number'?'#'+(a.slot+1):String(a.slot)))}</td><td>${a.kind==='advance'?'Avance de etapa anulado':esc((a.surrenderedId!==undefined?'Rendición · ':'')+nameOf(a.winnerId))}</td><td>Modificado ${auditForSlot(e,a.slot)} ${auditForSlot(e,a.slot)===1?'vez':'veces'}</td></tr>`).join(''):'<tr><td colspan="5">Sin correcciones.</td></tr>'}</tbody></table></div></section>`}
+function fightReportTable(e){const name=id=>e.players.find(p=>p.id===id)?.name||'-';const pairs=e.type==='crown'?crownFightPairs(e):[];
+ const heads=['#','Fecha y hora','Enfrentamiento','Ganador','Resultado','Personajes usados','Dominio +/−','Correcciones'];
+ const rows=e.fights.map((f,i)=>[i+1,when(f.at),e.type==='tournament'?f.match:e.type==='crown'?name(pairs[i]?.left)+' vs '+name(pairs[i]?.right):name(0)+' vs '+name(1),name(f.winnerId),Number.isInteger(f.surrenderedId)?'Rendición de '+name(f.surrenderedId):'Combate',Number.isInteger(f.surrenderedId)?'No aplica':f.used?fightUsed(f):'No registrado',Number.isInteger(f.surrenderedId)?'0 / 0':f.used?'+'+dominationPoints(fightUsed(f))+' / '+tournamentLoserPoints(fightUsed(f)):'—',auditForSlot(e,f.slot??i)]);
+ return `<section class="card"><div class="barhead"><h3>Tabla completa de enfrentamientos</h3><span class="pill">${e.fights.length} juegos</span></div><div class="tablewrap"><table class="table"><thead><tr>${heads.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.length?rows.map(row=>`<tr>${row.map(x=>`<td>${esc(x)}</td>`).join('')}</tr>`).join(''):`<tr><td colspan="${heads.length}">Todavía no hay resultados.</td></tr>`}</tbody></table></div></section>`;
+}
+function crownFightPairs(e){let champ=0,challenger=1,side=0;const out=[];for(const f of e.fights){const left=side===0?champ:challenger,right=side===0?challenger:champ;out.push({left,right});if(![champ,challenger].includes(f.winnerId))break;const loser=f.winnerId===champ?challenger:champ;if(f.winnerId!==champ)side=1-side;champ=f.winnerId;const last=challenger;let next=null;for(let j=1;j<=e.players.length;j++){const x=(last+j)%e.players.length;if(x!==champ&&(e.players.length===2||x!==loser)){next=x;break}}if(next===null){for(let j=1;j<=e.players.length;j++){const x=(last+j)%e.players.length;if(x!==champ){next=x;break}}}challenger=next}return out}
+
+function reportRows(e){let stats=[],heads=[],rows=[];
+ if(e.type==='versus'){
+  const v=versusStats(e);heads=['Jugador','Wins','Derrotas','Puntos dominio','% wins'];stats=e.players.map(p=>({id:p.id,name:p.name,wins:v.wins[p.id],losses:e.fights.length-v.wins[p.id],dom:v.dom[p.id]}));rows=stats.map(p=>[p.name,p.wins,p.losses,p.dom,e.fights.length?(100*p.wins/e.fights.length).toFixed(1)+'%':'0%']);
+ }
+ if(e.type==='crown'){
+  const c=calcCrown(e),m=crownMoney(e,c);heads=['Jugador','Wins','Derrotas','Puntos dominio','Coins que paga','Coins que recibe','Neto'];stats=[...c.stats].sort((a,b)=>b.wins-a.wins||b.dom-a.dom||a.losses-b.losses);rows=stats.map(p=>[p.name,p.wins,p.losses,p.dom,m.pays[p.id],m.receives[p.id],m.net[p.id]]);
+ }
+ if(e.type==='tournament'){
+  const t=calcTournament(e);heads=['Jugador','Juegos ganados','Juegos perdidos','Dominio neto','Series ganadas','Series perdidas'];stats=[...t.stats].sort((a,b)=>b.gameWins-a.gameWins||b.dom-a.dom||a.id-b.id);rows=stats.map(p=>[p.name,p.gameWins,p.gameLosses,p.dom,p.matchWins,p.matchLosses]);
+ }
+ return {stats,heads,rows};
+}
+function reportsPage(){
+ if(!eventData)return hero('Reportes','Sin evento activo','Inicia un evento para registrar resultados.');
+ const e=eventData,r=reportRows(e),t=e.type==='tournament'?calcTournament(e):null,c=e.type==='crown'?calcCrown(e):null,v=e.type==='versus'?versusStats(e):null;
+ const done=t?t.winner!==null:c?c.done:v.done;
+ const table=`<section class="card"><h3>Clasificación completa</h3><div class="tablewrap"><table class="table"><thead><tr>${r.heads.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${r.rows.map(row=>`<tr>${row.map(x=>`<td>${esc(x)}</td>`).join('')}</tr>`).join('')}</tbody></table></div></section>`;
+ let dom='';
+ if(e.type==='versus'){dom=`<section class="card"><h3>Barra de dominio · ${done?'Final':'Provisional'}</h3>${dominanceSplit(e.fighterDetails?v.dom[0]:v.wins[0],e.fighterDetails?v.dom[1]:v.wins[1],nameOf(0),nameOf(1))}</section>`}
+ else if(e.type==='crown'){const ranking=[...c.stats].sort((a,b)=>b.dom-a.dom||b.wins-a.wins);dom=`<section class="card"><h3>Dominio por jugador · Mayor a menor</h3>${ranking.map(p=>individualDomBar(p,Math.max(1,...ranking.map(x=>Math.abs(x.dom))))).join('')}</section>`}
+ else if(t?.winner!==null){const id=t.winner;let earned=0,other=0;for(const f of e.fights){const m=t.byKey.get(f.match);if(!m||![m.p1,m.p2].includes(id)||m.guestId!==undefined)continue;if(f.winnerId===id)earned+=(Number.isInteger(f.surrenderedId)?0:dominationPoints(fightUsed(f)));else other+=(Number.isInteger(f.surrenderedId)?0:dominationPoints(fightUsed(f)))}dom=`<section class="card"><h3>Dominio del campeón: ${esc(nameOf(id))}</h3>${dominanceSplit(earned,other,nameOf(id),'Rivales')}<p class="muted small">Dominio neto acumulado: ${signedPoints(t.stats[id].dom)}.</p></section>`}
+ let payments='';if(c){const m=crownMoney(e,c);payments=`<section class="card"><h3>Liquidación de coins · ${done?'Final':'Provisional'}</h3><div class="kpis"><div class="kpi"><span class="label">Pozo</span><div class="val">${fmt(m.pool)}</div></div><div class="kpi"><span class="label">Meta</span><div class="val">${e.target}</div></div><div class="kpi"><span class="label">Wins registrados</span><div class="val">${e.fights.length}</div></div><div class="kpi"><span class="label">Campeón</span><div class="val" style="font-size:17px">${c.done?esc(nameOf(c.crowned)):'Pendiente'}</div></div></div></section>`}
+ return hero('Reportes · Evento actual','Resultados completos','Fecha, clasificación, puntos de dominio, todos los juegos y cambios auditados.')+eventHeader()+`<div class="standout-date"><div><span class="label">Fecha del evento</span><strong>${esc(when(e.createdAt))}</strong></div><div><span class="label">Modo</span><strong>${typeName(e.type)}</strong></div><div><span class="label">Estado</span><strong>${done?'Finalizado':'Abierto'}</strong></div></div><div class="btnrow no-print" style="margin:14px 0"><button class="btn primary" data-action="csv">↓ Descargar reporte CSV</button><button class="btn" data-action="print">⎙ Imprimir / PDF</button><button class="btn" data-nav="${e.type}">Volver al evento</button></div>${payments}${c?settlementCard(e,c):''}<div class="cols" style="margin:16px 0"><div>${table}</div><div>${dom}</div></div>${t?`<section class="card"><h3>Clasificaciones y motivos de avance por ronda</h3><p class="muted small">Consulta cada etapa, incluyendo eliminados, puntos negativos, boletos directos, repechajes y clasificación por tabla.</p>${tournamentClassificationReports(e,t)||'<p>Todavía no se ha procesado una ronda.</p>'}</section>`:''}${fightReportTable(e)}<div style="margin-top:16px">${correctionsTable(e)}</div>`;
+}
+function render(){document.querySelectorAll('[data-nav]').forEach(btn=>btn.classList.toggle('active',btn.dataset.nav===activeTab));if(activeTab==='home')view.innerHTML=renderHome();else if(activeTab==='reports')view.innerHTML=reportsPage();else if(eventData?.type===activeTab){view.innerHTML=activeTab==='versus'?renderPersonales(eventData):activeTab==='crown'?renderCrown(eventData):renderTournament(eventData)}else view.innerHTML=setupPage(activeTab)}
+function recordFight(f){if(!eventData)return;const slot=eventData.fights.length;f.slot=slot;f.corrected=auditForSlot(eventData,slot);eventData.fights.push(f);eventData.actions=eventData.actions||[];eventData.actions.push({kind:'fight',slot});save();render()}
+function chosenUsed(id){const n=Number(val('used-'+id));if(![1,2,3].includes(n))throw Error('Selecciona personajes usados: 1, 2 o 3.');return n}
+function win(winner){if(!eventData)return;const e=eventData;let fight;
+ if(e.type==='versus'){
+  const v=versusStats(e);if(v.done)return notify('Personales finalizado.');if(winner!==0&&winner!==1)return;
+  fight={winnerId:winner,at:now()};if(e.fighterDetails)fight.used=chosenUsed(winner);
+ }else if(e.type==='crown'){
+  const c=calcCrown(e);if(c.done)return notify('La Corona ya tiene campeón.');if(winner!==c.champ&&winner!==c.challenger)return;
+  fight={winnerId:winner,used:chosenUsed(winner),at:now()};
+ }else return;
+ recordFight(fight);
+ if(e.type==='crown'&&calcCrown(e).done)notify('¡Corona conquistada!');else if(e.type==='versus'&&versusStats(e).done)notify('¡Personales terminado!');else notify('Win registrado.');
+}
+function game(match,winner){if(eventData?.type!=='tournament')return;const t=calcTournament(eventData),m=t.matches.find(m=>m.key===match);if(!m||!t.active.matches.some(x=>x.key===match)||!m.ready||m.done||m.p1===null||m.p2===null||![m.p1,m.p2].includes(winner))return;
+ const used=Number(val(`used-${m.key}-${winner}`));if(![1,2,3].includes(used))throw Error('Selecciona 1, 2 o 3 personajes usados.');recordFight({match,winnerId:winner,used,at:now()});const after=calcTournament(eventData);notify(after.winner!==null?'¡Torneo terminado!':`Juego para ${nameOf(winner)} registrado.`);
+}
+function surrender(loser,match){
+ const e=eventData;if(!e||!Number.isInteger(loser))return;
+ let winner=null,fight=null;
+ if(e.type==='versus'){
+  if(versusStats(e).done||![0,1].includes(loser))return;
+  winner=1-loser;
+  fight={winnerId:winner,surrenderedId:loser,used:null,at:now()};
+ }else if(e.type==='crown'){
+  const c=calcCrown(e);if(c.done||![c.champ,c.challenger].includes(loser))return;
+  winner=loser===c.champ?c.challenger:c.champ;
+  fight={winnerId:winner,surrenderedId:loser,used:null,at:now()};
+ }else if(e.type==='tournament'){
+  const t=calcTournament(e),m=t.active?.matches.find(x=>x.key===match);
+  if(!m||!m.ready||m.done||![m.p1,m.p2].includes(loser))return;
+  winner=loser===m.p1?m.p2:m.p1;
+  fight={match,winnerId:winner,surrenderedId:loser,used:null,at:now()};
+ }else return;
+ if(!confirm(`¿Confirmas que ${nameOf(loser)} se RINDE ante ${nameOf(winner)}?\n\n${nameOf(winner)} recibe la victoria, pero AMBOS obtienen 0 puntos de dominio.${e.type==='tournament'?'\nLa serie se dará por terminada y clasificará quien no se rindió.':''}\nEsta acción se puede deshacer (máximo 3 veces por evento).`))return;
+ recordFight(fight);
+ const finished=e.type==='tournament'?calcTournament(e).winner!==null:e.type==='versus'?versusStats(e).done:calcCrown(e).done;
+ notify(finished?'¡Evento finalizado por rendición!':`${nameOf(loser)} se rindió · Win ${nameOf(winner)} · Dominio 0.`);
+}
+function manualAdvance(prefix,winner){
+ if(eventData?.type!=='tournament')return;
+ const e=eventData,t=calcTournament(e),out=tieOutcome(e,t);
+ if(!out||out.complete||!out.choices.includes(winner))return;
+ if(!confirm(`El único repechaje terminó empatado. ¿Confirmas que ${nameOf(winner)} obtiene la plaza por decisión manual?\n\nEste boleto se registra y no cuenta como win.`))return;
+ e.tour.manualSelections.push(winner);
+ e.actions??=[];e.actions.push({kind:'manual',prefix,winnerId:winner,at:now()});
+ save();render();notify(`Decisión de clasificación registrada: ${nameOf(winner)}.`);
+}
+function undo(){
+ if(!eventData)return;
+ const e=eventData,remaining=undoRemaining(e),action=e.actions?.at(-1)||(e.fights.length?{kind:'fight'}:null);
+ if(!action)return;
+ if(!remaining){notify('Límite alcanzado: 3 correcciones por evento.');return}
+ const f=action.kind==='fight'?e.fights.at(-1):null;
+ const desc=f?`${Number.isInteger(f.surrenderedId)?'Rendición de '+nameOf(f.surrenderedId)+' · ':''}Win ${nameOf(f.winnerId)}${f.match?' · '+f.match:''}`:action.kind==='advance'?`Procesamiento de etapa: ${action.stage}`:`Boleto manual para ${nameOf(action.winnerId)}`;
+ if(!confirm(`¿Deseas DESHACER la última acción?\n\n${desc}\n\nSe restaurará el estado anterior y quedará una marca de corrección visible.\n\nQuedarán ${remaining-1} correcciones.`))return;
+ e.corrections??=[];
+ const slot=f?e.fights.length-1:action.kind==='advance'?`etapa_${e.tour.stages.length}`:`manual_${action.prefix}_${(e.tour.manualSelections||[]).length-1}`;
+ e.corrections.push({slot,at:now(),winnerId:f?.winnerId??action.winnerId??null,match:f?.match||(action.kind==='advance'?'Avance de ronda · '+action.stage:'Decisión manual · '+action.prefix),used:f?.used??null,surrenderedId:f?.surrenderedId,reason:'Acción anulada',kind:action.kind});
+ if(action.kind==='manual')e.tour.manualSelections.pop();
+ else if(action.kind==='advance')e.tour=action.before;
+ else e.fights.pop();
+ if(e.actions?.length)e.actions.pop();
+ save();render();notify(`Acción deshecha · ${correctionsUsed(e)}/3 modificaciones registradas.`);
+}
+function deleteEvent(){if(eventData&&!confirm('¿ABANDONAR EL EVENTO ACTUAL?\n\nSe eliminarán sus wins, resultados, historial y correcciones del almacenamiento local. Esta acción no se puede deshacer.\n\nDescarga el reporte CSV antes si quieres conservar una copia.'))return;eventData=null;try{localStorage.removeItem(STORE_KEY)}catch(e){}activeTab='home';render();window.scrollTo({top:0,behavior:'smooth'});notify('Preparado para nuevo evento. Selecciona una modalidad.')}function download(text,filename,mime){const b=new Blob([text],{type:mime}),url=URL.createObjectURL(b),a=document.createElement('a');a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),800)}
+const filename=()=>`Kino_Fighter_${eventData?.type||'evento'}_${new Date().toISOString().slice(0,10)}`;
+function csvField(s){if(typeof s==='number'&&Number.isFinite(s))return String(s);s=String(s??'');if(/^[=+@\-\t\r]/.test(s))s="'"+s;return /[",\r\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s}
+function exportCSV(){if(!eventData)return;const e=eventData,r=reportRows(e),name=id=>e.players.find(p=>p.id===id)?.name||'-',pairs=e.type==='crown'?crownFightPairs(e):[];
+ const rows=[['Kino Fighter — Creado por S'],['Aviso','Coins simbólicas; NO son dinero en efectivo real'],['Modalidad',typeName(e.type)],['Fecha del evento',when(e.createdAt)],['Partidas registradas',e.fights.length],['Correcciones auditadas',correctionsUsed(e)],[],['CLASIFICACIÓN'],r.heads,...r.rows,[],['HISTORIAL COMPLETO'],['#','Fecha','Enfrentamiento','Ganador','Resultado','Personajes usados','Puntos ganador / perdedor','Modificado veces']];
+ e.fights.forEach((f,i)=>rows.push([i+1,when(f.at),e.type==='tournament'?f.match:e.type==='crown'?name(pairs[i]?.left)+' vs '+name(pairs[i]?.right):name(0)+' vs '+name(1),name(f.winnerId),Number.isInteger(f.surrenderedId)?'Rendición de '+name(f.surrenderedId):'Combate',Number.isInteger(f.surrenderedId)?'No aplica':f.used?fightUsed(f):'No registrado',Number.isInteger(f.surrenderedId)?'0 / 0':f.used?'+'+dominationPoints(fightUsed(f))+' / '+tournamentLoserPoints(fightUsed(f)):'-',auditForSlot(e,f.slot??i)]));
+ rows.push([],['REGISTRO DE CORRECCIONES'],['#','Fecha','Enfrentamiento','Resultado anulado','Número de modificaciones en este juego']);
+ (e.corrections||[]).forEach((c,i)=>rows.push([i+1,when(c.at),c.match||'#'+(typeof c.slot==='number'?c.slot+1:c.slot),name(c.winnerId),auditForSlot(e,c.slot)]));
+ if(e.type==='tournament'){const t=calcTournament(e);rows.push([],['ETAPAS EN ORDEN'],['Etapa','Estado','Número de series']);t.stages.forEach(st=>rows.push([st.label,st.done?'Terminada':'Pendiente',st.matches.length]));rows.push([],['CLASIFICACION Y MOTIVOS POR RONDA'],['Ronda','Jugador','Wins ronda','Derrotas ronda','Dominio neto ronda','Clasificación / motivo']);t.stages.forEach(st=>{const report=st.classification||(st.done&&t.winner!==null?tournamentStageReport(e,t,st):null);if(report)report.rows.forEach(p=>rows.push([st.label,name(p.id),p.wins,p.losses,signedPoints(p.dom),p.reason]));});rows.push([],['PLAN DE JUEGOS'],['Mínimo con rendiciones',t.plan.minWithSurrender],['Mínimo sin rendiciones',t.plan.min],['Máximo',t.plan.max],['Desempates posibles',t.plan.tieLimit],[],['DECISIONES MANUALES'],['Fecha','Boleto asignado a','Grupo']);(e.actions||[]).filter(a=>a.kind==='manual').forEach(a=>rows.push([when(a.at),name(a.winnerId),a.prefix]));}
+ download('\ufeff'+rows.map(row=>row.map(csvField).join(',')).join('\r\n'),filename()+'.csv','text/csv;charset=utf-8');notify('Reporte CSV con historial y correcciones descargado.');
+}
+function handleDynamic(el){if(el.id==='playerCount'){captureSetup();if(activeTab==='crown')draft.crownCount=safe(el.value,2,32,4);if(activeTab==='tournament')draft.tournamentCount=safe(el.value,2,32,10);render();return}if(el.id==='stakeMode'){captureSetup();draft.crownMode=el.value;render();return}}
+document.addEventListener('change',e=>{const el=e.target;if(el?.id==='playerCount'||el?.id==='stakeMode')handleDynamic(el)});
+document.addEventListener('click',e=>{const b=e.target.closest('button[data-action],button[data-nav]');if(!b)return;if(b.dataset.nav){nav(b.dataset.nav);return}try{switch(b.dataset.action){case 'create':createEvent(b.dataset.type);break;case 'win':win(Number(b.dataset.winner));break;case 'game':game(b.dataset.match,Number(b.dataset.winner));break;case 'surrender':surrender(Number(b.dataset.loser),b.dataset.match);break;case 'abandon':deleteEvent();break;case 'manual':manualAdvance(b.dataset.prefix,Number(b.dataset.winner));break;case 'process-round':processTournament();break;case 'undo':undo();break;case 'delete':deleteEvent();break;case 'csv':exportCSV();break;case 'print':window.print();break;}}catch(error){alert('Revisa los datos: '+(error.message||error))}});
+
+load();render();
+
+</script>
+</body>
+</html>
