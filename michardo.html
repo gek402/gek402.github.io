@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Michardo y la Tableta para Miss Paty</title>
+<style>
+:root{
+  --bg:#0f1424;--bg2:#1a2340;--panel:#182341;--panel2:#24325a;--line:#6f87bb;--ink:#eef5ff;
+  --gold:#ffd36b;--mint:#73dccd;--rose:#ff9db2;--danger:#ff6f7d;--shadow:#09101f;
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:radial-gradient(circle at top,#26345d 0,#0a1020 60%);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;touch-action:none}
+button{font:inherit;color:inherit;cursor:pointer}
+#app{height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:6px}
+.top{width:min(1120px,100%);display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#b8c7ea;padding:0 4px;letter-spacing:.8px}
+.top b{color:#fff}
+#frame{position:relative;width:min(1120px,100%,calc((100dvh - 104px)*16/9));max-height:calc(100dvh - 104px);aspect-ratio:16/9;border:3px solid #5e71a3;border-radius:18px;overflow:hidden;box-shadow:0 20px 0 #050b17,0 30px 70px #0008;background:#0e1530}
+canvas{display:block;width:100%;height:100%;image-rendering:pixelated}
+#hud{display:none;position:absolute;inset:10px 10px auto 10px;z-index:2;justify-content:space-between;align-items:flex-start;pointer-events:none}
+.panel{background:#0e1934eb;border:2px solid #6f87bb;border-radius:12px;padding:8px 12px;box-shadow:0 4px 0 #071022;font-size:14px;font-weight:900;text-shadow:1px 2px 0 #0007}
+#hudLeft span{color:#ffd77e}
+#hudRight span{color:#8ff1de}
+#overlay{position:absolute;inset:0;z-index:10;background:linear-gradient(135deg,#091225dd,#151b38cc);display:flex;align-items:center;justify-content:center;padding:18px}
+#overlay.hidden{display:none}
+.card{width:min(760px,95%);max-height:100%;overflow:auto;padding:22px;border:3px solid #8bb2d9;border-radius:22px;background:linear-gradient(180deg,#243a64,#15223f);box-shadow:0 12px 0 #0a1021,0 22px 60px #0009;text-align:center}
+.badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#0e1d39;border:1px solid #526ea8;color:#8feadb;font-weight:800;letter-spacing:1.5px;font-size:11px;text-transform:uppercase}
+h1{margin:12px 0 8px;font-size:clamp(28px,5vw,48px);line-height:1.02;color:#ffdf8e;text-shadow:3px 4px 0 #814a71}
+h2{margin:10px 0;font-size:clamp(22px,3.4vw,32px);color:#ffdd8c}
+p{margin:10px auto;max-width:640px;line-height:1.55;font-size:clamp(13px,1.8vw,17px)}
+.hero{font-size:clamp(50px,8vw,90px);line-height:1;filter:drop-shadow(0 8px 0 #071022)}
+.row{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:16px}
+.btn{border:2px solid #fce0a1;background:linear-gradient(#ffd77d,#eeaa63);color:#27334d;font-weight:900;border-radius:12px;padding:11px 18px;box-shadow:0 5px 0 #9e6648;min-height:44px}
+.btn.secondary{background:linear-gradient(#36517e,#23365a);border-color:#7da0ce;color:#ecf6ff;box-shadow:0 5px 0 #132340}
+.btn:active{transform:translateY(2px);box-shadow:0 3px 0 #132340}
+#dialog{display:none;position:absolute;left:4%;right:4%;bottom:4%;z-index:6;background:#101b33f6;border:3px solid #ffda8f;border-radius:14px;padding:14px 18px;box-shadow:0 6px 0 #071022}
+#speaker{font-size:14px;font-weight:900;color:#ffd97e}
+#dialogText{margin-top:6px;font-size:clamp(12px,1.8vw,18px);line-height:1.48;min-height:44px}
+#dialogHint{text-align:right;color:#acbddf;font-size:11px;margin-top:4px}
+.controls{width:min(1120px,100%);display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:56px}
+.group{display:flex;gap:8px}
+.ctrl{min-width:52px;min-height:48px;border-radius:12px;border:2px solid #6e87bd;background:linear-gradient(#354f7f,#1c2a4e);box-shadow:0 4px 0 #0b1630;font-size:20px;font-weight:900;user-select:none}
+.ctrl.small{font-size:12px;min-width:74px}
+.ctrl:active,.ctrl.active{transform:translateY(2px);box-shadow:0 2px 0 #0b1630;background:linear-gradient(#4a6b95,#223458)}
+.footer{font-size:11px;color:#99aad0;text-align:center}
+.note{font-size:12px;color:#bcd0f1}
+.list{display:grid;gap:8px;text-align:left;max-width:620px;margin:14px auto 0}
+.list div{background:#10203f;border:1px solid #536fa6;border-radius:10px;padding:10px 12px}
+.optionGrid{display:grid;gap:10px;max-width:620px;margin:14px auto 0}
+.optionBtn{text-align:left;border:2px solid #7599c5;background:#193050;border-radius:12px;padding:12px;font-weight:800;color:#eef6ff}
+.optionBtn:hover{background:#213d68}
+@media(max-width:680px){.top{font-size:9px}.ctrl{min-width:46px;min-height:44px}.ctrl.small{min-width:64px;font-size:11px}.footer{font-size:10px}.card{padding:14px}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="top"><div>🎮 <b>COLEGIO ANGLO MEXIQUENSE</b> · Aventura TICs</div><div>PILOTO JAVASCRIPT · Michardo</div></div>
+  <div id="frame">
+    <canvas id="game" width="960" height="540"></canvas>
+    <div id="hud"><div class="panel" id="hudLeft"></div><div class="panel" id="hudRight"></div></div>
+    <div id="overlay"><div class="card" id="overlayCard"></div></div>
+    <div id="dialog"><div id="speaker"></div><div id="dialogText"></div><div id="dialogHint">E / ENTER / TOCAR PARA CONTINUAR ▸</div></div>
+  </div>
+  <div class="controls">
+    <div class="group">
+      <button class="ctrl" data-key="left">◀</button>
+      <button class="ctrl" data-key="right">▶</button>
+    </div>
+    <div class="group">
+      <button class="ctrl small" data-key="throw">LANZAR</button>
+      <button class="ctrl small" data-key="interact">HABLAR</button>
+      <button class="ctrl" data-key="jump">⬆</button>
+      <button class="ctrl small" data-key="pause">PAUSA</button>
+    </div>
+  </div>
+  <div class="footer">A / D o flechas para moverte · ESPACIO para saltar · F/X para lanzar pescadito · E para interactuar · P para pausa</div>
+</div>
+<script>
+(()=>{
+'use strict';
+const canvas=document.getElementById('game');
+const ctx=canvas.getContext('2d'); ctx.imageSmoothingEnabled=false;
+const W=canvas.width, H=canvas.height;
+const $=id=>document.getElementById(id);
+const overlay=$('overlay'), overlayCard=$('overlayCard'), dialogBox=$('dialog');
+const hud=$('hud'), hudLeft=$('hudLeft'), hudRight=$('hudRight');
+const speakerEl=$('speaker'), dialogTextEl=$('dialogText');
+
+const keys={left:false,right:false,jump:false,throw:false,interact:false};
+let state='menu';
+let levelIndex=0;
+let lastTime=0;
+let camX=0;
+let gameTime=0;
+let score=0;
+let hearts=4;
+let maxHearts=4;
+let fishAmmo=0;
+let rescued=0;
+let dialogQueue=[];
+let dialogPos=0;
+let onDialogEnd=null;
+let activeQuestion=null;
+let levelCompletePending=false;
+let particles=[];
+let projectiles=[];
+let hero;
+let jumpLatch=false;
+let throwLatch=false;
+let invuln=0;
+let musicMuted=false;
+let stars=Array.from({length:80},(_,i)=>({x:(i*113)%W,y:(i*47)%H,s:(i%3)+1}));
+
+const gravity=1650;
+const levelTitles=[
+  '1. Patio del Colegio',
+  '2. Calle de los Murales',
+  '3. Parque de las Brochas',
+  '4. Puente de los Cables',
+  '5. Plaza Pixel',
+  '6. Mirador de la Ciudad'
+];
+
+const levelData=[
+  {
+    width:2050,bg:'school',theme:'#73dccd',goalText:'Recoge 5 moñitos y llega a la salida.',
+    platforms:[
+      [0,500,2050,40],[220,430,160,18],[470,385,130,18],[680,340,140,18],[920,395,160,18],[1180,350,150,18],[1460,310,180,18],[1720,390,180,18]
+    ],
+    spikes:[ [610,500,60],[1090,500,50],[1638,500,42] ],
+    collectibles:[
+      {x:285,y:390,type:'bow'},{x:530,y:345,type:'bow'},{x:740,y:300,type:'fish'},{x:1230,y:310,type:'bow'},{x:1520,y:270,type:'fish'},{x:1790,y:350,type:'bow'}
+    ],
+    npcs:[
+      {x:100,y:452,type:'student',name:'Alumnos',dialog:[
+        'Michardo, Miss Paty olvidó su tableta en el colegio y salió a una reunión por la ciudad.',
+        'La amarramos con mucho cuidado para que tú se la lleves. ¡Sabemos que podrás encontrarla!'
+      ]},
+      {x:830,y:292,type:'student',name:'Sofi',dialog:['¡Busca los moñitos brillantes! Son señales del camino correcto.']}
+    ],
+    enemies:[
+      {x:1010,y:468,min:960,max:1070,type:'bug'},{x:1550,y:278,min:1475,max:1610,type:'bug'}
+    ],
+    gate:{x:1930,y:458},
+    question:{asker:'Alumnos del colegio', prompt:'¿Qué dispositivo permite dibujar directamente con un dedo o lápiz digital?', options:['Una tableta', 'Una bocina', 'Un cable de corriente'], answer:0, ok:'¡Correcto! Una tableta es útil para dibujar, aprender y crear.', fail:'No pasa nada: observa las opciones e inténtalo otra vez.'}
+  },
+  {
+    width:2300,bg:'street',theme:'#ffd36b',goalText:'Usa pescaditos para despejar el camino.',
+    platforms:[
+      [0,500,2300,40],[220,440,160,18],[420,380,130,18],[670,430,160,18],[890,350,160,18],[1140,290,160,18],[1390,350,150,18],[1640,410,170,18],[1900,330,180,18]
+    ],
+    spikes:[[590,500,56],[1070,500,56],[1550,500,56],[2140,500,56]],
+    collectibles:[
+      {x:270,y:400,type:'fish'},{x:470,y:340,type:'fish'},{x:720,y:390,type:'bow'},{x:940,y:310,type:'fish'},{x:1190,y:250,type:'fish'},{x:1690,y:370,type:'bow'},{x:1980,y:290,type:'fish'}
+    ],
+    npcs:[
+      {x:300,y:392,type:'bird',name:'Tilo',dialog:['¡Prrri! Los pescaditos sirven para ahuyentar bichitos digitales. Presiona F para lanzarlos.']},
+      {x:1730,y:362,type:'student',name:'Emi',dialog:['Miss Paty fue hacia la zona del puente. ¡Vas súper bien, Michardo!']}
+    ],
+    enemies:[
+      {x:780,y:398,min:720,max:810,type:'bug'}, {x:1240,y:258,min:1160,max:1280,type:'drone'}, {x:1970,y:298,min:1920,max:2030,type:'bug'}
+    ],
+    gate:{x:2210,y:458},
+    question:{
+      asker:'Tilo', prompt:'Antes de pasar: ¿qué dispositivo te permite mover el cursor?',
+      options:['Pantalla','Ratón / mouse','Bocina'], answer:1,
+      ok:'¡Correcto! El ratón ayuda a mover el cursor.', fail:'Casi... piensa en el accesorio que se mueve con la mano.'
+    }
+  },
+  {
+    width:2400,bg:'park',theme:'#ff9db2',goalText:'Explora el parque y habla con los amigos de Michardo.',
+    platforms:[
+      [0,500,2400,40],[180,420,140,18],[410,360,140,18],[610,300,140,18],[850,360,140,18],[1080,420,180,18],[1320,340,170,18],[1600,280,180,18],[1880,350,170,18],[2130,290,150,18]
+    ],
+    spikes:[[550,500,48],[785,500,48],[1530,500,52],[2050,500,52]],
+    collectibles:[
+      {x:225,y:380,type:'bow'},{x:460,y:320,type:'fish'},{x:660,y:260,type:'fish'},{x:900,y:320,type:'bow'},{x:1380,y:300,type:'heart'},{x:1660,y:240,type:'fish'},{x:1945,y:310,type:'bow'},{x:2190,y:250,type:'fish'}
+    ],
+    npcs:[
+      {x:1140,y:382,type:'cat',name:'Misha',dialog:['Mrrr... si vas al centro de la ciudad, toma el camino alto. Ahí hay menos tráfico digital.']},
+      {x:1730,y:242,type:'student',name:'Gael',dialog:['Qué bonito vas, Michardo. Miss Paty siempre dice que la tecnología sirve mejor cuando la usamos con creatividad.']}
+    ],
+    enemies:[
+      {x:710,y:268,min:640,max:760,type:'drone'},{x:1430,y:308,min:1360,max:1480,type:'bug'},{x:2010,y:318,min:1920,max:2065,type:'bug'}
+    ],
+    gate:{x:2290,y:458},
+    question:{asker:'Misha, la gatita', prompt:'¿Qué mezcla de luz forma el color amarillo en una pantalla RGB?', options:['Azul y rojo', 'Rojo y verde', 'Azul y verde'], answer:1, ok:'¡Muy bien! En RGB, rojo y verde producen amarillo.', fail:'No pasa nada: observa las opciones e inténtalo otra vez.'}
+  },
+  {
+    width:2520,bg:'bridge',theme:'#8db5ff',goalText:'Cruza el puente y responde bien para abrir la barrera.',
+    platforms:[
+      [0,500,2520,40],[220,435,150,18],[450,370,150,18],[720,320,160,18],[980,380,170,18],[1270,330,150,18],[1500,260,160,18],[1780,320,160,18],[2050,250,170,18],[2280,350,130,18]
+    ],
+    spikes:[[390,500,50],[905,500,52],[1460,500,52],[1705,500,52],[2230,500,44]],
+    collectibles:[
+      {x:275,y:395,type:'fish'},{x:505,y:330,type:'bow'},{x:775,y:280,type:'fish'},{x:1040,y:340,type:'fish'},{x:1320,y:290,type:'bow'},{x:1555,y:220,type:'fish'},{x:1835,y:280,type:'heart'},{x:2110,y:210,type:'fish'}
+    ],
+    npcs:[
+      {x:118,y:452,type:'student',name:'Nora',dialog:['Aquí la barrera del puente sólo se abre si contestas una pregunta de TICs. ¡Tú puedes!']},
+      {x:1580,y:202,type:'bird',name:'Tilo',dialog:['No olvides saltar con calma. Este nivel ya es más serio, prrri.']}
+    ],
+    enemies:[
+      {x:625,y:468,min:560,max:690,type:'bug'},{x:1100,y:348,min:1030,max:1140,type:'drone'},{x:1880,y:288,min:1810,max:1940,type:'drone'},{x:2320,y:318,min:2300,max:2390,type:'bug'}
+    ],
+    gate:{x:2440,y:458},
+    question:{
+      asker:'Barrera inteligente', prompt:'¿Qué significa TICs en la escuela?',
+      options:['Tecnología, Innovación y Colores','Tecnologías de la Información y la Comunicación','Tarjetas Interactivas de Cómputo'], answer:1,
+      ok:'¡Exacto! Así se abre la barrera.', fail:'No aún. Piensa en el nombre real de la materia.'
+    }
+  },
+  {
+    width:2750,bg:'plaza',theme:'#8fe6a1',goalText:'La plaza tiene más obstáculos. Administra tus pescaditos.',
+    platforms:[
+      [0,500,2750,40],[170,430,140,18],[390,370,120,18],[610,430,160,18],[840,350,150,18],[1080,280,130,18],[1280,360,150,18],[1510,300,150,18],[1735,380,150,18],[1970,315,150,18],[2210,250,150,18],[2450,330,160,18]
+    ],
+    spikes:[[530,500,50],[780,500,52],[1005,500,52],[1450,500,52],[1910,500,56],[2375,500,56]],
+    collectibles:[
+      {x:220,y:390,type:'fish'},{x:435,y:330,type:'fish'},{x:665,y:390,type:'bow'},{x:890,y:310,type:'fish'},{x:1120,y:240,type:'fish'},{x:1325,y:320,type:'bow'},{x:1560,y:260,type:'fish'},{x:1785,y:340,type:'heart'},{x:2015,y:275,type:'fish'},{x:2480,y:290,type:'fish'}
+    ],
+    npcs:[
+      {x:900,y:312,type:'student',name:'Lina',dialog:['Te acercas mucho, Michardo. Miss Paty está en la parte alta de la ciudad, cerca del mirador.']},
+      {x:2520,y:292,type:'cat',name:'Don Bigotes',dialog:['La última subida será dura. Lleva suficientes pescaditos y no corras sin mirar.']}
+    ],
+    enemies:[
+      {x:320,y:398,min:250,max:350,type:'bug'},{x:730,y:398,min:640,max:760,type:'bug'},{x:1180,y:248,min:1090,max:1200,type:'drone'},{x:1630,y:268,min:1540,max:1650,type:'drone'},{x:2080,y:283,min:1990,max:2100,type:'bug'},{x:2550,y:298,min:2470,max:2580,type:'drone'}
+    ],
+    gate:{x:2675,y:458},
+    question:{asker:'Don Bigotes', prompt:'¿Qué herramienta usarías para pintar una imagen por píxeles?', options:['Un editor de dibujo digital', 'Una calculadora', 'Un reproductor de audio'], answer:0, ok:'¡Exacto! Los editores de dibujo permiten trabajar con píxeles.', fail:'No pasa nada: observa las opciones e inténtalo otra vez.'}
+  },
+  {
+    width:2840,bg:'city',theme:'#ffc17d',goalText:'Encuentra a Miss Paty y entrégale la tableta.',
+    platforms:[
+      [0,500,2840,40],[230,430,150,18],[470,370,140,18],[730,315,150,18],[990,380,170,18],[1250,315,150,18],[1510,255,150,18],[1770,330,160,18],[2040,270,160,18],[2320,340,150,18],[2540,270,150,18]
+    ],
+    spikes:[[400,500,48],[650,500,48],[920,500,48],[1480,500,52],[1980,500,52],[2485,500,52]],
+    collectibles:[
+      {x:285,y:390,type:'fish'},{x:520,y:330,type:'fish'},{x:780,y:275,type:'bow'},{x:1045,y:340,type:'fish'},{x:1305,y:275,type:'bow'},{x:1565,y:215,type:'fish'},{x:1830,y:290,type:'fish'},{x:2090,y:230,type:'heart'},{x:2365,y:300,type:'bow'},{x:2590,y:230,type:'fish'}
+    ],
+    npcs:[
+      {x:160,y:452,type:'student',name:'Videollamada',dialog:['Miss Paty está en el mirador. ¡Estamos todos animándote desde el colegio!']},
+      {x:2660,y:212,type:'paty',name:'Miss Paty',dialog:['¡Michardo! ¡Encontraste mi tableta! Gracias, gracias, hermoso gatito.']}
+    ],
+    enemies:[
+      {x:820,y:283,min:750,max:860,type:'drone'},{x:1370,y:283,min:1280,max:1410,type:'bug'},{x:1900,y:298,min:1810,max:1940,type:'drone'},{x:2440,y:308,min:2360,max:2470,type:'bug'}
+    ],
+    gate:{x:2750,y:458},
+    question:{
+      asker:'Miss Paty', prompt:'Última pregunta: ¿para qué sirve mejor la tecnología en la escuela?',
+      options:['Para aprender, crear y comunicarnos','Para asustarnos','Sólo para jugar sin pensar'], answer:0,
+      ok:'¡Muy bien! Ese es justo el espíritu de nuestras clases.', fail:'Piénsalo con calma: buscamos aprender y crear.'
+    },
+    finale:true
+  }
+];
+
+function resetHero(){
+  hero={x:70,y:430,w:34,h:34,vx:0,vy:0,dir:1,ground:false,step:0,hasTablet:true};
+  camX=0; invuln=0; projectiles=[]; particles=[];
+}
+
+function initLevel(index){
+  levelIndex=index;
+  state='play';
+  levelCompletePending=false;
+  resetHero();
+  const lvl=levelData[levelIndex];
+  lvl.npcs.forEach(n=>n.talked=false);
+  lvl.collectibles.forEach(o=>o.taken=false);
+  lvl.enemies.forEach(e=>{e.alive=true;e.v=(e.type==='drone'?85:60)*(Math.random()<.5?-1:1);});
+  if(lvl.question) lvl.question.answered=false;
+  updateHUD();
+  overlay.classList.add('hidden'); hud.style.display='flex';
+  if(index===0){
+    // El juego comienza inmediatamente; los estudiantes hablan automáticamente al acercarse.
+    // No bloquear los controles del jugador tras pulsar Comenzar.
+    notify('¡Encuentra a Miss Paty! Camina con A/D o ←/→.', 4);
+  } else {
+    notify(`${levelTitles[index]} · ${lvl.goalText}`, 4);
+  }
+}
+
+function updateHUD(){
+  hudLeft.innerHTML=`Nivel: <span>${levelIndex+1}/6</span><br>Vida: ${'❤'.repeat(hearts)}${'🖤'.repeat(Math.max(0,maxHearts-hearts))}<br>Puntos: ${score}`;
+  hudRight.innerHTML=`Pescaditos: <span>${fishAmmo}</span><br>Moñitos: <span>${rescued}</span><br>${levelTitles[levelIndex]}`;
+}
+
+function showMenu(){
+  state='menu'; overlay.classList.remove('hidden'); hud.style.display='none'; dialogBox.style.display='none';
+  overlayCard.innerHTML=`
+    <div class="badge">Proyecto piloto · Videojuego educativo</div>
+    <div class="hero">🐈🎀📱</div>
+    <h1>Michardo y la Tableta para Miss Paty</h1>
+    <p><b>Historia:</b> Los alumnos del <b>Colegio Anglo Mexiquense</b> mandan a <b>Michardo</b>, un gatito atigrado muy valiente, a llevar la tableta de <b>Miss Paty</b>, la maestra de TICs, hasta otro punto de la ciudad donde ella se encuentra.</p>
+    <p>El camino tendrá amigos que hablan al acercarse, una pregunta final por nivel, bichitos digitales y retos de plataformas. Michardo podrá recoger <b>pescaditos</b> para lanzarlos y abrirse paso.</p>
+    <div class="row">
+      <button class="btn" id="playBtn">▶ JUGAR (A / D para caminar)</button>
+      <button class="btn secondary" id="controlsBtn">Ver controles</button>
+    </div>
+    <p class="note">6 niveles · Un solo HTML · Hecho con JavaScript puro</p>
+  `;
+  $('playBtn').onclick=()=>showIntro();
+  $('controlsBtn').onclick=()=>showControls();
+}
+
+function showControls(){
+  overlay.classList.remove('hidden');
+  overlayCard.innerHTML=`
+    <div class="badge">Controles y objetivos</div>
+    <h2>¿Cómo se juega?</h2>
+    <div class="list">
+      <div><b>Moverse:</b> A / D o flechas izquierda y derecha.</div>
+      <div><b>Saltar:</b> Espacio o flecha arriba.</div>
+      <div><b>Lanzar pescadito:</b> F o X. Recógelos durante el camino.</div>
+      <div><b>Diálogos:</b> aparecen solos al acercarte a cada personaje. E/Enter avanza el diálogo y activa la salida.</div>
+      <div><b>Pausa:</b> P.</div>
+    </div>
+    <p>Debes evitar picos, derrotar o esquivar bichitos y responder una pregunta de TICs al finalizar cada uno de los seis niveles. Al final, Michardo entregará la tableta y abrazará a Miss Paty.</p>
+    <div class="row"><button class="btn" id="backMenuBtn">Volver</button></div>`;
+  $('backMenuBtn').onclick=()=>showMenu();
+}
+
+function showIntro(){
+  // La portada ya cuenta la historia y este botón debe iniciar un juego CONTROLABLE.
+  // La versión anterior dibujaba el mundo antes de crear hero y detenía la animación.
+  initLevel(0);
+}
+
+let notification='', notificationUntil=0;
+function notify(message, seconds=3){
+  notification=message;
+  notificationUntil=gameTime+seconds;
+}
+
+function showDialog(lines, done){
+  dialogQueue=lines.slice(); dialogPos=0; onDialogEnd=done||null; dialogBox.style.display='block'; state='dialog'; renderDialogLine();
+}
+function renderDialogLine(){
+  const line=dialogQueue[dialogPos]; speakerEl.textContent=line.who; dialogTextEl.textContent=line.text;
+}
+function advanceDialog(){
+  if(state!=='dialog') return;
+  dialogPos++;
+  if(dialogPos>=dialogQueue.length){ dialogBox.style.display='none'; state='play'; const fn=onDialogEnd; onDialogEnd=null; if(fn) fn(); }
+  else renderDialogLine();
+}
+
+function askQuestion(question, callback){
+  state='question'; overlay.classList.remove('hidden'); hud.style.display='none'; activeQuestion={question,callback};
+  overlayCard.innerHTML=`<div class="badge">Pregunta TICs</div><div class="hero">💡</div><h2>${question.asker}</h2><p>${question.prompt}</p><div class="optionGrid">${question.options.map((opt,i)=>`<button class="optionBtn" data-opt="${i}">${String.fromCharCode(65+i)}. ${opt}</button>`).join('')}</div><p class="note" id="qmsg">Elige una opción para continuar.</p>`;
+  overlayCard.querySelectorAll('[data-opt]').forEach(btn=>btn.onclick=()=>{
+    const selected=+btn.dataset.opt;
+    if(selected===question.answer){
+      question.answered=true; score+=60; beep(860,.15,'triangle'); $('qmsg').textContent='✓ '+question.ok;
+      overlayCard.querySelectorAll('[data-opt]').forEach(b=>b.disabled=true);
+      const next=document.createElement('button'); next.className='btn'; next.textContent='Seguir';
+      next.onclick=()=>{ overlay.classList.add('hidden'); hud.style.display='flex'; state='play'; if(callback) callback(true);};
+      const row=document.createElement('div'); row.className='row'; row.appendChild(next); overlayCard.appendChild(row); updateHUD();
+    } else {
+      $('qmsg').textContent='✗ '+question.fail; beep(180,.18,'square');
+    }
+  });
+}
+
+function pauseMenu(){
+  if(state==='dialog'){advanceDialog(); return;}
+  if(state!=='play') return;
+  state='paused'; overlay.classList.remove('hidden');
+  overlayCard.innerHTML=`<div class="badge">Pausa</div><div class="hero">⏸️🐈</div><h2>Michardo está descansando</h2><div class="row"><button class="btn" id="resumeBtn">Continuar</button><button class="btn secondary" id="menuBtn">Menú</button></div>`;
+  $('resumeBtn').onclick=()=>{state='play'; overlay.classList.add('hidden');};
+  $('menuBtn').onclick=()=>showMenu();
+}
+
+function loseLife(){
+  if(invuln>0) return;
+  hearts--; invuln=1.2; beep(150,.18,'sawtooth'); spawnBurst(hero.x+hero.w/2,hero.y+hero.h/2,'#ff6f7d',18);
+  if(hearts<=0){
+    state='lose'; overlay.classList.remove('hidden'); hud.style.display='none';
+    overlayCard.innerHTML=`<div class="badge">Inténtalo de nuevo</div><div class="hero">😿</div><h2>Michardo se cansó</h2><p>No te preocupes. Puedes volver a jugar el nivel actual con más cuidado.</p><div class="row"><button class="btn" id="retryBtn">Reintentar nivel</button><button class="btn secondary" id="menuLoseBtn">Ir al menú</button></div>`;
+    $('retryBtn').onclick=()=>{hearts=maxHearts; initLevel(levelIndex);}; $('menuLoseBtn').onclick=()=>{hearts=maxHearts; score=0; fishAmmo=0; rescued=0; showMenu();};
+  }
+}
+
+function finishLevel(){
+  if(levelCompletePending) return; levelCompletePending=true;
+  const isLast=levelIndex===levelData.length-1;
+  state='leveldone'; overlay.classList.remove('hidden'); hud.style.display='none';
+  if(isLast){
+    overlayCard.innerHTML=`<div class="badge">Final de la aventura</div><div class="hero">🐈🤗👩‍🏫</div><h2>¡Misión cumplida!</h2><p>Michardo encontró a <b>Miss Paty</b> en el mirador de la ciudad y le entregó su tableta. Ella lo abrazó con muchísimo cariño.</p><p>Los alumnos del Colegio Anglo Mexiquense celebran porque la misión salió perfecto y la tecnología quedó como lo que es: una herramienta para aprender, crear y comunicarse.</p><p><b>Puntuación final:</b> ${score}</p><div class="row"><button class="btn" id="againBtn">Jugar de nuevo</button><button class="btn secondary" id="menuWinBtn">Menú</button></div>`;
+    $('againBtn').onclick=()=>{score=0; fishAmmo=0; rescued=0; hearts=maxHearts; showIntro();};
+    $('menuWinBtn').onclick=()=>showMenu();
+  } else {
+    overlayCard.innerHTML=`<div class="badge">Nivel completado</div><div class="hero">✨🐈</div><h2>${levelTitles[levelIndex]}</h2><p>¡Muy bien! Michardo superó este tramo del camino.</p><p><b>Puntos:</b> ${score} · <b>Pescaditos:</b> ${fishAmmo}</p><div class="row"><button class="btn" id="nextBtn">Siguiente nivel</button></div>`;
+    $('nextBtn').onclick=()=>{overlay.classList.add('hidden'); hud.style.display='flex'; hearts=Math.min(maxHearts, hearts+1); initLevel(levelIndex+1);};
+  }
+}
+
+function beep(freq=440,duration=.08,type='square',volume=.02){
+  if(musicMuted) return;
+  try{
+    const AC=window.AudioContext||window.webkitAudioContext;
+    if(!beep.ctx) beep.ctx=new AC();
+    const ac=beep.ctx, o=ac.createOscillator(), g=ac.createGain();
+    o.type=type; o.frequency.value=freq; g.gain.value=volume;
+    o.connect(g); g.connect(ac.destination);
+    const now=ac.currentTime; o.start(now); g.gain.setValueAtTime(volume,now); g.gain.exponentialRampToValueAtTime(.0001,now+duration); o.stop(now+duration+0.01);
+  }catch(e){}
+}
+
+function spawnBurst(x,y,color,n=12){
+  for(let i=0;i<n;i++) particles.push({x,y,vx:(Math.random()*2-1)*180,vy:(Math.random()*2-1)*180,life:.4+Math.random()*.4,color,size:3+Math.random()*3});
+}
+
+function rect(x,y,w,h,color){ctx.fillStyle=color;ctx.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h));}
+function roundRect(x,y,w,h,r,color){ctx.fillStyle=color;ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();ctx.fill();}
+function text(txt,x,y,size=16,color='#fff',align='left'){ctx.fillStyle=color;ctx.font=`900 ${size}px system-ui`;ctx.textAlign=align;ctx.fillText(txt,x,y); ctx.textAlign='left';}
+
+function drawBackground(){
+  const lvl=levelData[levelIndex]||levelData[0];
+  const mode=lvl.bg;
+  if(mode==='school'){
+    const g=ctx.createLinearGradient(0,0,0,H); g.addColorStop(0,'#86dff0'); g.addColorStop(.55,'#d7f3ff'); g.addColorStop(1,'#e4f3ff'); ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    rect(0,420,W,120,'#90d98f'); rect(0,450,W,90,'#63b065');
+    for(let i=0;i<5;i++){const x=i*230-camX*.2%230; rect(x+40,250,140,170,'#f4e7c9'); rect(x+60,270,100,80,'#b8d8f4'); rect(x+20,410,180,12,'#d0b77d');}
+  } else if(mode==='street'){
+    const g=ctx.createLinearGradient(0,0,0,H); g.addColorStop(0,'#98dcff'); g.addColorStop(.6,'#f1f6ff'); g.addColorStop(1,'#ffe9c8'); ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    rect(0,440,W,100,'#5d647e'); rect(0,470,W,70,'#404965');
+    for(let i=0;i<7;i++){const x=(i*160-camX*.28)%1200; rect(x+30,260,100,180,['#f6d7a3','#d0d7f0','#f6b7b9'][i%3]); rect(x+50,290,22,22,'#8abaf0'); rect(x+88,290,22,22,'#8abaf0');}
+  } else if(mode==='park'){
+    const g=ctx.createLinearGradient(0,0,0,H); g.addColorStop(0,'#7cd5ff'); g.addColorStop(.65,'#e6fbff'); g.addColorStop(1,'#f9f2d9'); ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    rect(0,440,W,100,'#98d57d'); rect(0,470,W,70,'#6ab266');
+    for(let i=0;i<8;i++){const x=(i*170-camX*.24)%1200; rect(x+74,295,18,130,'#8a6246'); ctx.fillStyle='#59b663'; ctx.beginPath(); ctx.arc(x+82,270,48,0,Math.PI*2); ctx.fill();}
+  } else if(mode==='bridge'){
+    const g=ctx.createLinearGradient(0,0,0,H); g.addColorStop(0,'#91c4ff'); g.addColorStop(.6,'#dfeaff'); g.addColorStop(1,'#f5e6d8'); ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    rect(0,442,W,98,'#6b7697'); rect(0,472,W,68,'#505978');
+    for(let i=0;i<6;i++){const x=(i*200-camX*.33)%1300; rect(x+70,190,20,250,'#7a8bb3'); rect(x+100,220,4,220,'#bdd3f3'); rect(x+56,240,48,8,'#dce8fb');}
+  } else if(mode==='plaza'){
+    const g=ctx.createLinearGradient(0,0,0,H); g.addColorStop(0,'#a0e0ff'); g.addColorStop(.6,'#f8fcff'); g.addColorStop(1,'#fff2ce'); ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    rect(0,445,W,95,'#e6c58c'); rect(0,475,W,65,'#cda869');
+    for(let i=0;i<6;i++){const x=(i*180-camX*.23)%1200; roundRect(x+30,310,120,110,16,['#ffd1b1','#c8dbff','#d6f3d6'][i%3]); rect(x+72,330,36,34,'#8ec0f5');}
+  } else if(mode==='city'){
+    const g=ctx.createLinearGradient(0,0,0,H); g.addColorStop(0,'#f9b07c'); g.addColorStop(.5,'#ffc7ab'); g.addColorStop(1,'#fff2de'); ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    rect(0,440,W,100,'#7a7d8f'); rect(0,470,W,70,'#5d6072');
+    for(let i=0;i<9;i++){const x=(i*130-camX*.4)%1300; rect(x+20,180+(i%3)*28,90,245,['#8fa5d5','#d9a3a0','#9cd4bf','#e7cf8f'][i%4]); for(let r=0;r<5;r++){for(let c2=0;c2<2;c2++) rect(x+38+c2*30,210+r*34,16,20,'#f1f6ff');}}
+  }
+  // decorative stars / floating confetti
+  stars.forEach((s,i)=>{const sx=(s.x-camX*(0.04+i%4*0.01)+W)%W; rect(sx,s.y,s.s,s.s,i%2?'#ffffff99':'#ffe6a399');});
+}
+
+function drawPlatform(p,theme){
+  rect(p[0],p[1],p[2],p[3],'#2d4268'); rect(p[0],p[1],p[2],6,theme); for(let i=10;i<p[2]-14;i+=38) rect(p[0]+i,p[1]+10,18,3,'#1a2947');
+}
+function drawSpike(s){
+  for(let i=0;i<s[2];i+=12){ctx.fillStyle='#d85067';ctx.beginPath();ctx.moveTo(s[0]+i,s[1]);ctx.lineTo(s[0]+i+6,s[1]-16);ctx.lineTo(s[0]+i+12,s[1]);ctx.fill();}
+}
+
+function drawStudent(x,y){
+  rect(x+10,y-38,16,16,'#f3c9a6'); rect(x+8,y-44,20,8,'#593b28'); rect(x+8,y-22,20,22,'#7ca0f5'); rect(x+5,y,y?0:0,0,''); rect(x+9,y,6,20,'#394866'); rect(x+20,y,6,20,'#394866'); rect(x+4,y-20,6,12,'#f3c9a6'); rect(x+26,y-20,6,12,'#f3c9a6'); rect(x+14,y-32,3,3,'#232a38'); rect(x+22,y-32,3,3,'#232a38');
+}
+function drawBird(x,y){
+  rect(x+12,y-22,18,16,'#f2c94c'); rect(x+7,y-18,10,10,'#efae25'); rect(x+27,y-15,10,6,'#f09345'); rect(x+14,y-7,4,11,'#7b5c3d'); rect(x+24,y-7,4,11,'#7b5c3d'); rect(x+18,y-17,3,3,'#2d2d2d');
+}
+function drawOtherCat(x,y){
+  rect(x+9,y-28,22,18,'#c7b0e3'); rect(x+6,y-24,7,7,'#b39ad3'); rect(x+28,y-24,7,7,'#b39ad3'); rect(x+14,y-10,4,10,'#7f668f'); rect(x+23,y-10,4,10,'#7f668f'); rect(x+15,y-20,3,3,'#232a38'); rect(x+22,y-20,3,3,'#232a38');
+}
+function drawPaty(x,y){
+  // Miss Paty: tall, curly reddish-blonde hair, glasses, green eyes
+  rect(x+12,y-58,26,22,'#f5d4b2');
+  rect(x+8,y-66,34,10,'#c98260'); rect(x+6,y-58,7,20,'#d8a06f'); rect(x+37,y-58,7,20,'#d8a06f'); rect(x+9,y-74,32,10,'#c97b55');
+  rect(x+8,y-36,34,42,'#5a86d9'); rect(x+15,y+6,6,22,'#41506f'); rect(x+28,y+6,6,22,'#41506f'); rect(x+5,y-34,7,18,'#f5d4b2'); rect(x+42,y-34,7,18,'#f5d4b2');
+  rect(x+18,y-49,4,4,'#46a96e'); rect(x+28,y-49,4,4,'#46a96e');
+  rect(x+15,y-50,8,1,'#27324b'); rect(x+27,y-50,8,1,'#27324b'); rect(x+23,y-49,4,1,'#27324b');
+}
+function drawBug(x,y){
+  rect(x-15,y-14,30,14,'#ad67b7'); rect(x-12,y-28,24,15,'#d082df'); rect(x-8,y-22,4,4,'#232a38'); rect(x+4,y-22,4,4,'#232a38'); rect(x-13,y,6,8,'#874291'); rect(x+7,y,6,8,'#874291');
+}
+function drawDrone(x,y){
+  rect(x-16,y-10,32,12,'#86c5ff'); rect(x-8,y-20,16,10,'#5098de'); rect(x-26,y-18,10,4,'#d2e7ff'); rect(x+16,y-18,10,4,'#d2e7ff'); rect(x-3,y-6,6,6,'#ffef88');
+}
+function drawCollectible(o){
+  const bob=Math.sin(gameTime*5+o.x*.01)*4;
+  if(o.type==='fish'){
+    rect(o.x-10,o.y+bob-4,20,8,'#8fd3ff'); rect(o.x+8,o.y+bob-2,6,4,'#5fa4d0'); ctx.fillStyle='#5fa4d0'; ctx.beginPath(); ctx.moveTo(o.x-10,o.y+bob); ctx.lineTo(o.x-18,o.y+bob-6); ctx.lineTo(o.x-18,o.y+bob+6); ctx.fill();
+  } else if(o.type==='bow'){
+    rect(o.x-6,o.y+bob-6,6,12,'#ff8eb0'); rect(o.x,o.y+bob-6,6,12,'#ff8eb0'); rect(o.x-2,o.y+bob-2,4,4,'#fff3a5');
+  } else if(o.type==='heart'){
+    rect(o.x-7,o.y+bob-4,6,6,'#ff7f97'); rect(o.x+1,o.y+bob-4,6,6,'#ff7f97'); rect(o.x-3,o.y+bob+2,6,6,'#ff7f97');
+  }
+}
+
+function drawClassicCat(x,y,scale=1,frame=0){ctx.save();ctx.translate(Math.round(x),Math.round(y));ctx.scale(scale,scale);let bob=frame?Math.sin(gameTime*15)*2:Math.sin(gameTime*3)*1.4;ctx.translate(0,bob);if(hero&&hero.dir<0){ctx.translate(40,0);ctx.scale(-1,1)}rect(6,29,29,23,'#93664c');rect(10,31,22,19,'#cba07c');rect(9,51,10,6,'#5c4a47');rect(24,51,10,6,'#5c4a47');rect(32,35,12,6,'#a77755');rect(40,28,6,10,'#a77755');rect(11,16,31,27,'#b8825c');rect(9,7,10,18,'#a97856');rect(10,6,7,11,'#d99691');rect(34,7,10,18,'#a97856');rect(36,6,6,11,'#d99691');rect(12,22,7,10,'#4f403e');rect(34,22,6,10,'#4f403e');rect(17,21,8,10,'#f6efc8');rect(31,21,8,10,'#f6efc8');rect(21,22,4,7,'#407f66');rect(33,22,4,7,'#407f66');rect(26,32,6,4,'#e98c9e');rect(24,36,3,2,'#5e3c44');rect(30,36,3,2,'#5e3c44');rect(15,13,5,3,'#6a5149');rect(27,14,6,4,'#6a5149');rect(21,11,4,5,'#72534a');rect(8,38,5,4,'#765646');rect(32,44,5,5,'#785748');rect(16,44,4,5,'#785748');rect(15,38,22,3,'#7b65b1');rect(23,39,5,6,'#ffd56b');ctx.restore()}
+
+function drawHero(){
+  if(!hero || (invuln>0 && Math.floor(invuln*12)%2===0)) return;
+  // Recupera exactamente el estilo de Michardo de la primera aventura:
+  // orejas triangulares rosadas, ojos verdes grandes, hocico rosado,
+  // marcas atigradas, collar morado y cascabel dorado.
+  drawClassicCat(hero.x+1, hero.y-3, 0.65, Math.abs(hero.vx)>0?hero.step:0);
+  if(hero.hasTablet){
+    // La tableta viaja segura con un moño junto a Michardo.
+    rect(hero.x-6,hero.y+12,9,15,'#415784');
+    rect(hero.x-4,hero.y+14,5,11,'#b4e6f4');
+    rect(hero.x-5,hero.y+10,4,3,'#ef7aab');
+    rect(hero.x-1,hero.y+10,4,3,'#ef7aab');
+  }
+}
+
+function drawWorld(){
+  drawBackground();
+  const lvl=levelData[levelIndex];
+  ctx.save(); ctx.translate(-camX,0);
+  lvl.platforms.forEach(p=>drawPlatform(p,lvl.theme));
+  lvl.spikes.forEach(drawSpike);
+  lvl.collectibles.forEach(o=>{if(!o.taken) drawCollectible(o);});
+  lvl.npcs.forEach(n=>{
+    if(n.type==='student') drawStudent(n.x,n.y);
+    else if(n.type==='bird') drawBird(n.x,n.y);
+    else if(n.type==='cat') drawOtherCat(n.x,n.y);
+    else if(n.type==='paty') drawPaty(n.x,n.y);
+    if(Math.abs(hero.x-n.x)<80 && Math.abs(hero.y-n.y)<80) text(n.talked?'✓ AMIGO':'CHARLA',n.x+18,n.y-48,12,'#fff7b4','center');
+  });
+  lvl.enemies.forEach(e=>{ if(e.alive){ if(e.type==='bug') drawBug(e.x,e.y); else drawDrone(e.x,e.y);} });
+  // gate
+  const gx=lvl.gate.x;
+  roundRect(gx-18,lvl.gate.y-72,36,72,10,lvl.finale?'#9be2c3':'#8bbaf3');
+  rect(gx-6,lvl.gate.y-54,12,14,'#f8f8ff');
+  text(lvl.finale?'META':'PREGUNTA',gx,lvl.gate.y-82,12,'#fff2ba','center');
+  if(Math.abs(hero.x-gx)<80) text('E: pregunta final',gx,lvl.gate.y-95,12,'#fff6b9','center');
+  // projectiles and particles
+  projectiles.forEach(p=>drawCollectible({x:p.x,y:p.y,type:'fish'}));
+  drawHero();
+  particles.forEach(p=>rect(p.x,p.y,p.size,p.size,p.color));
+  ctx.restore();
+  // top progress bar
+  const progress=Math.min(1, hero.x/(lvl.width-120));
+  roundRect(300,16,340,14,7,'#0f1c36c0'); roundRect(304,20,332*progress,6,3,lvl.theme); text('Misión: llevar la tableta a Miss Paty',W/2,50,14,'#eef7ff','center');
+}
+
+function solidAt(x,y,w,h){
+  const lvl=levelData[levelIndex];
+  for(const p of lvl.platforms){
+    if(x+w>p[0] && x<p[0]+p[2] && y+h>p[1] && y<p[1]+p[3]) return p;
+  }
+  return null;
+}
+
+function updateHero(dt){
+  const lvl=levelData[levelIndex];
+  hero.vx=(keys.left?-1:0)+(keys.right?1:0);
+  if(hero.vx!==0) hero.dir=hero.vx>0?1:-1;
+  const speed=230;
+  hero.x += hero.vx*speed*dt;
+  hero.x=Math.max(0,Math.min(lvl.width-hero.w, hero.x));
+  if((keys.jump)&&hero.ground&&!jumpLatch){ hero.vy=-620; hero.ground=false; jumpLatch=true; beep(520,.08,'triangle'); }
+  if(!keys.jump) jumpLatch=false;
+  hero.vy += gravity*dt; if(hero.vy>900) hero.vy=900;
+  const oldY=hero.y;
+  hero.y += hero.vy*dt;
+  hero.ground=false;
+  for(const p of lvl.platforms){
+    if(hero.x+hero.w>p[0]+4 && hero.x<p[0]+p[2]-4 && oldY+hero.h<=p[1]+8 && hero.y+hero.h>=p[1] && hero.vy>=0){
+      hero.y=p[1]-hero.h; hero.vy=0; hero.ground=true;
+    }
+  }
+  if(hero.y>H+50){ loseLife(); hero.x=Math.max(50,hero.x-120); hero.y=100; hero.vy=0; }
+  hero.step += dt*12*Math.abs(hero.vx);
+  camX += (Math.max(0,Math.min(lvl.width-W, hero.x-260)) - camX)*Math.min(1,dt*5);
+
+  // Los encuentros son AUTOMÁTICOS: al acercarse a un personaje,
+  // se reproduce toda su conversación una sola vez por nivel.
+  // No hace falta presionar E. La E queda disponible para los portales.
+  for(const npc of lvl.npcs){
+    if(npc.talked) continue;
+    if(Math.abs(hero.x+17-(npc.x+17))<68 && Math.abs(hero.y+16-(npc.y-18))<76){
+      npc.talked=true;
+      keys.left=keys.right=keys.jump=keys.throw=false;
+      if(npc.type==='paty' && lvl.finale){
+        showDialog([
+          {who:'Miss Paty',text:'¡Michardo, mi precioso gatito! ¡Encontraste mi tableta y llegaste hasta aquí!'},
+          {who:'Michardo',text:'¡Miau! Los alumnos del Colegio Anglo Mexiquense me la confiaron para entregártela.'},
+          {who:'Miss Paty',text:'¡Qué equipo tan maravilloso! Antes del abrazo, resuelve nuestro último reto de TICs.'}
+        ],()=>askQuestion(lvl.question,()=>{
+          showDialog([
+            {who:'Miss Paty',text:'¡Perfecto! La tecnología nos ayuda a aprender, crear y comunicarnos.'},
+            {who:'Narrador',text:'Miss Paty recibe la tableta, se arrodilla y abraza con muchísimo cariño a Michardo.'},
+            {who:'Michardo',text:'¡Miaaau! ¡Misión cumplida!'}
+          ],()=>finishLevel());
+        }));
+      }else{
+        showDialog((npc.dialog||[]).map(t=>({who:npc.name,text:t})));
+      }
+      return;
+    }
+  }
+
+  // collect
+  lvl.collectibles.forEach(o=>{
+    if(!o.taken && Math.abs(hero.x+17-o.x)<28 && Math.abs(hero.y+17-o.y)<28){
+      o.taken=true;
+      if(o.type==='fish'){ fishAmmo+=2; score+=20; beep(720,.08,'triangle'); spawnBurst(o.x,o.y,'#8fd3ff',8); }
+      else if(o.type==='bow'){ rescued++; score+=25; beep(840,.08,'triangle'); spawnBurst(o.x,o.y,'#ff8eb0',10); }
+      else if(o.type==='heart'){ hearts=Math.min(maxHearts, hearts+1); score+=30; beep(640,.09,'triangle'); spawnBurst(o.x,o.y,'#ff7f97',8); }
+      updateHUD();
+    }
+  });
+  // spikes
+  lvl.spikes.forEach(s=>{ if(hero.x+hero.w>s[0] && hero.x<s[0]+s[2] && hero.y+hero.h>s[1]-16) loseLife(); });
+  // enemies
+  lvl.enemies.forEach(e=>{
+    if(!e.alive) return;
+    e.x += e.v*dt;
+    if(e.x<e.min||e.x>e.max) e.v*=-1;
+    if(Math.abs(hero.x+17-e.x)<24 && Math.abs(hero.y+17-e.y)<24) loseLife();
+  });
+  // throw fish
+  if(keys.throw && !throwLatch){
+    if(fishAmmo>0){
+      fishAmmo--; throwLatch=true; projectiles.push({x:hero.x+hero.w/2,y:hero.y+14,vx:hero.dir*360,vy:-20,life:1.5}); beep(460,.07,'square'); updateHUD();
+    }
+  }
+  if(!keys.throw) throwLatch=false;
+  for(let i=projectiles.length-1;i>=0;i--){
+    const p=projectiles[i]; p.x += p.vx*dt; p.y += p.vy*dt; p.life -= dt;
+    if(p.life<=0){ projectiles.splice(i,1); continue; }
+    for(const e of lvl.enemies){
+      if(e.alive && Math.abs(p.x-e.x)<18 && Math.abs(p.y-e.y)<18){ e.alive=false; projectiles.splice(i,1); score+=45; spawnBurst(e.x,e.y,'#ffd36b',14); beep(270,.08,'sawtooth'); updateHUD(); break; }
+    }
+  }
+  // particles
+  for(let i=particles.length-1;i>=0;i--){ const p=particles[i]; p.x+=p.vx*dt; p.y+=p.vy*dt; p.life-=dt; p.vy+=220*dt; if(p.life<=0) particles.splice(i,1); }
+  if(invuln>0) invuln-=dt;
+}
+
+function interact(){
+  if(state==='dialog'){ advanceDialog(); return; }
+  if(state!=='play') return;
+  const lvl=levelData[levelIndex];
+  // Los encuentros con estudiantes, animales y Miss Paty son automáticos.
+  // E/Enter sólo sirven para iniciar el reto de salida al final del nivel.
+  if(Math.abs(hero.x-lvl.gate.x)<70 && Math.abs(hero.y-lvl.gate.y)<110){
+    if(lvl.finale){
+      if(!lvl.question.answered){
+        notify('Encuentra primero a Miss Paty para entregar la tableta.',3.5);
+      }else finishLevel();
+      return;
+    }
+    if(!lvl.question.answered){
+      askQuestion(lvl.question,()=>finishLevel());
+    } else finishLevel();
+  }
+}
+
+function update(dt){
+  if(state==='play') updateHero(dt);
+  gameTime += dt;
+}
+
+function render(){
+  ctx.clearRect(0,0,W,H);
+  if(!hero || state==='menu'||state==='paused'||state==='lose'||state==='leveldone'||state==='question'){
+    drawBackground(); ctx.save(); ctx.translate(0,0); drawHeroAtMenu(); ctx.restore();
+  } else {
+    drawWorld();
+    if(notification && gameTime<notificationUntil){
+      roundRect(185,65,590,32,12,'#0e1934dd');
+      text(notification,480,87,15,'#fff5d3','center');
+    }
+  }
+}
+
+function drawHeroAtMenu(){
+  // Portada con el mismo personaje de la versión original.
+  const previewHero=hero;
+  hero={dir:1};
+  drawClassicCat(155,333,2.05,0);
+  hero=previewHero;
+}
+
+function gameLoop(ts){
+  const dt=Math.min(0.033, ((ts-lastTime)||16)/1000); lastTime=ts;
+  update(dt); render(); requestAnimationFrame(gameLoop);
+}
+
+const keyMap={ArrowLeft:'left',KeyA:'left',ArrowRight:'right',KeyD:'right',ArrowUp:'jump',Space:'jump',KeyW:'jump',KeyE:'interact',Enter:'interact',KeyP:'pause',Escape:'pause',KeyF:'throw',KeyX:'throw'};
+document.addEventListener('keydown',e=>{const k=keyMap[e.code]; if(!k) return; e.preventDefault(); if(k==='interact'&&!e.repeat) interact(); else if(k==='pause'&&!e.repeat){ if(state==='paused'){overlay.classList.add('hidden'); state='play'; hud.style.display='flex';} else pauseMenu(); } else { keys[k]=true; }});
+document.addEventListener('keyup',e=>{const k=keyMap[e.code]; if(k && keys[k]!==undefined) keys[k]=false;});
+document.querySelectorAll('[data-key]').forEach(btn=>{
+  const k=btn.dataset.key;
+  btn.addEventListener('pointerdown',e=>{e.preventDefault(); btn.classList.add('active'); if(k==='interact') interact(); else if(k==='pause'){ if(state==='paused'){overlay.classList.add('hidden'); state='play'; hud.style.display='flex';} else pauseMenu(); } else keys[k]=true;});
+  const off=()=>{btn.classList.remove('active'); if(keys[k]!==undefined) keys[k]=false;};
+  btn.addEventListener('pointerup',off); btn.addEventListener('pointercancel',off); btn.addEventListener('pointerleave',off);
+});
+dialogBox.addEventListener('click',advanceDialog);
+
+showMenu();
+requestAnimationFrame(gameLoop);
+})();
+</script>
+</body>
+</html>
