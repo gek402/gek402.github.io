@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <title>Michardo y la Tableta para Miss Paty</title>
 <style>
 :root{
@@ -50,6 +50,82 @@ p{margin:10px auto;max-width:640px;line-height:1.55;font-size:clamp(13px,1.8vw,1
 .optionBtn{text-align:left;border:2px solid #7599c5;background:#193050;border-radius:12px;padding:12px;font-weight:800;color:#eef6ff}
 .optionBtn:hover{background:#213d68}
 @media(max-width:680px){.top{font-size:9px}.ctrl{min-width:46px;min-height:44px}.ctrl.small{min-width:64px;font-size:11px}.footer{font-size:10px}.card{padding:14px}}
+
+/* Adaptación real a pantalla: el lienzo cambia la anchura lógica sin distorsionar a Michardo. */
+html,body{height:100%;overscroll-behavior:none}
+#app{height:100vh;height:100dvh;min-height:0}
+#frame{min-height:0;flex-shrink:1}
+.controls .group{align-items:center}
+.movement{grid-area:move}.actions{grid-area:actions}.utilities{grid-area:utility}
+.utilities{gap:6px}
+.utilities .ctrl{font-size:11px;min-width:82px}
+.ctrl{touch-action:none;-webkit-tap-highlight-color:transparent}
+.card{overscroll-behavior:contain;-webkit-overflow-scrolling:touch;}
+#dialog{overflow:auto;max-height:62%;overscroll-behavior:contain}
+@media (min-width: 900px) and (pointer:fine){.controls{gap:10px}.utilities{margin-left:auto}}
+@media (hover:none), (pointer:coarse){
+ .ctrl{min-height:58px;min-width:58px;font-size:24px}
+ .ctrl.small{font-size:12px;min-width:72px}
+ .btn,.optionBtn{min-height:50px}
+}
+@media (max-width: 900px) and (orientation:portrait){
+ .top{gap:8px;font-size:10px;letter-spacing:0;flex-wrap:wrap;justify-content:center;text-align:center}
+ #app{padding:4px;gap:5px;justify-content:stretch}
+ #frame{width:100%;height:auto;max-height:none;flex:1 1 auto;aspect-ratio:auto;border-radius:12px;border-width:2px;box-shadow:none}
+ #overlay{padding:8px;align-items:stretch}
+ .card{height:100%;max-height:100%;width:100%;padding:14px;border-width:2px;border-radius:13px}
+ .card h1{font-size:clamp(24px,6vw,34px)}
+ .card h2{font-size:clamp(20px,5vw,28px)}
+ .card p{font-size:clamp(14px,3.7vw,17px);line-height:1.45}
+ .hero{font-size:clamp(34px,9vw,60px)}
+ .badge{font-size:10px;letter-spacing:.6px}
+ .row{margin-top:10px}
+ .btn{padding:10px 12px;font-size:14px;min-height:46px}
+ #hud{inset:5px 5px auto 5px;gap:4px}
+ .panel{padding:5px 7px;border-width:1px;font-size:11px;line-height:1.4;box-shadow:none}
+ #dialog{left:2%;right:2%;bottom:2%;border-width:2px;padding:12px;border-radius:9px;max-height:55%}
+ #speaker{font-size:14px}
+ #dialogText{font-size:15px;min-height:0}
+ #dialogHint{font-size:11px}
+ .controls{width:100%;display:grid;grid-template-columns:1fr 1fr;grid-template-areas:"utility utility" "move actions";gap:5px;flex:0 0 auto;min-height:0}
+ .movement{grid-area:move;justify-content:flex-start}
+ .actions{grid-area:actions;justify-content:flex-end}
+ .utilities{grid-area:utility;justify-content:space-between;flex-wrap:nowrap}
+ .group{gap:7px}
+ .ctrl,.ctrl.small{min-width:0;min-height:62px;padding:5px;border-radius:12px;font-size:24px;flex:1 1 0}
+ .utilities .ctrl{min-height:42px;font-size:11px;flex:0 1 auto;padding:4px 12px}
+ .actions .ctrl.small{font-size:12px}
+ .footer{display:none}
+}
+@media (max-width:900px) and (orientation:portrait){
+ .top{flex:0 0 auto;min-height:22px}
+ #frame{min-height:205px}
+ .controls{padding:2px 2px max(5px,env(safe-area-inset-bottom));}
+ .ctrl,.ctrl.small{min-height:72px}
+ .utilities .ctrl{min-height:45px}
+}
+@media (max-width:920px) and (orientation:landscape){
+ .top,.footer{display:none}
+ #app{padding:2px;gap:2px;flex-direction:row;align-items:stretch}
+ #frame{flex:1;min-width:0;width:auto;max-height:none;aspect-ratio:auto;border-radius:8px;box-shadow:none}
+ .controls{flex:0 0 166px;width:166px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"utility utility" "move move" "actions actions";gap:5px;align-content:center;min-height:0;padding:2px;overflow:hidden}
+ .controls .group{gap:5px;min-width:0;width:100%;justify-content:stretch}
+ .controls .group .ctrl{width:0;min-width:0;flex:1 1 0;padding:2px}
+ .ctrl,.ctrl.small{min-height:50px;font-size:21px}
+ .actions .ctrl.small{font-size:11px}
+ .utilities .ctrl{min-height:36px;font-size:9px;padding:4px;}
+ .card{padding:12px}
+ .card p{font-size:13px;margin:6px auto}
+ .card h1{font-size:24px}
+ .hero{font-size:30px}
+ #dialog{max-height:65%}
+}
+@media(max-height:440px) and (orientation:landscape){
+ .controls{flex-basis:140px;width:140px}
+ .ctrl,.ctrl.small{min-height:43px}
+ .utilities .ctrl{min-height:29px}
+ #dialogText{font-size:13px}
+}
 </style>
 </head>
 <body>
@@ -62,15 +138,17 @@ p{margin:10px auto;max-width:640px;line-height:1.55;font-size:clamp(13px,1.8vw,1
     <div id="dialog"><div id="speaker"></div><div id="dialogText"></div><div id="dialogHint">E / ENTER / TOCAR PARA CONTINUAR ▸</div></div>
   </div>
   <div class="controls">
-    <div class="group">
+    <div class="group movement">
       <button class="ctrl" data-key="left">◀</button>
       <button class="ctrl" data-key="right">▶</button>
     </div>
-    <div class="group">
-      <button class="ctrl small" data-key="throw">LANZAR</button>
-      <button class="ctrl small" data-key="interact">HABLAR</button>
+    <div class="group actions">
+      <button class="ctrl small" data-key="throw">🐟 LANZAR</button>
       <button class="ctrl" data-key="jump">⬆</button>
-      <button class="ctrl small" data-key="pause">PAUSA</button>
+    </div>
+    <div class="group utilities">
+      <button class="ctrl small" data-key="interact">CONTINUAR / HABLAR</button>
+      <button class="ctrl small" data-key="pause">Ⅱ PAUSA</button>
     </div>
   </div>
   <div class="footer">A / D o flechas para moverte · ESPACIO para saltar · F/X para lanzar pescadito · E para interactuar · P para pausa</div>
@@ -80,7 +158,17 @@ p{margin:10px auto;max-width:640px;line-height:1.55;font-size:clamp(13px,1.8vw,1
 'use strict';
 const canvas=document.getElementById('game');
 const ctx=canvas.getContext('2d'); ctx.imageSmoothingEnabled=false;
-const W=canvas.width, H=canvas.height;
+let W=canvas.width; const H=canvas.height;
+function resizeGame(){
+  const frame=document.getElementById('frame');
+  const bounds=frame.getBoundingClientRect();
+  if(bounds.width<10||bounds.height<10)return;
+  const logicalWidth=Math.round(H*bounds.width/bounds.height);
+  if(Math.abs(W-logicalWidth)>2){W=Math.max(280,Math.min(1300,logicalWidth)); canvas.width=W; canvas.height=H;ctx.imageSmoothingEnabled=false;}
+}
+window.addEventListener('resize',resizeGame);
+if(window.visualViewport)window.visualViewport.addEventListener('resize',resizeGame);
+
 const $=id=>document.getElementById(id);
 const overlay=$('overlay'), overlayCard=$('overlayCard'), dialogBox=$('dialog');
 const hud=$('hud'), hudLeft=$('hudLeft'), hudRight=$('hudRight');
@@ -333,6 +421,7 @@ function notify(message, seconds=3){
 }
 
 function showDialog(lines, done){
+  keys.left=keys.right=keys.jump=keys.throw=false;
   dialogQueue=lines.slice(); dialogPos=0; onDialogEnd=done||null; dialogBox.style.display='block'; state='dialog'; renderDialogLine();
 }
 function renderDialogLine(){
@@ -533,7 +622,7 @@ function drawWorld(){
   ctx.restore();
   // top progress bar
   const progress=Math.min(1, hero.x/(lvl.width-120));
-  roundRect(300,16,340,14,7,'#0f1c36c0'); roundRect(304,20,332*progress,6,3,lvl.theme); text('Misión: llevar la tableta a Miss Paty',W/2,50,14,'#eef7ff','center');
+  const barWidth=Math.min(340,Math.max(90,W-50)); roundRect((W-barWidth)/2,16,barWidth,12,6,'#0f1c36c0'); roundRect((W-barWidth)/2+4,19,(barWidth-8)*progress,6,3,lvl.theme); if(W>570)text('Misión: llevar la tableta a Miss Paty',W/2,50,14,'#eef7ff','center');
 }
 
 function solidAt(x,y,w,h){
@@ -564,7 +653,7 @@ function updateHero(dt){
   }
   if(hero.y>H+50){ loseLife(); hero.x=Math.max(50,hero.x-120); hero.y=100; hero.vy=0; }
   hero.step += dt*12*Math.abs(hero.vx);
-  camX += (Math.max(0,Math.min(lvl.width-W, hero.x-260)) - camX)*Math.min(1,dt*5);
+  camX += (Math.max(0,Math.min(lvl.width-W, hero.x-Math.max(110,W*.32))) - camX)*Math.min(1,dt*5);
 
   // Los encuentros son AUTOMÁTICOS: al acercarse a un personaje,
   // se reproduce toda su conversación una sola vez por nivel.
@@ -677,7 +766,7 @@ function drawHeroAtMenu(){
 }
 
 function gameLoop(ts){
-  const dt=Math.min(0.033, ((ts-lastTime)||16)/1000); lastTime=ts;
+  resizeGame(); const dt=Math.min(0.033, ((ts-lastTime)||16)/1000); lastTime=ts;
   update(dt); render(); requestAnimationFrame(gameLoop);
 }
 
@@ -686,13 +775,14 @@ document.addEventListener('keydown',e=>{const k=keyMap[e.code]; if(!k) return; e
 document.addEventListener('keyup',e=>{const k=keyMap[e.code]; if(k && keys[k]!==undefined) keys[k]=false;});
 document.querySelectorAll('[data-key]').forEach(btn=>{
   const k=btn.dataset.key;
-  btn.addEventListener('pointerdown',e=>{e.preventDefault(); btn.classList.add('active'); if(k==='interact') interact(); else if(k==='pause'){ if(state==='paused'){overlay.classList.add('hidden'); state='play'; hud.style.display='flex';} else pauseMenu(); } else keys[k]=true;});
+  btn.addEventListener('pointerdown',e=>{e.preventDefault(); try{btn.setPointerCapture(e.pointerId)}catch(err){} btn.classList.add('active'); if(k==='interact') interact(); else if(k==='pause'){ if(state==='paused'){overlay.classList.add('hidden'); state='play'; hud.style.display='flex';} else pauseMenu(); } else keys[k]=true;});
   const off=()=>{btn.classList.remove('active'); if(keys[k]!==undefined) keys[k]=false;};
-  btn.addEventListener('pointerup',off); btn.addEventListener('pointercancel',off); btn.addEventListener('pointerleave',off);
+  btn.addEventListener('pointerup',off); btn.addEventListener('pointercancel',off); btn.addEventListener('lostpointercapture',off);
 });
 dialogBox.addEventListener('click',advanceDialog);
 
 showMenu();
+resizeGame();
 requestAnimationFrame(gameLoop);
 })();
 </script>
