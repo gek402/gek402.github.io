@@ -6,6 +6,7 @@
     <title>Servicio de Comedor - Colegio Anglo Mexiquense</title>
     <!-- LIBRERÍAS EXTERNAS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         :root {
             --primary: #1e3a8a;
@@ -588,7 +589,25 @@
         body.dark-mode .history-table td.valor-saldo-positivo,
         body.dark-mode #TablaResultadosReporte td.valor-monto-positivo,
         body.dark-mode #TablaResultadosReporte td.valor-saldo-positivo { color: #5ce6ae !important; font-weight: 800 !important; }
-    </style>
+    
+        /* Ajuste visual de inicio: precio discreto bajo el selector de tema. */
+        #BtnPrecioComidaSuperior {
+            position: fixed; top: 51px; right: 12px; z-index: 10000;
+            padding: 5px 9px; margin: 0; max-width: calc(100vw - 24px);
+            border: 1px solid var(--border); border-radius: 8px;
+            background: var(--card-bg); color: var(--text);
+            font-size: .69rem; font-weight: 600; line-height: 1.25;
+            cursor: pointer; white-space: nowrap;
+        }
+        body.dark-mode #BtnPrecioComidaSuperior {
+            background: var(--card-bg) !important;
+            color: var(--text) !important;
+            border-color: var(--border) !important;
+        }
+        body:not(.acceso-autorizado) #BtnPrecioComidaSuperior {
+            visibility: hidden !important;
+        }
+</style>
 </head>
 <body>
 
@@ -637,20 +656,36 @@
   </form>
 </div>
 <script>
+// La contraseña se valida en Apps Script mediante un formulario POST aislado.
+// No se guarda ni se compara ninguna clave dentro del HTML.
 (function () {
-  var formulario = document.getElementById('FormularioAcceso');
-  var campo = document.getElementById('CampoContrasena');
-  var error = document.getElementById('ErrorAcceso');
-  if (!formulario || !campo || !error) return;
-  formulario.addEventListener('submit', function (evento) {
+  const formulario = document.getElementById('FormularioAcceso');
+  const campo = document.getElementById('CampoContrasena');
+  const error = document.getElementById('ErrorAcceso');
+  const boton = document.getElementById('BotonAcceso');
+  let esperando = false;
+  formulario.addEventListener('submit', async function (evento) {
     evento.preventDefault();
-    if (campo.value === '1122') {
-      document.body.classList.add('acceso-autorizado');
+    if (esperando) return;
+    esperando = true;
+    boton.disabled = true;
+    boton.textContent = 'Verificando…';
+    error.textContent = '';
+    try {
+      const clave = campo.value;
       campo.value = '';
+      const respuesta = await ValidarAccesoServidor(clave);
+      if (!respuesta.autorizado) throw new Error(respuesta.message || 'Contraseña incorrecta.');
+      await CargarAlumnosDesdeSheets();
+      document.body.classList.add('acceso-autorizado');
       error.textContent = '';
-    } else {
-      error.textContent = 'Contraseña incorrecta. Inténtelo de nuevo.';
-      campo.select();
+    } catch (e) {
+      error.textContent = e.message || 'No se pudo verificar el acceso.';
+      campo.focus();
+    } finally {
+      esperando = false;
+      boton.disabled = false;
+      boton.textContent = 'Entrar';
     }
   });
   campo.focus();
@@ -661,6 +696,7 @@
 
 
 <button type="button" id="BtnModoOscuro" class="theme-toggle" onclick="AlternarModoOscuro()" aria-pressed="false" title="Activar modo oscuro">🌙 Activar modo oscuro</button>
+<button type="button" id="BtnPrecioComidaSuperior" onclick="ConfigurarPrecioComida()" title="Modificar precio de comida">⚙️ Precio comida: <span id="EtiquetaPrecioComida">$50.00</span></button>
 
 <!-- PANTALLA DE CARGA Y BLOQUEO -->
 <div id="OverlayCarga">
@@ -697,8 +733,8 @@
             <button class="btn-touch btn-secondary btn-home-primaria" onclick="MostrarVista('VistaPrimaria')">Primaria (PRI)</button>
             <button class="btn-touch btn-primary btn-home-preescolar" onclick="MostrarVista('VistaPreescolar')">Preescolar (PRE)</button>
             <button class="btn-touch btn-home-actualizar" onclick="AccionActualizarDesdeBaseDeDatos()">🔄 Actualizar desde Base de Datos</button>
-            <small id="EtiquetaUltimaActualizacionBD" style="grid-column:1 / -1; display:block; text-align:center; color:var(--muted); font-size:0.78rem; margin-top:-5px;">Última actualización: aún no registrada</small>
             <button id="BtnModuloReportesRezagos" class="btn-touch" style="background: #0f172a;" onclick="AbrirVistaReportes()">📊 Módulo de Reportes y Rezagos</button>
+            <small id="EtiquetaUltimaActualizacionBD" style="grid-column:1 / -1; display:block; text-align:center; color:var(--muted); font-size:0.78rem; margin-top:0;">Última actualización: aún no registrada</small>
         </div>
 
         <div class="offline-bar">
@@ -852,6 +888,7 @@
             <div class="btn-grid" style="grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 6px; margin-top: 15px; margin-bottom: 15px;">
                 <button class="btn-touch btn-success" style="padding: 10px; font-size: 0.8rem;" onclick="CopiarReporteAlPortapapeles()">📋 Copiar Resumen</button>
                 <button class="btn-touch btn-primary" style="padding: 10px; font-size: 0.8rem;" onclick="CopiarTablaAlPortapapeles()">📋 Copiar Tabla</button>
+                <button class="btn-touch btn-success" style="padding:10px;font-size:.8rem" onclick="DescargarExcelComedor()">📊 Descargar Excel</button>
                 <button class="btn-touch btn-danger" style="padding: 10px; font-size: 0.8rem; background: #dc2626;" onclick="GenerarReportePdf()">📄 Ver/Generar PDF</button>
                 <button class="btn-touch" style="background: #64748b; padding: 10px; font-size: 0.8rem;" onclick="LimpiarResultadosReporte()">🧹 Limpiar</button>
             </div>
@@ -874,6 +911,7 @@
         <div class="btn-grid" style="grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 8px; margin-top: 15px;">
             <button class="btn-touch btn-success" style="padding: 10px; font-size: 0.85rem;" onclick="CopiarReporteFlotanteAlPortapapeles()">📋 Copiar Resumen</button>
             <button class="btn-touch btn-primary" style="padding: 10px; font-size: 0.85rem;" onclick="CopiarTablaFlotanteAlPortapapeles()">📋 Copiar Tabla</button>
+            <button class="btn-touch btn-success" style="padding:10px;font-size:.85rem" onclick="DescargarExcelComedor(true)">📊 Descargar Excel</button>
             <button class="btn-touch btn-danger" style="padding: 10px; font-size: 0.85rem; background: #dc2626;" onclick="GenerarPdfHistorialFlotante()">📄 Ver / Imprimir PDF</button>
         </div>
         <button class="btn-touch" style="background: #64748b; width: 100%; margin-top: 8px;" onclick="CerrarModalHistorialFlotante()">Cerrar / Volver al Reporte</button>
@@ -1048,225 +1086,97 @@
         if (oscuro) AplicarModoOscuro(true);
     })();
 
-    const CostoComidaGlobal = 50.0;
+    let CostoComidaGlobal = (() => { const v = Number(localStorage.getItem('ComedorPrecioUnitario')); return Number.isFinite(v) && v > 0 ? v : 50.0; })();
+    function ConfigurarPrecioComida() {
+        const valor = prompt('Precio unitario de comida (MXN). Se aplica a las NUEVAS comidas en este dispositivo. Actualícelo en cada equipo que registre operaciones:', CostoComidaGlobal.toFixed(2));
+        if (valor === null) return;
+        const precio = Number(String(valor).replace(',', '.'));
+        if (!Number.isFinite(precio) || precio <= 0 || precio > 10000 || !/^\d+(?:[.,]\d{1,2})?$/.test(valor.trim())) { alert('Introduzca un precio positivo válido, con máximo dos decimales.'); return; }
+        if (!confirm(`¿Cambiar el precio de las nuevas comidas a $${precio.toFixed(2)}? Los registros anteriores no se modificarán.`)) return;
+        CostoComidaGlobal = precio;
+        localStorage.setItem('ComedorPrecioUnitario', String(precio));
+        const etiqueta = document.getElementById('EtiquetaPrecioComida');
+        if (etiqueta) etiqueta.textContent = `$${precio.toFixed(2)}`;
+    }
+    function DescargarRespaldoPrograma() {
+        const copia = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+        const enlace = document.createElement('a');
+        enlace.href = URL.createObjectURL(new Blob([copia], {type:'text/html;charset=utf-8'}));
+        enlace.download = 'RESPALDO COMEDOR ANGLO.html';
+        document.body.appendChild(enlace); enlace.click(); enlace.remove();
+        setTimeout(() => URL.revokeObjectURL(enlace.href), 3000);
+    }
     const UrlScriptGoogle = "https://script.google.com/macros/s/AKfycbwEG6u5bSpgvhuiNk-JaOcMtkVfOYcsG3n8sDnNjtVo4CcgRFtrf_mRWFKr_-8Y33QlQg/exec";
     
-    // Matriz de Estudiantes
-    const BaseDatosEstudiantes = [
-        {Nivel:"PRE",Grado:1,GrupoLetra:"A",IdAlumno:"A0001",Nombre:"FLORES PEREZ ANLYN AITANA"},
-        {Nivel:"PRE",Grado:1,GrupoLetra:"A",IdAlumno:"A0002",Nombre:"MENDIETA SERRANO YUI IRINA"},
-        {Nivel:"PRE",Grado:1,GrupoLetra:"A",IdAlumno:"A0003",Nombre:"RAMIREZ PEREZ LIAM MAXIMILIANO"},
-        {Nivel:"PRE",Grado:1,GrupoLetra:"A",IdAlumno:"A0004",Nombre:"VELASCO GARCIA DONOVAN TADEO"},
-        {Nivel:"PRE",Grado:1,GrupoLetra:"A",IdAlumno:"A0005",Nombre:"VILLASEÑOR PEREZ IVANNA"},
-        {Nivel:"PRE",Grado:2,GrupoLetra:"A",IdAlumno:"A0006",Nombre:"AMADO PEREZ ALEJANDRA QUETZALY"},
-        {Nivel:"PRE",Grado:2,GrupoLetra:"A",IdAlumno:"A0007",Nombre:"BETANCOURT BERNAL MARLON ANDRE"},
-        {Nivel:"PRE",Grado:2,GrupoLetra:"A",IdAlumno:"A0008",Nombre:"BRINGAS ONTIVEROS MARGARET ESTELA"},
-        {Nivel:"PRE",Grado:2,GrupoLetra:"A",IdAlumno:"A0009",Nombre:"FLORES PEREZ YAEL FERNANDO"},
-        {Nivel:"PRE",Grado:2,GrupoLetra:"A",IdAlumno:"A0010",Nombre:"GUTIERREZ FLORES MAR ISABELLA"},
-        {Nivel:"PRE",Grado:2,GrupoLetra:"A",IdAlumno:"A0011",Nombre:"MARTINEZ GONZALEZ PAULA"},
-        {Nivel:"PRE",Grado:2,GrupoLetra:"A",IdAlumno:"A0012",Nombre:"MARTINEZ VAZQUEZ AITANA"},
-        {Nivel:"PRE",Grado:2,GrupoLetra:"A",IdAlumno:"A0013",Nombre:"MEJIA MUJICA UXUE EILEEN"},
-        {Nivel:"PRE",Grado:2,GrupoLetra:"A",IdAlumno:"A0014",Nombre:"ORTIZ SAN AGUSTIN ABRAHAM"},
-        {Nivel:"PRE",Grado:2,GrupoLetra:"A",IdAlumno:"A0015",Nombre:"ROBLES MARTINEZ EDWIN ALEXANDER"},
-        {Nivel:"PRE",Grado:2,GrupoLetra:"A",IdAlumno:"A0016",Nombre:"SALVADOR HERNANDEZ IVET MARTINA"},
-        {Nivel:"PRE",Grado:2,GrupoLetra:"A",IdAlumno:"A0017",Nombre:"TAPIA HIPOLITO DEREK EDUARDO"},
-        {Nivel:"PRE",Grado:2,GrupoLetra:"A",IdAlumno:"A0018",Nombre:"TELLEZ GONZALEZ ATZIN IVONNE"},
-        {Nivel:"PRE",Grado:2,GrupoLetra:"A",IdAlumno:"A0019",Nombre:"TELLEZ GONZALEZ JADE MADAY"},
-        {Nivel:"PRE",Grado:2,GrupoLetra:"A",IdAlumno:"A0020",Nombre:"TORRES TORRES ROSA MARIA"},
-        {Nivel:"PRE",Grado:2,GrupoLetra:"A",IdAlumno:"A0021",Nombre:"VAZQUEZ PASCACIO DIEGO FERNANDO"},
-        {Nivel:"PRE",Grado:3,GrupoLetra:"A",IdAlumno:"A0022",Nombre:"ACEVEDO RAMIREZ DAYANA LIZETE"},
-        {Nivel:"PRE",Grado:3,GrupoLetra:"A",IdAlumno:"A0023",Nombre:"AVILES FLORES JULIAN"},
-        {Nivel:"PRE",Grado:3,GrupoLetra:"A",IdAlumno:"A0024",Nombre:"CATALAN OROPEZA ANDER ABIRAN FREYO"},
-        {Nivel:"PRE",Grado:3,GrupoLetra:"A",IdAlumno:"A0025",Nombre:"FLORES SUAREZ JESUS MATEO"},
-        {Nivel:"PRE",Grado:3,GrupoLetra:"A",IdAlumno:"A0026",Nombre:"GONZALEZ SERRANO MATIAS DARIEL"},
-        {Nivel:"PRE",Grado:3,GrupoLetra:"A",IdAlumno:"A0027",Nombre:"GORDILLO VELASQUEZ ANA BRENDA"},
-        {Nivel:"PRE",Grado:3,GrupoLetra:"A",IdAlumno:"A0028",Nombre:"GUTIERREZ ROMERO EMILIA XARENI"},
-        {Nivel:"PRE",Grado:3,GrupoLetra:"A",IdAlumno:"A0029",Nombre:"GUZMAN SANTANA JESUS ALBERTO"},
-        {Nivel:"PRE",Grado:3,GrupoLetra:"A",IdAlumno:"A0030",Nombre:"HERNANDEZ SORIANO AURORA BERNADETTE"},
-        {Nivel:"PRE",Grado:3,GrupoLetra:"A",IdAlumno:"A0031",Nombre:"HERRERA HERNANDEZ RUBEN DARIEL"},
-        {Nivel:"PRE",Grado:3,GrupoLetra:"A",IdAlumno:"A0032",Nombre:"HUERTA SALGADO PAVEL ELIAM"},
-        {Nivel:"PRE",Grado:3,GrupoLetra:"A",IdAlumno:"A0033",Nombre:"JIMENEZ MARTINEZ OSCAR JESUS"},
-        {Nivel:"PRE",Grado:3,GrupoLetra:"A",IdAlumno:"A0034",Nombre:"LOPEZ LOZANO ALESSANDRO SANTINO"},
-        {Nivel:"PRE",Grado:3,GrupoLetra:"A",IdAlumno:"A0035",Nombre:"MALDONADO DOMINGUEZ NOAH LIAM"},
-        {Nivel:"PRE",Grado:3,GrupoLetra:"A",IdAlumno:"A0036",Nombre:"MARTINEZ SANCHEZ JOSE LISANDRO"},
-        {Nivel:"PRE",Grado:3,GrupoLetra:"A",IdAlumno:"A0037",Nombre:"NAVARRETE RAMIREZ YALI QUETZALLI"},
-        {Nivel:"PRE",Grado:3,GrupoLetra:"A",IdAlumno:"A0038",Nombre:"RAMOS ESCOBAR NATALY REGINA"},
-        {Nivel:"PRE",Grado:3,GrupoLetra:"A",IdAlumno:"A0039",Nombre:"RODRIGUEZ MARIN KAMILA GABRIELA"},
-        {Nivel:"PRE",Grado:3,GrupoLetra:"A",IdAlumno:"A0040",Nombre:"VAZQUEZ SANCHEZ LUKA MATEO"},
-        {Nivel:"PRE",Grado:3,GrupoLetra:"A",IdAlumno:"A0041",Nombre:"ZARCO BERGES VICTORIA"},
-        {Nivel:"PRI",Grado:1,GrupoLetra:"A",IdAlumno:"A0042",Nombre:"ALVARADO GORDILLO MICHELLE"},
-        {Nivel:"PRI",Grado:1,GrupoLetra:"A",IdAlumno:"A0043",Nombre:"ARREOLA CONTRERAS KALEL"},
-        {Nivel:"PRI",Grado:1,GrupoLetra:"A",IdAlumno:"A0044",Nombre:"BAÑALES CUETO SAMANTHA"},
-        {Nivel:"PRI",Grado:1,GrupoLetra:"A",IdAlumno:"A0045",Nombre:"BARRAGAN SANCHEZ LIAM"},
-        {Nivel:"PRI",Grado:1,GrupoLetra:"A",IdAlumno:"A0046",Nombre:"CANO ESTRELLA AITANA ISABELLE"},
-        {Nivel:"PRI",Grado:1,GrupoLetra:"A",IdAlumno:"A0047",Nombre:"CHAPARRO GONZALEZ ADRIANA GUADALUPE"},
-        {Nivel:"PRI",Grado:1,GrupoLetra:"A",IdAlumno:"A0048",Nombre:"CORZA LOPEZ CHRISTOPHER JASSIEL"},
-        {Nivel:"PRI",Grado:1,GrupoLetra:"A",IdAlumno:"A0049",Nombre:"HERNANDEZ CASTELAN CEDRICK IMANOL"},
-        {Nivel:"PRI",Grado:1,GrupoLetra:"A",IdAlumno:"A0050",Nombre:"HERNANDEZ FLORES AREN DARIO"},
-        {Nivel:"PRI",Grado:1,GrupoLetra:"A",IdAlumno:"A0051",Nombre:"MARTINEZ GONZALEZ REGINA"},
-        {Nivel:"PRI",Grado:1,GrupoLetra:"A",IdAlumno:"A0052",Nombre:"MEJIA MIRANDA LEONARDO RAMSES"},
-        {Nivel:"PRI",Grado:1,GrupoLetra:"A",IdAlumno:"A0053",Nombre:"MENDEZ BARRERA LEAH REGINA"},
-        {Nivel:"PRI",Grado:1,GrupoLetra:"A",IdAlumno:"A0054",Nombre:"MOLINA SERRATO JIMENA ELIZABETH"},
-        {Nivel:"PRI",Grado:1,GrupoLetra:"A",IdAlumno:"A0055",Nombre:"MONTELLANO MENDOZA DIANA ESMERALDA"},
-        {Nivel:"PRI",Grado:1,GrupoLetra:"A",IdAlumno:"A0056",Nombre:"MONTELLANO MENDOZA MAR ZAFIRO"},
-        {Nivel:"PRI",Grado:1,GrupoLetra:"A",IdAlumno:"A0057",Nombre:"OLICON MARIN ISABELLA"},
-        {Nivel:"PRI",Grado:1,GrupoLetra:"A",IdAlumno:"A0058",Nombre:"ORTIZ LAGUNAS NATAN JONAS"},
-        {Nivel:"PRI",Grado:1,GrupoLetra:"A",IdAlumno:"A0059",Nombre:"RAMOS SANCHEZ JADE GUADALUPE"},
-        {Nivel:"PRI",Grado:1,GrupoLetra:"A",IdAlumno:"A0060",Nombre:"TELLEZ GONZALEZ EIDEN ALBERTO"},
-        {Nivel:"PRI",Grado:1,GrupoLetra:"A",IdAlumno:"A0061",Nombre:"VALERIO SALINAS SOFIA LEILANY"},
-        {Nivel:"PRI",Grado:2,GrupoLetra:"A",IdAlumno:"A0062",Nombre:"ALPIZAR GOMEZ JULIAN"},
-        {Nivel:"PRI",Grado:2,GrupoLetra:"A",IdAlumno:"A0063",Nombre:"CARREON ARCINIEGA LIA AITANA"},
-        {Nivel:"PRI",Grado:2,GrupoLetra:"A",IdAlumno:"A0064",Nombre:"CRUZ GONZALEZ SANTIAGO"},
-        {Nivel:"PRI",Grado:2,GrupoLetra:"A",IdAlumno:"A0065",Nombre:"ESCOBAR MENDOZA MIA REGINA"},
-        {Nivel:"PRI",Grado:2,GrupoLetra:"A",IdAlumno:"A0066",Nombre:"ESTRADA DE LA CRUZ SAMADHI"},
-        {Nivel:"PRI",Grado:2,GrupoLetra:"A",IdAlumno:"A0067",Nombre:"GOMEZ DURAN NESTOR IVAN"},
-        {Nivel:"PRI",Grado:2,GrupoLetra:"A",IdAlumno:"A0068",Nombre:"GONZALEZ LECONA AMARA"},
-        {Nivel:"PRI",Grado:2,GrupoLetra:"A",IdAlumno:"A0069",Nombre:"GUERRA RAMIREZ JOSE NICOLAS"},
-        {Nivel:"PRI",Grado:2,GrupoLetra:"A",IdAlumno:"A0070",Nombre:"HERNANDEZ MONTAÑO ELIAN DANIEL"},
-        {Nivel:"PRI",Grado:2,GrupoLetra:"A",IdAlumno:"A0071",Nombre:"JUAREZ LOPEZ BRIANNA KEYLIN"},
-        {Nivel:"PRI",Grado:2,GrupoLetra:"A",IdAlumno:"A0072",Nombre:"JUAREZ ZARANDA ANTONIO"},
-        {Nivel:"PRI",Grado:2,GrupoLetra:"A",IdAlumno:"A0073",Nombre:"LOZANO GOMEZ CASANDRA"},
-        {Nivel:"PRI",Grado:2,GrupoLetra:"A",IdAlumno:"A0074",Nombre:"MARTINEZ FLORES CAMILA"},
-        {Nivel:"PRI",Grado:2,GrupoLetra:"A",IdAlumno:"A0075",Nombre:"MEDINA FLORES GERALDINE"},
-        {Nivel:"PRI",Grado:2,GrupoLetra:"A",IdAlumno:"A0076",Nombre:"MEDINA VENTURA ELIAN DAVID"},
-        {Nivel:"PRI",Grado:2,GrupoLetra:"A",IdAlumno:"A0077",Nombre:"NICOLAS IBARRA ANGEL ALONSO"},
-        {Nivel:"PRI",Grado:2,GrupoLetra:"A",IdAlumno:"A0078",Nombre:"ORTIZ LAGUNAS JACOB SALOMON"},
-        {Nivel:"PRI",Grado:2,GrupoLetra:"A",IdAlumno:"A0079",Nombre:"PICHARDO ORTIZ MIA MAHELET"},
-        {Nivel:"PRI",Grado:2,GrupoLetra:"A",IdAlumno:"A0080",Nombre:"RANCAÑO MARTINEZ SOFIA MAITE"},
-        {Nivel:"PRI",Grado:2,GrupoLetra:"A",IdAlumno:"A0081",Nombre:"RANCAÑO RAZO PEDRO ALEJANDRO"},
-        {Nivel:"PRI",Grado:2,GrupoLetra:"A",IdAlumno:"A0082",Nombre:"RODRIGUEZ MARIN DIEGO EVERARDO"},
-        {Nivel:"PRI",Grado:2,GrupoLetra:"A",IdAlumno:"A0083",Nombre:"TORRES GONZALEZ SOPHIA"},
-        {Nivel:"PRI",Grado:2,GrupoLetra:"A",IdAlumno:"A0084",Nombre:"VALADES MARTINEZ LEONARDO JESUS"},
-        {Nivel:"PRI",Grado:2,GrupoLetra:"A",IdAlumno:"A0085",Nombre:"VAZQUEZ ORTEGA MATIAS NICOLAS"},
-        {Nivel:"PRI",Grado:2,GrupoLetra:"A",IdAlumno:"A0086",Nombre:"VENTURA MALDONADO MYA VALENTINA"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0087",Nombre:"ACEVEDO RAMIREZ KARLA ABIGAIL"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0088",Nombre:"BELLO MORALES DIEGO EMILIANO"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0089",Nombre:"BENITO HERNANDEZ ERIK SANTIAGO"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0090",Nombre:"BENITO HERNANDEZ MONSERRAT NOEMI"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0091",Nombre:"BUENO PUENTE SARA ESTHER"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0092",Nombre:"CAMPECH OLGUIN ALEXIS XABIER"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0093",Nombre:"CASTANEDA RODRIGUEZ VALENTINA"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0094",Nombre:"DURAN VAZQUEZ LIAM OSMAR"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0095",Nombre:"FLORES CABRERA MILDRED"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0096",Nombre:"GALLARDO VILLANUEVA ROMINA"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0097",Nombre:"GORDILLO VELASQUEZ AXEL MATEO"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0098",Nombre:"HERNANDEZ RAMOS EVAN DANIEL"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0099",Nombre:"HERRERA TORIBIO EMILIO DANIEL"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0100",Nombre:"JUAREZ LOPEZ IKER YIBRAM"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0101",Nombre:"LAZCANO MARTINEZ EMILY ISABELLA"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0102",Nombre:"LOPEZ LIRA LUCA MATIAS"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0103",Nombre:"LUIS BERMEO IAN LEONEL"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0104",Nombre:"MARCELIANO MONROY MATIAS DILAN"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0105",Nombre:"MARTINEZ FLORES ROMINA"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0106",Nombre:"MONTOYA MONJARAS ELIAS MOISES"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0107",Nombre:"MORA FRANCO NICOLE"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0108",Nombre:"NERI VASQUEZ LIAM"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0109",Nombre:"OCHOA RAMIREZ SANTIAGO MATIAS"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0110",Nombre:"PACHECO RIVERA CARLOS ALEXANDER"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0111",Nombre:"PINEDA MENDOZA EMILIO MATHEO"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0112",Nombre:"PINTO LOPEZ RENATA AYLIN"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0113",Nombre:"RAMIREZ RONQUILLO XIMENA"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0114",Nombre:"REYES GUERRERO VALERIA"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0115",Nombre:"RODRIGUEZ RODRIGUEZ DANNA ROMINA"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0116",Nombre:"SEBASTIAN SOLANO LISA GABRIELLE"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0117",Nombre:"TAPIA HIPOLITO IVANNA REGINA"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0118",Nombre:"TORRES BARAJAS SOPHIA MICHELLE"},
-        {Nivel:"PRI",Grado:3,GrupoLetra:"A",IdAlumno:"A0119",Nombre:"VENTURA MALDONADO MARCO SANTIAGO"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"A",IdAlumno:"A0120",Nombre:"CANO ESTRELLA SANTIAGO EMIR"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"A",IdAlumno:"A0121",Nombre:"CARBAJAL ZARAGOZA LUCIA"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"A",IdAlumno:"A0122",Nombre:"CARBAJAL ZARAGOZA OSCAR"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"A",IdAlumno:"A0123",Nombre:"CRUZ SANCHEZ DULCE MIRANDA"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"A",IdAlumno:"A0124",Nombre:"ESCOBEDO SANCHEZ MATHIAS ALAIN"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"A",IdAlumno:"A0125",Nombre:"FLORES GUERRERO ERIN IVANNA"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"A",IdAlumno:"A0126",Nombre:"FLORES PEREZ ETHAN GAEL"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"A",IdAlumno:"A0127",Nombre:"GOMEZ CHAVEZ ARANTZA ITZAE"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"A",IdAlumno:"A0128",Nombre:"GOMEZ DURAN LUZ ANDREA"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"A",IdAlumno:"A0129",Nombre:"GONZALEZ QUINTOS CHRISTIAN"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"A",IdAlumno:"A0130",Nombre:"GUERRERO MONTOYA ALONDRA GUADALUPE"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"A",IdAlumno:"A0131",Nombre:"HERNANDEZ RANCAÑO KATHERIN VALENTINA"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"A",IdAlumno:"A0132",Nombre:"JIMENEZ MARTINEZ ZARA ISABELLA"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"A",IdAlumno:"A0133",Nombre:"LOPEZ OJEDA MATILDA"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"A",IdAlumno:"A0134",Nombre:"MARTINEZ OLVERA SAID ANDRE"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"A",IdAlumno:"A0135",Nombre:"MENDEZ BARRERA DIEGO EMILIANO"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"A",IdAlumno:"A0136",Nombre:"MENDEZ MORENO ABRAHAM"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"A",IdAlumno:"A0137",Nombre:"MOLINA SERRATO DAYANA MAYTE"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"A",IdAlumno:"A0138",Nombre:"PEÑA MATA AMANDA"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"A",IdAlumno:"A0139",Nombre:"SANCHEZ MARTINEZ ADRIAN"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"A",IdAlumno:"A0140",Nombre:"SANTOS ARCOS LEON MICHELLE"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"A",IdAlumno:"A0141",Nombre:"XOCHIPILTECATL LUNA LUIS RODRIGO"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"B",IdAlumno:"A0142",Nombre:"AGUILAR MEDINA SOFIA FERNANDA"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"B",IdAlumno:"A0143",Nombre:"BAÑALES CUETO SOFIA"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"B",IdAlumno:"A0144",Nombre:"BLANCO MARIN SHANNON VALENTINA"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"B",IdAlumno:"A0145",Nombre:"FERNANDEZ RODRIGUEZ ELIAN MATEO"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"B",IdAlumno:"A0146",Nombre:"GARDUÑO ALFARO ABRIL"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"B",IdAlumno:"A0147",Nombre:"GODINEZ GARCIA KEYSI ODETH"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"B",IdAlumno:"A0148",Nombre:"GONZALEZ HIDALGO EVELYN DANAE"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"B",IdAlumno:"A0149",Nombre:"GONZALEZ LECONA IRENE"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"B",IdAlumno:"A0150",Nombre:"GUTIERREZ ADAME STEVEN YAZID"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"B",IdAlumno:"A0151",Nombre:"GUTIERREZ FLORES CAMILA"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"B",IdAlumno:"A0152",Nombre:"MARTINEZ MOLINA CITLALLY"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"B",IdAlumno:"A0153",Nombre:"MORA HERNANDEZ ZAID"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"B",IdAlumno:"A0154",Nombre:"NAVA CADENA ALONSO FERNANDO"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"B",IdAlumno:"A0155",Nombre:"ORTIZ PEREZ SAUL GAEL"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"B",IdAlumno:"A0156",Nombre:"OSORIO MIRELES JOEL URIEL"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"B",IdAlumno:"A0157",Nombre:"PALACIOS ISLAS GENESIS AITANA"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"B",IdAlumno:"A0158",Nombre:"PEREZ GARCIA LIAM SANTIAGO"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"B",IdAlumno:"A0159",Nombre:"PEREZ PERALTA PAOLA GETSEMANI"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"B",IdAlumno:"A0160",Nombre:"SANCHEZ MIER ABDIEL"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"B",IdAlumno:"A0161",Nombre:"SILVA RIVERO SANTIAGO ENRIQUE"},
-        {Nivel:"PRI",Grado:4,GrupoLetra:"B",IdAlumno:"A0162",Nombre:"TORRES NARANJO ADIRAM KEYLAN"},
-        {Nivel:"PRI",Grado:5,GrupoLetra:"A",IdAlumno:"A0163",Nombre:"AGUILAR BANDIN LIA OSMARA"},
-        {Nivel:"PRI",Grado:5,GrupoLetra:"A",IdAlumno:"A0164",Nombre:"AGUILAR CAMPILLO ALONDRA XARENI"},
-        {Nivel:"PRI",Grado:5,GrupoLetra:"A",IdAlumno:"A0165",Nombre:"BARROSO RAZO MATEO EMILIANO"},
-        {Nivel:"PRI",Grado:5,GrupoLetra:"A",IdAlumno:"A0166",Nombre:"BRINGAS ONTIVEROS LUCIANO ANDREE"},
-        {Nivel:"PRI",Grado:5,GrupoLetra:"A",IdAlumno:"A0167",Nombre:"BUENO PUENTE JEHU SANTIAGO"},
-        {Nivel:"PRI",Grado:5,GrupoLetra:"A",IdAlumno:"A0168",Nombre:"CASTRO MORENO IAN EDUARDO"},
-        {Nivel:"PRI",Grado:5,GrupoLetra:"A",IdAlumno:"A0169",Nombre:"CUAPIO RAMOS IAN FERNANDO"},
-        {Nivel:"PRI",Grado:5,GrupoLetra:"A",IdAlumno:"A0170",Nombre:"ESCOBAR MENDOZA DANNA SOFIA"},
-        {Nivel:"PRI",Grado:5,GrupoLetra:"A",IdAlumno:"A0171",Nombre:"FERRA JIMENEZ PAULA LEILANY"},
-        {Nivel:"PRI",Grado:5,GrupoLetra:"A",IdAlumno:"A0172",Nombre:"FUENTES SALAZAR DAVID"},
-        {Nivel:"PRI",Grado:5,GrupoLetra:"A",IdAlumno:"A0173",Nombre:"GALLARDO MUÑOZ ROMMEL YASSER"},
-        {Nivel:"PRI",Grado:5,GrupoLetra:"A",IdAlumno:"A0174",Nombre:"GARCIA RANGEL KARLA NATALY"},
-        {Nivel:"PRI",Grado:5,GrupoLetra:"A",IdAlumno:"A0175",Nombre:"GONZALEZ HERNANDEZ JORGE EDUARDO"},
-        {Nivel:"PRI",Grado:5,GrupoLetra:"A",IdAlumno:"A0176",Nombre:"GUERRERO MONTOYA DIEGO"},
-        {Nivel:"PRI",Grado:5,GrupoLetra:"A",IdAlumno:"A0177",Nombre:"JIMENEZ MARTINEZ CAMILA MELANY"},
-        {Nivel:"PRI",Grado:5,GrupoLetra:"A",IdAlumno:"A0178",Nombre:"LANDA JUAREZ BRUNO"},
-        {Nivel:"PRI",Grado:5,GrupoLetra:"A",IdAlumno:"A0179",Nombre:"LAZARO ESTRADA ARTURO"},
-        {Nivel:"PRI",Grado:5,GrupoLetra:"A",IdAlumno:"A0180",Nombre:"LUNA CERVANTES ISABELLA ALEJANDRA"},
-        {Nivel:"PRI",Grado:5,GrupoLetra:"A",IdAlumno:"A0181",Nombre:"MARTINEZ GUERRERO MIA VALENTINA"},
-        {Nivel:"PRI",Grado:5,GrupoLetra:"A",IdAlumno:"A0182",Nombre:"MEDINA FLORES BRAULIO JESUS"},
-        {Nivel:"PRI",Grado:5,GrupoLetra:"A",IdAlumno:"A0183",Nombre:"MEDINA FLORES SEBASTIAN"},
-        {Nivel:"PRI",Grado:5,GrupoLetra:"A",IdAlumno:"A0184",Nombre:"ORDAZ LOPEZ IKER ALEXANDER"},
-        {Nivel:"PRI",Grado:5,GrupoLetra:"A",IdAlumno:"A0185",Nombre:"OSORNO ROMERO VICTORIA"},
-        {Nivel:"PRI",Grado:5,GrupoLetra:"A",IdAlumno:"A0186",Nombre:"POPOCA BONILLA MARIA PAULA"},
-        {Nivel:"PRI",Grado:5,GrupoLetra:"A",IdAlumno:"A0187",Nombre:"RAMIREZ PEREZ MATEO ALONSO"},
-        {Nivel:"PRI",Grado:5,GrupoLetra:"A",IdAlumno:"A0188",Nombre:"RIVERA HERNANDEZ EDRIAN GAEL"},
-        {Nivel:"PRI",Grado:5,GrupoLetra:"A",IdAlumno:"A0189",Nombre:"SILVA GONZALEZ LUNA ABIGAIL"},
-        {Nivel:"PRI",Grado:5,GrupoLetra:"A",IdAlumno:"A0190",Nombre:"VALENCIA ROMERO MIA MELANIE"},
-        {Nivel:"PRI",Grado:5,GrupoLetra:"A",IdAlumno:"A0191",Nombre:"VELASCO GARCIA DOMINICK EMMYR"},
-        {Nivel:"PRI",Grado:6,GrupoLetra:"A",IdAlumno:"A0192",Nombre:"ALMAGUER MORENO MARTIN"},
-        {Nivel:"PRI",Grado:6,GrupoLetra:"A",IdAlumno:"A0193",Nombre:"ANGELES RAMIREZ LEON URIEL"},
-        {Nivel:"PRI",Grado:6,GrupoLetra:"A",IdAlumno:"A0194",Nombre:"BETANZOS RAMIREZ ELLIOT ARGEO"},
-        {Nivel:"PRI",Grado:6,GrupoLetra:"A",IdAlumno:"A0195",Nombre:"BRIONES ARAMBULA LEONEL ANDRE"},
-        {Nivel:"PRI",Grado:6,GrupoLetra:"A",IdAlumno:"A0196",Nombre:"BRIONES ARAMBULA RENATA GISELL"},
-        {Nivel:"PRI",Grado:6,GrupoLetra:"A",IdAlumno:"A0197",Nombre:"CARRANZA MORA IAN ANDRE"},
-        {Nivel:"PRI",Grado:6,GrupoLetra:"A",IdAlumno:"A0198",Nombre:"CONTRERAS OLMOS AITANA VALERIA"},
-        {Nivel:"PRI",Grado:6,GrupoLetra:"A",IdAlumno:"A0199",Nombre:"DE LEON GALVEZ LEONARDO DE ANGELLO"},
-        {Nivel:"PRI",Grado:6,GrupoLetra:"A",IdAlumno:"A0200",Nombre:"ECHEVERRIA AMADOR FRIDA"},
-        {Nivel:"PRI",Grado:6,GrupoLetra:"A",IdAlumno:"A0201",Nombre:"GOMEZ LIMON MAXIMO SANTIAGO"},
-        {Nivel:"PRI",Grado:6,GrupoLetra:"A",IdAlumno:"A0202",Nombre:"GONZALEZ SERRANO ZURIEL ALEJANDRO"},
-        {Nivel:"PRI",Grado:6,GrupoLetra:"A",IdAlumno:"A0203",Nombre:"MARTINEZ GUERRERO LIA ISABELLA"},
-        {Nivel:"PRI",Grado:6,GrupoLetra:"A",IdAlumno:"A0204",Nombre:"MARTINEZ VAZQUEZ ANGEL KALEB"},
-        {Nivel:"PRI",Grado:6,GrupoLetra:"A",IdAlumno:"A0205",Nombre:"NORIEGA BERNABE EMMET"},
-        {Nivel:"PRI",Grado:6,GrupoLetra:"A",IdAlumno:"A0206",Nombre:"ORDAZ CHILPA IAN SEBASTIAN"},
-        {Nivel:"PRI",Grado:6,GrupoLetra:"A",IdAlumno:"A0207",Nombre:"OROPEZA AGUILAR JIMENA MELANI"},
-        {Nivel:"PRI",Grado:6,GrupoLetra:"A",IdAlumno:"A0208",Nombre:"REYES GARCIA DYLAN DACIEL"},
-        {Nivel:"PRI",Grado:6,GrupoLetra:"A",IdAlumno:"A0209",Nombre:"ROBLES LOPEZ ARI ANDRE"},
-        {Nivel:"PRI",Grado:6,GrupoLetra:"A",IdAlumno:"A0210",Nombre:"ROSAS AGUILAR DANTE EMMANUEL"},
-        {Nivel:"PRI",Grado:6,GrupoLetra:"A",IdAlumno:"A0211",Nombre:"SANCHEZ RAMIREZ DERECK MATEO"},
-        {Nivel:"PRI",Grado:6,GrupoLetra:"A",IdAlumno:"A0212",Nombre:"SORIA MENDOZA ROGELIO CALEB"},
-        {Nivel:"PRI",Grado:6,GrupoLetra:"A",IdAlumno:"A0213",Nombre:"VALDEZ OCHOA THIAGO MATEO"}
-    ];
+    // Directorio dinámico: la única fuente es la pestaña Alumnos de Google Sheets.
+    let BaseDatosEstudiantes = [];
+    let AlumnosDescargados = false;
+    async function CargarAlumnosDesdeSheets() {
+        const controlador = new AbortController();
+        const tiempo = setTimeout(() => controlador.abort(), 18000);
+        try {
+            const url = UrlScriptGoogle + '?accion=alumnos&_=' + Date.now();
+            const respuesta = await fetch(url, {cache:'no-store',signal:controlador.signal});
+            if (!respuesta.ok) throw new Error('No se pudo descargar el directorio de alumnos.');
+            const datos = await respuesta.json();
+            if (datos.status !== 'SUCCESS' || !Array.isArray(datos.alumnos)) throw new Error(datos.message || 'El servidor no entregó el directorio.');
+            const vistos = new Set();
+            const nuevos = datos.alumnos.map(a => ({
+                IdAlumno: String(a.IdAlumno || '').trim().toUpperCase(),
+                Nombre: String(a.Nombre || '').trim(),
+                Nivel: String(a.Nivel || '').trim().toUpperCase(),
+                Grado: Number(a.Grado) || 0,
+                GrupoLetra: String(a.GrupoLetra || a.Grupo || '').trim().toUpperCase()
+            })).filter(a => {
+                if (!a.IdAlumno || !a.Nombre || vistos.has(a.IdAlumno)) return false;
+                vistos.add(a.IdAlumno); return true;
+            });
+            if (!nuevos.length) throw new Error('La hoja Alumnos no devolvió estudiantes activos.');
+            BaseDatosEstudiantes = nuevos;
+            AlumnosDescargados = true;
+            return nuevos.length;
+        } finally { clearTimeout(tiempo); }
+    }
+
+    // Apps Script responde a un formulario POST con HTML que notifica el resultado.
+    // No enviamos la contraseña por URL, ni la guardamos en localStorage.
+    function ValidarAccesoServidor(contrasena) {
+        return new Promise((resolve, reject) => {
+            const nonce = 'ACC-' + Date.now() + '-' + Math.random().toString(36).slice(2);
+            const frame = document.createElement('iframe');
+            frame.name = 'comedor_auth_' + nonce.replace(/[^a-z0-9]/gi,'');
+            frame.style.display = 'none';
+            const form = document.createElement('form');
+            form.method = 'POST'; form.action = UrlScriptGoogle; form.target = frame.name;
+            form.style.display = 'none';
+            const add = (nombre,valor) => {
+                const input = document.createElement('input');
+                input.name = nombre; input.value = valor; form.appendChild(input);
+            };
+            add('accion','validarAcceso'); add('contrasena',contrasena); add('nonce',nonce);
+            let finalizado = false;
+            const terminar = (err,datos) => {
+                if (finalizado) return;
+                finalizado = true;
+                clearTimeout(timeout);
+                window.removeEventListener('message',escuchar);
+                form.remove(); frame.remove();
+                if (err) reject(err); else resolve(datos);
+            };
+            const escuchar = (evento) => {
+                // Apps Script HtmlService puede envolver la respuesta en un iframe interno.
+                // La ventana emisora no coincide necesariamente con frame.contentWindow.
+                // Comprobamos el tipo y el nonce aleatorio para asociar la respuesta.
+                const d = evento.data;
+                if (!d || d.tipo !== 'COMEDOR_ACCESO' || d.nonce !== nonce) return;
+                terminar(null,{autorizado:d.autorizado === true,message:d.message || ''});
+            };
+            window.addEventListener('message',escuchar);
+            document.body.appendChild(frame); document.body.appendChild(form);
+            const timeout = setTimeout(() => terminar(new Error('El servidor no respondió a tiempo. Verifique la implementación de Apps Script.')), 20000);
+            form.submit();
+        });
+    }
 
     function NormalizarRegistro(r) {
         if (r.Fecha && (String(r.Fecha).includes('GMT') || String(r.Fecha).length > 12)) {
@@ -1964,7 +1874,7 @@
         efecto.classList.add(Registro.MontoOperacion > 0 ? 'saldo-positivo' : (Registro.MontoOperacion < 0 ? 'saldo-negativo' : 'saldo-neutro'));
         const importe = document.getElementById('ConfirmacionMontoRecibido');
         importe.classList.remove('saldo-positivo', 'saldo-negativo', 'saldo-neutro');
-        importe.classList.add(Registro.Monto < 50 ? 'saldo-negativo' : 'saldo-positivo');
+        importe.classList.add(Registro.Monto < CostoComidaGlobal ? 'saldo-negativo' : 'saldo-positivo');
         let explicacion = '';
         if (Registro.CantComida === 1 && Registro.Monto === 0) {
             explicacion = `No se recibirá dinero. Se registrará una comida con costo de ${dinero(Registro.MontoOperacionActual)}, descontándola del saldo del alumno.`;
@@ -2173,7 +2083,12 @@
     const CLAVE_ESTADO_SINCRONIZACION = 'ComedorSincronizacionPendienteConfirmacion';
 
     async function DescargarRegistrosNubeParaVerificar() {
-        const respuesta = await fetch(UrlScriptGoogle, { cache: 'no-store' });
+        const controlador = new AbortController();
+        const temporizador = setTimeout(() => controlador.abort(), 18000);
+        let respuesta;
+        try { respuesta = await fetch(UrlScriptGoogle, {cache:'no-store',signal:controlador.signal}); }
+        finally { clearTimeout(temporizador); }
+        if (!respuesta.ok) throw new Error('Respuesta HTTP '+respuesta.status);
         const datos = await respuesta.json();
         if (datos.status !== 'SUCCESS' || !Array.isArray(datos.records)) throw new Error('El servidor no devolvió una lista válida.');
         return {
@@ -2193,11 +2108,11 @@
                 localStorage.setItem('ComedorCacheBaseDatos', JSON.stringify(nube));
                 if (!descarga.soportaIds) return { nube, confirmados, soportaIds: false };
                 if (confirmados.size === idsEsperados.size) return { nube, confirmados, soportaIds: true };
-                if (intento < maxIntentos - 1) await new Promise(resolve => setTimeout(resolve, 1500));
+                if (intento < maxIntentos - 1) await new Promise(resolve => setTimeout(resolve, Math.min(700 + intento * 450, 2000)));
                 else return { nube, confirmados, soportaIds: true };
             } catch (e) {
                 ultimoError = e;
-                if (intento < maxIntentos - 1) await new Promise(resolve => setTimeout(resolve, 1500));
+                if (intento < maxIntentos - 1) await new Promise(resolve => setTimeout(resolve, Math.min(700 + intento * 450, 2000)));
             }
         }
         if (ultimoError) throw ultimoError;
@@ -2222,7 +2137,7 @@
         SincronizacionEnCurso = true;
         const boton = document.getElementById('BtnSincronizarRegistros');
         if (boton) { boton.disabled = true; boton.textContent = 'Sincronizando…'; }
-        MostrarOverlayCarga('Sincronizando bloque...', 'Enviando movimientos y comprobando sus identificadores únicos. No vuelva a enviar mientras se verifica.');
+        MostrarOverlayCarga('Sincronizando bloque...', 'Verificando y enviando movimientos. Los registros solo se retiran cuando Google Sheets confirma sus IDs.');
 
         try {
             AsegurarIdsSolicitudLocal(registrosLocales);
@@ -2265,14 +2180,17 @@
             localStorage.setItem(CLAVE_ESTADO_SINCRONIZACION, JSON.stringify({ ids: idsEnvio, iniciado: new Date().toISOString() }));
 
             // POST no-cors no permite leer la respuesta. La confirmación se realiza consultando los IDs únicos en doGet.
-            await fetch(UrlScriptGoogle, {
+            const controladorEnvio = new AbortController();
+            const limiteEnvio = setTimeout(() => controladorEnvio.abort(), 20000);
+            try { await fetch(UrlScriptGoogle, {
+                signal: controladorEnvio.signal,
                 method: 'POST',
                 mode: 'no-cors',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify(registrosLocales)
-            });
+            }); } finally { clearTimeout(limiteEnvio); }
 
-            const verificacion = await EsperarConfirmacionPorIds(new Set(idsEnvio), 6);
+            const verificacion = await EsperarConfirmacionPorIds(new Set(idsEnvio), 5);
             if (!verificacion.soportaIds) {
                 OcultarOverlayCarga();
                 alert('⚠️ El servidor no está devolviendo IdSolicitudLocal. Los pendientes se conservaron y el intento quedó marcado para verificación. No vuelva a enviarlos hasta actualizar el Google Apps Script compatible.');
@@ -2324,7 +2242,7 @@
         }
     }
 
-    function ConfirmarEliminarPendientesSincronizacion() {
+    async function ConfirmarEliminarPendientesSincronizacion() {
         const pendientes = JSON.parse(localStorage.getItem('ComedorRegistrosPendientes') || '[]');
         if (pendientes.length === 0) {
             alert('No hay pendientes por eliminar.');
@@ -2334,10 +2252,21 @@
         if (!confirmar) return;
         const clave = prompt('Para confirmar la eliminación, escriba la contraseña de acceso:');
         if (clave === null) return;
-        if (clave !== '1122') {
+        let accesoEliminacion;
+        try { accesoEliminacion = await ValidarAccesoServidor(clave); }
+        catch (e) { alert('No se pudo verificar la contraseña. No se eliminó ningún pendiente.'); return; }
+        if (!accesoEliminacion.autorizado) {
             alert('Contraseña incorrecta. No se eliminó ningún pendiente.');
             return;
         }
+        // Segundo candado: respaldo obligatorio antes de borrar movimientos no confirmados.
+        const copia = JSON.stringify({exportado:new Date().toISOString(),pendientes,estado:localStorage.getItem(CLAVE_ESTADO_SINCRONIZACION)},null,2);
+        const url = URL.createObjectURL(new Blob([copia],{type:'application/json'}));
+        const enlace = document.createElement('a'); enlace.href=url;
+        enlace.download='RESPALDO PENDIENTES COMEDOR '+new Date().toISOString().slice(0,10)+'.json';
+        document.body.appendChild(enlace); enlace.click(); enlace.remove();
+        setTimeout(()=>URL.revokeObjectURL(url),15000);
+        if (!confirm('Se solicitó la descarga del respaldo JSON de los pendientes.\n\n¿Confirma POR SEGUNDA VEZ que desea eliminar los movimientos locales? Verifique que el respaldo se descargó antes de aceptar.')) return;
         localStorage.removeItem('ComedorRegistrosPendientes');
         localStorage.removeItem(CLAVE_ESTADO_SINCRONIZACION);
         ActualizarConteoPendientes();
@@ -3302,7 +3231,7 @@
                 let Registro = RegistrosAlumno[i];
                 const CantidadComidas = parseInt(Registro.CantComida || Registro.PagoCantComida) || 0;
                 const MontoCobrado = parseFloat(Registro.Monto) || 0;
-                const MontoOpActualVal = parseFloat(Registro.MontoOperacionActual) || (CantidadComidas * CostoComidaGlobal);
+                const MontoOpActualVal = Number.isFinite(parseFloat(Registro.MontoOperacionActual)) ? parseFloat(Registro.MontoOperacionActual) : (CantidadComidas * CostoComidaGlobal);
                 const MontoOpVal = parseFloat(Registro.MontoOperacion) !== undefined && !isNaN(parseFloat(Registro.MontoOperacion)) ? parseFloat(Registro.MontoOperacion) : (MontoCobrado - MontoOpActualVal);
 
                 TextoTablaFlotantCopiar += `${Registro.Fecha || ''} ${Registro.Hora || ''}\t${Registro.TipoPago || Registro.Tipo || ''}\t$${MontoCobrado.toFixed(2)}\t${CantidadComidas}\t$${MontoOpVal.toFixed(2)}\n`;
@@ -3724,7 +3653,7 @@
                 if (CoincidenciaDb) NombreEstudianteFinal = CoincidenciaDb.Nombre;
             }
 
-            const MontoOpActualVal = parseFloat(Registro.MontoOperacionActual) || (CantidadComidas * CostoComidaGlobal);
+            const MontoOpActualVal = Number.isFinite(parseFloat(Registro.MontoOperacionActual)) ? parseFloat(Registro.MontoOperacionActual) : (CantidadComidas * CostoComidaGlobal);
             const MontoOpVal = parseFloat(Registro.MontoOperacion) !== undefined && !isNaN(parseFloat(Registro.MontoOperacion)) ? parseFloat(Registro.MontoOperacion) : (MontoCobrado - MontoOpActualVal);
 
             TextoTablaCopiar += `${Registro.Fecha || ''} ${Registro.Hora || ''}\t${IdRegLimpio}\t${NombreEstudianteFinal}\t${Registro.TipoPago || Registro.Tipo || ''}\t$${MontoCobrado.toFixed(2)}\t${CantidadComidas}\t$${MontoOpVal.toFixed(2)}\n`;
@@ -3735,7 +3664,7 @@
                     <td><strong>${IdRegLimpio}</strong></td>
                     <td>${NombreEstudianteFinal}</td>
                     <td>${Registro.TipoPago || Registro.Tipo || ''}</td>
-                    <td class="${MontoCobrado < 50 ? 'valor-monto-negativo' : (MontoCobrado > 50 ? 'valor-monto-positivo' : '')}">$${MontoCobrado.toFixed(2)}</td>
+                    <td class="${MontoCobrado < CostoComidaGlobal ? 'valor-monto-negativo' : (MontoCobrado > CostoComidaGlobal ? 'valor-monto-positivo' : '')}">$${MontoCobrado.toFixed(2)}</td>
                     <td style="text-align:center;">${CantidadComidas}</td>
                     <td class="${MontoOpVal < 0 ? 'valor-saldo-negativo' : (MontoOpVal > 0 ? 'valor-saldo-positivo' : '')}">$${MontoOpVal.toFixed(2)}</td>
                 </tr>
@@ -3746,6 +3675,87 @@
 
         document.getElementById('AreaResultados').style.display = 'block';
     }
+
+
+    // Excel: fecha local, nombre del reporte y datos tipados; no modifica Google Sheets.
+    function NombreReporteExcel(historial) {
+        if (historial) return 'HISTORIAL POR ALUMNO';
+        const rezagos = document.getElementById('ContenedorBuscadorRezagos');
+        if (rezagos && rezagos.style.display !== 'none') return 'REPORTE DE REZAGOS';
+        const titulo = (document.getElementById('TituloTablaReporte')?.textContent || '').toUpperCase();
+        const texto = (CadenaTextoReporteActual || '').toUpperCase();
+        const conjunto = titulo + ' ' + texto;
+        if (/COMIDA.*RANGO|RANGO.*COMIDA/.test(conjunto)) return 'COMIDAS POR RANGO';
+        if (/COMIDA/.test(conjunto) && /HOY|ACTUAL|DIA/.test(conjunto)) return 'COMIDAS DIA ACTUAL';
+        if (/MENSUAL|POR MES|MES:/.test(conjunto)) return 'REPORTE MENSUAL';
+        if (/RANGO/.test(conjunto)) return 'REPORTE POR RANGO';
+        if (/FECHA/.test(conjunto)) return 'REPORTE POR FECHA';
+        return 'REPORTE GENERAL';
+    }
+    function NombreArchivoExcel(historial) {
+        const d = new Date(), pad = n => String(n).padStart(2,'0');
+        return `${String(d.getFullYear()).slice(-2)}${pad(d.getMonth()+1)}${pad(d.getDate())}_${pad(d.getHours())}${pad(d.getMinutes())}_${NombreReporteExcel(historial)}.xlsx`;
+    }
+    function DescargarExcelComedor(historial = false) {
+        if (typeof XLSX === 'undefined') { alert('No se cargó el generador Excel. Compruebe su conexión.'); return; }
+        const origen = historial ? document.querySelector('#ContenedorPdfHistorialFlotante table') : document.getElementById('TablaResultadosReporte');
+        if (!origen) { alert('Primero genere una consulta.'); return; }
+        const filas = [...origen.querySelectorAll('tr')].filter(tr => getComputedStyle(tr).display !== 'none');
+        const matriz = filas.map(tr => [...tr.querySelectorAll('th,td')].filter(c => getComputedStyle(c).display !== 'none' && !c.querySelector('button')).map(c => {
+            const valor = c.innerText.trim().replace(/\s+/g,' ');
+            if (/^-?\$\s*[\d,]+(?:\.\d{1,2})?$/.test(valor)) return Number(valor.replace(/[$,\s]/g,''));
+            // Los identificadores y las fechas permanecen como texto para conservar ceros iniciales.
+            if (/^\d+(?:\.\d+)?$/.test(valor) && !/^0\d/.test(valor)) return Number(valor);
+            return /^[=+@\t\r]/.test(valor) ? "'" + valor : valor;
+        }));
+        if (matriz.length < 2 || !matriz.slice(1).some(r => r.some(v => v !== ''))) { alert('No hay resultados para exportar.'); return; }
+        const libro = XLSX.utils.book_new();
+        libro.Props = {Title:NombreReporteExcel(historial), Subject:'Comedor escolar', Author:'Colegio Anglo Mexiquense', CreatedDate:new Date()};
+        const nombre = NombreReporteExcel(historial);
+        const resumen = historial ? (CadenaTextoReporteFlotante || '') : (CadenaTextoReporteActual || '');
+        const fecha = new Date().toLocaleString('es-MX');
+        const resumenFilas = [
+            ['COLEGIO ANGLO MEXIQUENSE'],[nombre],[],
+            ['Fecha de emisión',fecha],['Precio unitario vigente (MXN)',CostoComidaGlobal],
+            ['Registros exportados',matriz.length-1],['Fuente','Consulta mostrada en pantalla'],
+            ['Última actualización de la base',localStorage.getItem('ComedorUltimaActualizacionBD') || 'No registrada'],
+            [],['RESUMEN DE LA CONSULTA'],...String(resumen).split('\n').filter(Boolean).map(line=>[line])
+        ];
+        const hojaResumen=XLSX.utils.aoa_to_sheet(resumenFilas);
+        hojaResumen['!cols']=[{wch:84},{wch:34}];
+        XLSX.utils.book_append_sheet(libro,hojaResumen,'Resumen');
+        const hojaDatos=XLSX.utils.aoa_to_sheet(matriz);
+        hojaDatos['!cols']=matriz[0].map((_,i)=>({wch:Math.min(55,Math.max(15,...matriz.slice(0,250).map(r=>String(r[i]??'').length+3)))}));
+        hojaDatos['!autofilter']={ref:hojaDatos['!ref']};
+        hojaDatos['!freeze']={xSplit:0,ySplit:1};
+        const encabezados=matriz[0].map(x=>String(x||'').toLowerCase());
+        for (let c=0;c<encabezados.length;c++) {
+            if (/monto|importe|abono|pago|cobro|adeudo|saldo|total.*\$/.test(encabezados[c])) {
+                for(let r=1;r<matriz.length;r++) {
+                    const celda=hojaDatos[XLSX.utils.encode_cell({r,c})];
+                    if(celda && celda.t==='n') celda.z='"$"#,##0.00;[Red]("$"#,##0.00)';
+                }
+            }
+        }
+        XLSX.utils.book_append_sheet(libro,hojaDatos,'Detalle');
+        const indicadores=[['INDICADOR','VALOR'],['Movimientos',matriz.length-1]];
+        encabezados.forEach((h,i)=>{
+            // Los saldos por movimiento no se suman: son posiciones, no flujos de caja.
+            if (/saldo|adeudo/.test(h)) return;
+            if (!/monto|importe|abono|pago|cobro|cantidad|cant\.|comidas/.test(h)) return;
+            const nums=matriz.slice(1).map(r=>r[i]).filter(v=>typeof v==='number'&&Number.isFinite(v));
+            if(nums.length) indicadores.push([matriz[0][i],Math.round(nums.reduce((a,b)=>a+b,0)*100)/100]);
+        });
+        const totales=XLSX.utils.aoa_to_sheet(indicadores);
+        totales['!cols']=[{wch:38},{wch:24}];
+        XLSX.utils.book_append_sheet(libro,totales,'Indicadores');
+        try { XLSX.writeFile(libro,NombreArchivoExcel(historial),{compression:true}); }
+        catch(error) { console.error(error); alert('No fue posible generar el Excel. Verifique los permisos de descarga del navegador.'); }
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        const e = document.getElementById('EtiquetaPrecioComida');
+        if (e) e.textContent = `$${CostoComidaGlobal.toFixed(2)}`;
+    });
 
     function CopiarReporteAlPortapapeles() {
         if (!CadenaTextoReporteActual) return;
